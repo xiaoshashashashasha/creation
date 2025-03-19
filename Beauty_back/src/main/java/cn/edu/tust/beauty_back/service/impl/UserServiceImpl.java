@@ -8,7 +8,6 @@ import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -20,6 +19,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUserName(String username) {
         User user = userMapper.findByUserName(username);
+        return user;
+    }
+
+    @Override
+    public User findByUserId(Integer user_id) {
+        User user = userMapper.findByUserId(user_id);
         return user;
     }
 
@@ -51,4 +56,11 @@ public class UserServiceImpl implements UserService {
         Integer user_id = (Integer) map.get("user_id");
         userMapper.updatePwd(user_id,Md5Util.getMd5String(newPwd));
     }
+
+    @Override
+    public void updateRole(int user_id, int role) {
+        userMapper.updateRole(user_id,role);
+    }
+
+
 }

@@ -6,6 +6,9 @@ import cn.edu.tust.beauty_back.service.UserService;
 import cn.edu.tust.beauty_back.utils.JwtUtil;
 import cn.edu.tust.beauty_back.utils.Md5Util;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     *注册
+     * **/
     @PostMapping("/register")
     public Result register(@Pattern(regexp = "^\\S{3,12}$") String username, @Pattern(regexp = "^\\S{9,16}$") String password, @Pattern(regexp = "^\\S{1,10}$") String nickname, @Pattern(regexp = "^.+$") String gender, @Pattern(regexp = "^.+$") String email) {
 
@@ -37,6 +43,9 @@ public class UserController {
         }
     }
 
+    /**
+     *登录
+     * **/
     @PostMapping("/login")
     public Result login(@Pattern(regexp = "^\\S{3,12}$") String username, @Pattern(regexp = "^\\S{9,16}$") String password) {
         //根据用户名查询用户是否存在
@@ -58,6 +67,9 @@ public class UserController {
         return Result.error("密码错误");
     }
 
+    /**
+     *获取用户详细信息
+     * **/
     @GetMapping("/userInfo")
     public Result userInfo() {
 
@@ -68,18 +80,27 @@ public class UserController {
         return Result.success(user);
     }
 
-    @PutMapping("/update")
+    /**
+     *更新基本信息
+     * **/
+    @PatchMapping("/update")
     public Result updateUserInfo(@RequestBody @Validated User user) {
         userService.update(user);
         return Result.success();
     }
 
+    /**
+     *上传头像
+     * **/
     @PatchMapping("/updateAvatar")
     public Result updateAvatar(@RequestParam @URL String avatarUrl) {
         userService.updateAvatar(avatarUrl);
         return Result.success();
     }
 
+    /**
+     *更新密码
+     * **/
     @PatchMapping("/updatePwd")
     public Result updatePwd(@RequestBody Map<String, String> params) {
         //校验参数
@@ -106,5 +127,20 @@ public class UserController {
         userService.updatePwd(newPwd);
         return Result.success();
 
+    }
+
+    /**
+     *更改用户权限
+     * **/
+    @PatchMapping("/changeRole")
+    public Result changeRole(@NotNull int user_id, @Min(0) @Max(2) int role) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer manager_id = (Integer) map.get("user_id");
+        User user = userService.findByUserId(manager_id);
+        if(user.getRole() == 1) {
+            userService.updateRole(user_id,role);
+            return Result.success();
+        }
+        return Result.error("您无权访问用户权限内容！");
     }
 }
