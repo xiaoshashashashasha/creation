@@ -1,22 +1,23 @@
 package cn.edu.tust.beauty_back.controller;
 
+import cn.edu.tust.beauty_back.bean.PageBean;
 import cn.edu.tust.beauty_back.bean.Result;
 import cn.edu.tust.beauty_back.bean.User;
+import cn.edu.tust.beauty_back.service.FollowService;
 import cn.edu.tust.beauty_back.service.UserService;
 import cn.edu.tust.beauty_back.utils.JwtUtil;
 import cn.edu.tust.beauty_back.utils.Md5Util;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -26,6 +27,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private FollowService followService;
 
     /**
      *注册
@@ -130,6 +133,50 @@ public class UserController {
     }
 
     /**
+     *关注他人
+     * **/
+    @PostMapping("/follow")
+    public Result follow(int followed_id){
+        followService.add(followed_id);
+        return Result.success();
+    }
+
+    /**
+     *取消关注
+     * **/
+    @DeleteMapping("/cancelFollow")
+    public Result cancelFollow(@RequestParam int followed_id){
+        followService.del(followed_id);
+        return Result.success();
+    }
+
+    /**
+     *查询关注用户列表
+     * **/
+    @GetMapping("/listFollowed")
+    public Result<List<User>> listFollowed(){
+        List<Integer> list_id = followService.listFollowed();
+        List<User> list_user = new ArrayList<>();
+        for (Integer user_id : list_id) {
+            list_user.add(userService.findByUserId(user_id));
+        }
+        return Result.success(list_user);
+    }
+
+    /**
+     *查询粉丝列表
+     * **/
+    @GetMapping("/listFollower")
+    public Result<List<User>> listFollower(){
+        List<Integer> list_id = followService.listFollower();
+        List<User> list_user = new ArrayList<>();
+        for (Integer user_id : list_id) {
+            list_user.add(userService.findByUserId(user_id));
+        }
+        return Result.success(list_user);
+    }
+
+    /**
      *更改用户权限
      * **/
     @PatchMapping("/changeRole")
@@ -140,6 +187,25 @@ public class UserController {
         if(user.getRole() == 1) {
             userService.updateRole(user_id,role);
             return Result.success();
+        }
+        return Result.error("您无权访问用户权限内容！");
+    }
+
+    /**
+     *管理者分页查询用户
+     * **/
+    @GetMapping("/list")
+    public Result<PageBean<User>> list(Integer pageNum, Integer pageSize,@RequestParam(required = false) Integer user_id,@RequestParam(required = false) String keyWord) {
+        //检查用户权限
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer manager_id = (Integer) map.get("user_id");
+        User user = userService.findByUserId(manager_id);
+        if(user.getRole() == 1) {
+            if (user_id != null && keyWord != null ){
+                return Result.error("非法参数！");
+            }
+            PageBean<User> pb = userService.list(pageNum,pageSize,user_id,keyWord);
+            return Result.success(pb);
         }
         return Result.error("您无权访问用户权限内容！");
     }

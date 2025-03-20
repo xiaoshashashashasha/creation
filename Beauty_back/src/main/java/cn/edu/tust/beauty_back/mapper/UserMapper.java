@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
     //根据用户名查询用户
@@ -36,4 +38,7 @@ public interface UserMapper {
     //更新用户权限
     @Update("update beauty_user set role=#{role} where user_id=#{user_id}")
     void updateRole(int user_id, int role);
+
+    //分页查询所有用户，若有条件则应用条件
+    List<User> list(Integer user_id, String keyWord);
 }

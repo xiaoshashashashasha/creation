@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.tust.beauty_back.mapper.UserMapper">
+    <!-- 动态SQL -->
+    <select id="list" resultType="cn.edu.tust.beauty_back.bean.User">
+        select * from beauty_user
+        <where>
+            <if test="user_id != null">
+                user_id = #{user_id}
+            </if>
+            <if test="user_id == null and keyWord != null and keyWord != ''">
+                and username like CONCAT('%', #{keyWord}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

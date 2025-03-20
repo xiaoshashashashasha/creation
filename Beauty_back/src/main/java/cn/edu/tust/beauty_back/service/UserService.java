@@ -1,5 +1,6 @@
 package cn.edu.tust.beauty_back.service;
 
+import cn.edu.tust.beauty_back.bean.PageBean;
 import cn.edu.tust.beauty_back.bean.User;
 
 public interface UserService {
@@ -17,4 +18,6 @@ public interface UserService {
     void updatePwd(String newPwd);
     //更新权限
     void updateRole(int user_id, int role);
+    //条件分页查询用户
+    PageBean<User> list(Integer pageNum, Integer pageSize, Integer user_id, String keyWord);
 }

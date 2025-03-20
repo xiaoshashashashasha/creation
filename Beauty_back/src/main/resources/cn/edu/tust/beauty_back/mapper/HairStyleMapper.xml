@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.tust.beauty_back.mapper.HairStyleMapper">
+    <!-- 动态SQL -->
+    <select id="list" resultType="cn.edu.tust.beauty_back.bean.HairStyle">
+        select * from beauty_hairstyle
+        <where>
+            <if test="keyWord != null and keyWord != ''">
+                 hairstyle_name like CONCAT('%', #{keyWord}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>
