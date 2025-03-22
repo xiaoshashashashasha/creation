@@ -5,9 +5,9 @@
 <mapper namespace="cn.edu.tust.beauty_back.mapper.CreationMapper">
     <!-- 动态SQL -->
     <select id="list" resultType="cn.edu.tust.beauty_back.bean.Creation">
-        select * from beauty_user
+        select * from beauty_creation
         <where>
-            examine = 0;
+            examine = 0
             <if test="class_id != null">
                 and class_id = #{class_id}
             </if>
@@ -18,7 +18,7 @@
     </select>
 
     <select id="listToExamine" resultType="cn.edu.tust.beauty_back.bean.Creation">
-        select * from beauty_user
+        select * from beauty_creation
         <where>
             <if test="examine != null">
                 examine = #{examine}

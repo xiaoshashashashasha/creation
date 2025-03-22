@@ -14,15 +14,12 @@ public class Creation {
     private int creation_id;
     private int user_id;
 
-    @NotEmpty
     @Pattern(regexp = "^\\S{1,10}$")
     private String title;
 
-    @NotEmpty
     @Pattern(regexp = "^\\S{1,30}$")
-    private String Abstract;
+    private String abs_text;
 
-    @NotEmpty
     @URL
     private String cover_pic;
 

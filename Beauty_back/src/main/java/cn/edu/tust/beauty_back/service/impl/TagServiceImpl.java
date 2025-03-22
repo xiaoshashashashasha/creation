@@ -22,7 +22,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<Tag> list() {
         List<Tag> list = tagMapper.list();
-        return List.of();
+        return list;
     }
 
     @Override
