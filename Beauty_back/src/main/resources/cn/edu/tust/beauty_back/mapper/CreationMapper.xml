@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.tust.beauty_back.mapper.CreationMapper">
+    <!-- 动态SQL -->
+    <select id="list" resultType="cn.edu.tust.beauty_back.bean.Creation">
+        select * from beauty_user
+        <where>
+            examine = 0;
+            <if test="class_id != null">
+                and class_id = #{class_id}
+            </if>
+            <if test="title != null and title != ''">
+                and title like CONCAT('%', #{title}, '%')
+            </if>
+        </where>
+    </select>
+
+    <select id="listToExamine" resultType="cn.edu.tust.beauty_back.bean.Creation">
+        select * from beauty_user
+        <where>
+            <if test="examine != null">
+                examine = #{examine}
+            </if>
+            <if test="class_id != null">
+                and class_id = #{class_id}
+            </if>
+            <if test="title != null and title != ''">
+                and title like CONCAT('%', #{title}, '%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

@@ -196,7 +196,6 @@ public class UserController {
      * **/
     @GetMapping("/list")
     public Result<PageBean<User>> list(Integer pageNum, Integer pageSize,@RequestParam(required = false) Integer user_id,@RequestParam(required = false) String keyWord) {
-        //检查用户权限
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer manager_id = (Integer) map.get("user_id");
         User user = userService.findByUserId(manager_id);
