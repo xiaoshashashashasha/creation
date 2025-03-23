@@ -18,9 +18,10 @@ public interface CreationService {
     //删除自己发布的图文内容
     void del(int creation_id);
 
+    //分页获取我发布的图文列表
+    PageBean<Creation> myList(Integer pageNum, Integer pageSize, Integer user_id);
     //多参数分页查询审核图文
     PageBean<Creation> listToExamine(Integer pageNum, Integer pageSize, String title, Integer class_id, Integer tag_id, Integer examine);
-
     //获取图文关联的标签
     List<Tag> getTagsByCId(Integer creation_id);
 
@@ -29,5 +30,6 @@ public interface CreationService {
     //取消关联标签
     void cancelConnect(Integer creation_id, Integer tag_id);
     //审核图文内容
-    void examine(Integer creation_id, Integer examine);
+    void examine(Integer creation_id, Integer examine,String review_comments);
+
 }

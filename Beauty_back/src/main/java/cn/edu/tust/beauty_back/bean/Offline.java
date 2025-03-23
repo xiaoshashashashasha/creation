@@ -2,25 +2,29 @@ package cn.edu.tust.beauty_back.bean;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 
 @Data
-public class HairStyle {
-    private Integer hairstyle_id;
-
-    @Pattern(regexp = "^\\S{1,10}$")
-    private String hairstyle_name;
+public class Offline {
+    private Integer offline_id;
 
     @NotEmpty
-    private String content;
+    @Pattern(regexp = "^\\S{3,12}$")
+    private String offline_name;
 
     @NotEmpty
-    @URL
-    private String hairstyle_pic;
+    @Pattern(regexp = "^\\S{3,99}$")
+    private String offline_position;
+
+    @NotEmpty
+    @Pattern(regexp = "^\\S{6,18}$")
+    private String offline_phone;
+
+    private Integer manager_id;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created_at;

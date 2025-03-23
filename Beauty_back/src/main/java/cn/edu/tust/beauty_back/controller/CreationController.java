@@ -4,6 +4,8 @@ import cn.edu.tust.beauty_back.bean.*;
 import cn.edu.tust.beauty_back.service.CreationService;
 import cn.edu.tust.beauty_back.service.UserService;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -50,6 +52,19 @@ public class CreationController {
     }
 
     /**
+     * 分页获取我发布的图文列表
+     **/
+    public Result<PageBean<Creation>> myList(Integer pageNum, Integer pageSize, @RequestParam Integer user_id){
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer login_id = (Integer) map.get("user_id");
+        if (login_id == user_id){
+            PageBean<Creation> pb = creationService.myList(pageNum, pageSize, user_id);
+            return Result.success(pb);
+        }
+        return Result.error("无权访问他人图文列表");
+    }
+
+    /**
      * 多参数分页查询图文内容
      **/
     @GetMapping("/list")
@@ -88,7 +103,7 @@ public class CreationController {
             creationService.connectTag(creation_id, tag_id);
             return Result.success();
         }
-        return Result.error("您无权访问用户权限内容！");
+        return Result.error("您无权访问该内容！");
 
     }
 
@@ -98,13 +113,13 @@ public class CreationController {
     @DeleteMapping("/cancelConnect")
     public Result cancelConnect(@NotNull Integer creation_id, @NotNull Integer tag_id) {
         Map<String, Object> map = ThreadLocalUtil.get();
-        Integer manager_id = (Integer) map.get("user_id");
-        User user = userService.findByUserId(manager_id);
+        Integer user_id = (Integer) map.get("user_id");
+        User user = userService.findByUserId(user_id);
         if (user.getRole() == 1) {
             creationService.cancelConnect(creation_id, tag_id);
             return Result.success();
         }
-        return Result.error("您无权访问用户权限内容！");
+        return Result.error("您无权访问该内容！");
     }
 
     /**
@@ -119,22 +134,22 @@ public class CreationController {
             PageBean<Creation> pb = creationService.listToExamine(pageNum, pageSize, title, class_id, tag_id, examine);
             return Result.success(pb);
         }
-        return Result.error("您无权访问用户权限内容！");
+        return Result.error("您无权访问该内容！");
     }
 
     /**
      *审核图文内容
      * **/
     @PatchMapping("/examine")
-    public Result examine(@NotNull Integer creation_id, @NotNull Integer examine) {
+    public Result examine(@NotNull Integer creation_id, @NotNull @Min(0) @Max(2) Integer examine, String review_comments) {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer manager_id = (Integer) map.get("user_id");
         User user = userService.findByUserId(manager_id);
         if (user.getRole() == 1) {
-            creationService.examine(creation_id,examine);
+            creationService.examine(creation_id,examine,review_comments);
             return Result.success();
         }
-        return Result.error("您无权访问用户权限内容！");
+        return Result.error("您无权访问该内容！");
     }
 
 }

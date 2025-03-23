@@ -88,8 +88,13 @@ public class UserController {
      * **/
     @PatchMapping("/update")
     public Result updateUserInfo(@RequestBody @Validated User user) {
-        userService.update(user);
-        return Result.success();
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer user_id = (Integer) map.get("user_id");
+        if (user_id.equals(user.getUser_id())) {
+            userService.update(user);
+            return Result.success();
+        }
+        return Result.error("无权更改他人信息！");
     }
 
     /**
@@ -208,4 +213,6 @@ public class UserController {
         }
         return Result.error("您无权访问用户权限内容！");
     }
+
+
 }

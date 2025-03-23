@@ -4,6 +4,7 @@ import cn.edu.tust.beauty_back.bean.HairStyle;
 import cn.edu.tust.beauty_back.bean.PageBean;
 import cn.edu.tust.beauty_back.bean.User;
 import cn.edu.tust.beauty_back.mapper.UserMapper;
+import cn.edu.tust.beauty_back.mapper.WalletMapper;
 import cn.edu.tust.beauty_back.service.UserService;
 import cn.edu.tust.beauty_back.utils.Md5Util;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
@@ -20,6 +21,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private WalletMapper walletMapper;
 
     @Override
     public User findByUserName(String username) {
@@ -39,6 +42,9 @@ public class UserServiceImpl implements UserService {
         String jwt_password = Md5Util.getMd5String(password);
         //添加用户
         userMapper.add(username,jwt_password,nickname,gender,email);
+        //获取用户id创建钱包
+        User user = userMapper.findByUserName(username);
+        walletMapper.add(user.getUser_id());
     }
 
     @Override

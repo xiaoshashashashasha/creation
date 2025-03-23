@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 public class User {
     @NotNull//值非null
-    private int user_id;
+    private Integer user_id;
 
     @NotEmpty//值非null且非空
     @Pattern(regexp = "^\\S{3,12}$")

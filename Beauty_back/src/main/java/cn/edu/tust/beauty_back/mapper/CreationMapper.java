@@ -49,6 +49,10 @@ public interface CreationMapper {
     List<Creation> listToExamine(String title, Integer class_id, Integer examine);
 
     //审核图文内容
-    @Update("update beauty_creation set examine = #{examine} where creation_id = #{creation_id}")
-    void updateExamine(Integer creation_id, Integer examine);
+    @Update("update beauty_creation set examine = #{examine}, review_comments = #{review_comments} where creation_id = #{creation_id}")
+    void updateExamine(Integer creation_id, Integer examine, String review_comments);
+
+    //获取我发布的图文列表
+    @Select("select * from beauty_creation where user_id = #{user_id}")
+    List<Creation> myList(Integer user_id);
 }

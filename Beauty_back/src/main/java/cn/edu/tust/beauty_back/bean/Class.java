@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class Class {
-    private int class_id;
+    private Integer class_id;
 
     @NotEmpty
     private String class_name;

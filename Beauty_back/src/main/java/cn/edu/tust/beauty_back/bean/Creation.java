@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 
 @Data
 public class Creation {
-    private int creation_id;
-    private int user_id;
+    private Integer creation_id;
+    private Integer user_id;
 
     @Pattern(regexp = "^\\S{1,10}$")
     private String title;
@@ -30,6 +30,8 @@ public class Creation {
     private Integer class_id;
 
     private int views;
+
+    private int likes;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created_at;
