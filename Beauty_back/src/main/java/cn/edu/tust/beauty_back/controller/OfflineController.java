@@ -4,6 +4,8 @@ import cn.edu.tust.beauty_back.bean.*;
 import cn.edu.tust.beauty_back.service.OfflineService;
 import cn.edu.tust.beauty_back.service.UserService;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -130,11 +132,14 @@ public class OfflineController {
      *审核门店申请，并创建门店框架
      * **/
     @PatchMapping("/examine")
-    public Result examine(@NotNull Integer request_id, @NotNull Integer examine, String review_comments){
+    public Result examine(@NotNull Integer request_id, @NotNull @Min(0) @Max(1) Integer examine, String review_comments){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
         User user = userService.findByUserId(user_id);
         if (user.getRole() == 1) {
+            if (examine == 1 && review_comments == null){
+                return Result.error("拒绝申请请给出拒绝原因！");
+            }
             offlineService.examine(request_id,examine,review_comments);
             return Result.success();
         }

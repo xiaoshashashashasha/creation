@@ -45,6 +45,7 @@ public class CreationServiceImpl implements CreationService {
 
     @Override
     public Creation getCreationByCId(int creation_id) {
+        creationMapper.view(creation_id);
         Creation creation = creationMapper.getCreationByCId(creation_id);
         return creation;
     }

@@ -54,6 +54,7 @@ public class CreationController {
     /**
      * 分页获取我发布的图文列表
      **/
+    @GetMapping("/myList")
     public Result<PageBean<Creation>> myList(Integer pageNum, Integer pageSize, @RequestParam Integer user_id){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer login_id = (Integer) map.get("user_id");
@@ -128,8 +129,8 @@ public class CreationController {
     @GetMapping("/listToExamine")
     public Result<PageBean<Creation>> listToExamine(Integer pageNum, Integer pageSize, @RequestParam(required = false) String title, @RequestParam(required = false) Integer class_id, @RequestParam(required = false) Integer tag_id, @RequestParam(required = true) Integer examine) {
         Map<String, Object> map = ThreadLocalUtil.get();
-        Integer manager_id = (Integer) map.get("user_id");
-        User user = userService.findByUserId(manager_id);
+        Integer user_id = (Integer) map.get("user_id");
+        User user = userService.findByUserId(user_id);
         if (user.getRole() == 1) {
             PageBean<Creation> pb = creationService.listToExamine(pageNum, pageSize, title, class_id, tag_id, examine);
             return Result.success(pb);
@@ -141,11 +142,14 @@ public class CreationController {
      *审核图文内容
      * **/
     @PatchMapping("/examine")
-    public Result examine(@NotNull Integer creation_id, @NotNull @Min(0) @Max(2) Integer examine, String review_comments) {
+    public Result examine(@NotNull Integer creation_id, @NotNull @Min(0) @Max(1) Integer examine, String review_comments) {
         Map<String, Object> map = ThreadLocalUtil.get();
-        Integer manager_id = (Integer) map.get("user_id");
-        User user = userService.findByUserId(manager_id);
+        Integer user_id = (Integer) map.get("user_id");
+        User user = userService.findByUserId(user_id);
         if (user.getRole() == 1) {
+            if (examine == 1 && review_comments == null) {
+                Result.error("打回图文请给出打回原因！");
+            }
             creationService.examine(creation_id,examine,review_comments);
             return Result.success();
         }

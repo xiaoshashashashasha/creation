@@ -55,4 +55,8 @@ public interface CreationMapper {
     //获取我发布的图文列表
     @Select("select * from beauty_creation where user_id = #{user_id}")
     List<Creation> myList(Integer user_id);
+
+    //浏览
+    @Update("update beauty_creation set views = views + 1 where creation_id = #{creation_id}")
+    void view(int creation_id);
 }
