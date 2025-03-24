@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class Offline {
+    @NotNull
     private Integer offline_id;
 
     @NotEmpty

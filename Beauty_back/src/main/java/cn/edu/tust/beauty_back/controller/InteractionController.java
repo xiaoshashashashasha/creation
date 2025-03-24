@@ -3,6 +3,7 @@ package cn.edu.tust.beauty_back.controller;
 import cn.edu.tust.beauty_back.bean.*;
 import cn.edu.tust.beauty_back.service.InteractionService;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -52,9 +53,11 @@ public class InteractionController {
      *点赞&取消点赞
      * **/
     @PatchMapping("/likeCreation")
-    public Result likeCreation(@RequestBody @Validated Like like){
+    public Result likeCreation(@NotNull Integer creation_id){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
+        Like like = new Like();
+        like.setCreation_id(creation_id);
         like.setUser_id(user_id);
         like = interactionService.likeCreation(like);
         return Result.success(like.getLike_state());
@@ -64,7 +67,7 @@ public class InteractionController {
      *获取点赞状态
      * **/
     @GetMapping("/likeInfo")
-    public Result likeInfo(@RequestParam Integer creation_id){
+    public Result likeInfo(@RequestParam @NotNull Integer creation_id){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
         Like like = interactionService.likeInfo(creation_id,user_id);
@@ -74,9 +77,12 @@ public class InteractionController {
     /**
      *收藏&取消收藏
      * **/
-    public Result collect(@RequestBody @Validated Favorite favorite){
+    @PatchMapping("/collectCreation")
+    public Result collectCreation(@NotNull Integer creation_id){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
+        Favorite favorite = new Favorite();
+        favorite.setCreation_id(creation_id);
         favorite.setUser_id(user_id);
         favorite = interactionService.collectCreation(favorite);
         return Result.success(favorite.getFavorite_state());
@@ -86,7 +92,7 @@ public class InteractionController {
      *获取收藏状态
      * **/
     @GetMapping("/collectInfo")
-    public Result collectInfo(@RequestParam Integer creation_id){
+    public Result collectInfo(@RequestParam @NotNull Integer creation_id){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
         Favorite favorite = interactionService.collectInfo(creation_id,user_id);
@@ -96,6 +102,7 @@ public class InteractionController {
     /**
      *分页查询我的收藏列表
      * **/
+    @GetMapping("/listFavorite")
     public Result<PageBean<Favorite>> listFavorite(Integer pageNum , Integer pageSize){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");

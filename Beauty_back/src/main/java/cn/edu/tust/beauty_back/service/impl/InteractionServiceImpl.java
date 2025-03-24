@@ -43,17 +43,19 @@ public class InteractionServiceImpl implements InteractionService {
 
     @Override
     public Like likeCreation(Like like) {
-        if (like.getLike_state() == null){
+        Like liket = interactionMapper.likeInfo(like.getCreation_id(),like.getUser_id());
+        if (liket == null){
             interactionMapper.addLike(like);
             like.setLike_state(0);
-        }else if (like.getLike_state() == 0){
-            like.setLike_state(1);
-            interactionMapper.updateLike(like);
+            liket = like;
+        }else if (liket.getLike_state() == 0){
+            liket.setLike_state(1);
+            interactionMapper.updateLike(liket);
         }else {
-            like.setLike_state(0);
-            interactionMapper.updateLike(like);
+            liket.setLike_state(0);
+            interactionMapper.updateLike(liket);
         }
-        return like;
+        return liket;
     }
 
     @Override
@@ -64,17 +66,19 @@ public class InteractionServiceImpl implements InteractionService {
 
     @Override
     public Favorite collectCreation(Favorite favorite) {
-        if (favorite.getFavorite_state() == null){
+        Favorite favoritet = interactionMapper.favoriteInfo(favorite.getCreation_id(),favorite.getUser_id());
+        if (favoritet == null){
             interactionMapper.addFavorite(favorite);
             favorite.setFavorite_state(0);
-        }else if (favorite.getFavorite_state() == 0){
-            favorite.setFavorite_state(1);
-            interactionMapper.updateFavorite(favorite);
+            favoritet = favorite;
+        }else if (favoritet.getFavorite_state() == 0){
+            favoritet.setFavorite_state(1);
+            interactionMapper.updateFavorite(favoritet);
         }else {
-            favorite.setFavorite_state(0);
-            interactionMapper.updateFavorite(favorite);
+            favoritet.setFavorite_state(0);
+            interactionMapper.updateFavorite(favoritet);
         }
-        return favorite;
+        return favoritet;
     }
 
     @Override

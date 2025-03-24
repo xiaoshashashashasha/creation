@@ -48,7 +48,7 @@ public interface OfflineMapper {
     void delMember(Integer member_id);
 
     //分页获取门店申请
-    @Select("select * from offline_request where review_pass = 2")
+    @Select("select * from offline_request where examine = 2")
     List<OfflineRequest> requestListExa();
 
     //审核门店申请

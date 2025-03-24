@@ -13,7 +13,6 @@ public class Favorite {
     @NotNull
     private Integer creation_id;
 
-    @NotNull
     private Integer user_id;
 
     private Integer favorite_state;

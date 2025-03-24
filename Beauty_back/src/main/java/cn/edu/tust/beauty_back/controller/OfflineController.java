@@ -51,7 +51,7 @@ public class OfflineController {
      *查看申请详情
      * **/
     @GetMapping("/requestInfo")
-    public Result requestInfo(Integer request_id){
+    public Result requestInfo(@RequestParam @NotNull Integer request_id){
         OfflineRequest offlineRequest = offlineService.requestInfo(request_id);
         return Result.success(offlineRequest);
     }
@@ -71,7 +71,7 @@ public class OfflineController {
      *查看门店详情
      * **/
     @GetMapping("/offlineInfo")
-    public Result offlineInfo(Integer offline_id){
+    public Result offlineInfo(@RequestParam @NotNull Integer offline_id){
         Offline offline = offlineService.offlineInfo(offline_id);
         return Result.success(offline);
     }
@@ -89,7 +89,7 @@ public class OfflineController {
      *置入门店成员
      * **/
     @PostMapping("/addMember")
-    public Result addMember(@RequestParam @Validated OfflineMember offlineMember){
+    public Result addMember(@RequestBody @Validated OfflineMember offlineMember){
         offlineService.addMember(offlineMember);
         return Result.success();
     }
@@ -98,7 +98,7 @@ public class OfflineController {
      *获取成员列表
      * **/
     @GetMapping("/memberList")
-    public Result<List<OfflineMember>> memberList(Integer offline_id){
+    public Result<List<OfflineMember>> memberList(@RequestParam @NotNull Integer offline_id){
         List<OfflineMember> list = offlineService.memberList(offline_id);
         return Result.success(list);
     }
@@ -107,7 +107,7 @@ public class OfflineController {
      *删除门店成员
      * **/
     @DeleteMapping("/delMember")
-    public Result delMember(@RequestParam Integer member_id){
+    public Result delMember(@RequestParam @NotNull Integer member_id){
         offlineService.delMember(member_id);
         return Result.success();
     }
@@ -150,7 +150,7 @@ public class OfflineController {
      *删除门店
      * **/
     @DeleteMapping("/delOffline")
-    public Result delOffline(@RequestParam Integer offline_id){
+    public Result delOffline(@RequestParam @NotNull Integer offline_id){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
         User user = userService.findByUserId(user_id);

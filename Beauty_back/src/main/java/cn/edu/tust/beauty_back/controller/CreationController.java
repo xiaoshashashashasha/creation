@@ -55,14 +55,13 @@ public class CreationController {
      * 分页获取我发布的图文列表
      **/
     @GetMapping("/myList")
-    public Result<PageBean<Creation>> myList(Integer pageNum, Integer pageSize, @RequestParam Integer user_id){
+    public Result<PageBean<Creation>> myList(Integer pageNum, Integer pageSize) {
         Map<String, Object> map = ThreadLocalUtil.get();
-        Integer login_id = (Integer) map.get("user_id");
-        if (login_id == user_id){
-            PageBean<Creation> pb = creationService.myList(pageNum, pageSize, user_id);
-            return Result.success(pb);
-        }
-        return Result.error("无权访问他人图文列表");
+        Integer user_id = (Integer) map.get("user_id");
+
+        PageBean<Creation> pb = creationService.myList(pageNum, pageSize, user_id);
+        return Result.success(pb);
+
     }
 
     /**
@@ -78,7 +77,7 @@ public class CreationController {
      * 删除自己发布的图文内容
      **/
     @DeleteMapping("/del")
-    public Result del(@RequestParam int creation_id) {
+    public Result del(@RequestParam @NotNull Integer creation_id) {
         creationService.del(creation_id);
         return Result.success();
     }
@@ -87,7 +86,7 @@ public class CreationController {
      * 获取图文关联的标签
      **/
     @GetMapping("/getTagsByCId")
-    public Result<List<Tag>> getTagsByCId(@NotNull Integer creation_id) {
+    public Result<List<Tag>> getTagsByCId(@RequestParam @NotNull Integer creation_id) {
         List<Tag> list = creationService.getTagsByCId(creation_id);
         return Result.success(list);
     }
@@ -127,7 +126,7 @@ public class CreationController {
      * 多参数分页查询审核图文
      **/
     @GetMapping("/listToExamine")
-    public Result<PageBean<Creation>> listToExamine(Integer pageNum, Integer pageSize, @RequestParam(required = false) String title, @RequestParam(required = false) Integer class_id, @RequestParam(required = false) Integer tag_id, @RequestParam(required = true) Integer examine) {
+    public Result<PageBean<Creation>> listToExamine(Integer pageNum, Integer pageSize, @RequestParam(required = false) String title, @RequestParam(required = false) Integer class_id, @RequestParam(required = false) Integer tag_id, @RequestParam @NotNull Integer examine) {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
         User user = userService.findByUserId(user_id);
@@ -139,8 +138,8 @@ public class CreationController {
     }
 
     /**
-     *审核图文内容
-     * **/
+     * 审核图文内容
+     **/
     @PatchMapping("/examine")
     public Result examine(@NotNull Integer creation_id, @NotNull @Min(0) @Max(1) Integer examine, String review_comments) {
         Map<String, Object> map = ThreadLocalUtil.get();
@@ -148,9 +147,9 @@ public class CreationController {
         User user = userService.findByUserId(user_id);
         if (user.getRole() == 1) {
             if (examine == 1 && review_comments == null) {
-                Result.error("打回图文请给出打回原因！");
+                return Result.error("打回图文请给出打回原因！");
             }
-            creationService.examine(creation_id,examine,review_comments);
+            creationService.examine(creation_id, examine, review_comments);
             return Result.success();
         }
         return Result.error("您无权访问该内容！");

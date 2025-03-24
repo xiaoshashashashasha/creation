@@ -13,7 +13,6 @@ public class Like {
     @NotNull
     private Integer creation_id;
 
-    @NotNull
     private Integer user_id;
 
     private Integer like_state;
