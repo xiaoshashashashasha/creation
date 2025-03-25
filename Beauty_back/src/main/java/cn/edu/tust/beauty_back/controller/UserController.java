@@ -11,6 +11,8 @@ import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @Validated
@@ -29,6 +32,10 @@ public class UserController {
     private UserService userService;
     @Autowired
     private FollowService followService;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      *注册
@@ -63,6 +70,14 @@ public class UserController {
             claims.put("user_id", user.getUser_id());
             claims.put("username", user.getUsername());
             String Token = JwtUtil.genToken(claims);
+            //将Token存储到redis中
+            ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+            operations.set(Token, Token, 1, TimeUnit.DAYS);
+
+            //当前情况无法限制多用户重复登录的情况
+            //要实现单用户登陆状态，必须实现重复登录要检测redis缓存中的token检索分析
+            //对同一用户信息的旧token进行删除，确保当前用户信息的独特性
+
             return Result.success(Token);
 
         }
@@ -110,7 +125,7 @@ public class UserController {
      *更新密码
      * **/
     @PatchMapping("/updatePwd")
-    public Result updatePwd(@RequestBody Map<String, String> params) {
+    public Result updatePwd(@RequestBody Map<String, String> params, @RequestHeader("Authorization") String token) {
         //校验参数
         String oldPwd = params.get("old_pwd");
         String newPwd = params.get("new_pwd");
@@ -133,6 +148,11 @@ public class UserController {
 
         //更新密码
         userService.updatePwd(newPwd);
+
+        //成功后删除redis中存储的Token
+        ValueOperations<String, String> operations = stringRedisTemplate.opsForValue();
+        operations.getOperations().delete(token);
+
         return Result.success();
 
     }
