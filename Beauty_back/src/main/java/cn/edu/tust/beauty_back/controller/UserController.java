@@ -33,8 +33,6 @@ public class UserController {
     @Autowired
     private FollowService followService;
     @Autowired
-    private StringRedisTemplate redisTemplate;
-    @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
     /**
@@ -86,10 +84,19 @@ public class UserController {
     }
 
     /**
+     *获取其他用户信息
+     * **/
+    @GetMapping("/otherInfo")
+    public Result otherInfo(@RequestParam @NotNull String username){
+        User user = userService.findByUserName(username);
+        return Result.success(user);
+    }
+
+    /**
      *获取用户详细信息
      * **/
-    @GetMapping("/userInfo")
-    public Result userInfo() {
+    @GetMapping("/myInfo")
+    public Result myInfo() {
 
         //从线程中获取经过解析的用户数据
         Map<String, Object> map = ThreadLocalUtil.get();
@@ -158,12 +165,26 @@ public class UserController {
     }
 
     /**
+     *获取关注状态 0为已关注，1为未关注
+     * **/
+    @GetMapping("/followInfo")
+    public Result followInfo(int followed_id) {
+        Integer state =  followService.followInfo(followed_id);
+        return Result.success(state);
+    }
+
+    /**
      *关注他人
      * **/
     @PostMapping("/follow")
     public Result follow(int followed_id){
-        followService.add(followed_id);
-        return Result.success();
+        Integer state = followService.followInfo(followed_id);
+        if (state == 1) {
+            followService.add(followed_id);
+            state = 0;
+            return Result.success(state);
+        }
+        return Result.error("您已关注对方！");
     }
 
     /**
@@ -171,8 +192,13 @@ public class UserController {
      * **/
     @DeleteMapping("/cancelFollow")
     public Result cancelFollow(@RequestParam int followed_id){
+        Integer state = followService.followInfo(followed_id);
+        if (state == 1) {
+            return Result.error("您未关注对方！");
+        }
         followService.del(followed_id);
-        return Result.success();
+        state = 1;
+        return Result.success(state);
     }
 
     /**

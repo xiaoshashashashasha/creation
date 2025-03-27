@@ -20,7 +20,6 @@ public class Creation {
     @Pattern(regexp = "^\\S{1,30}$")
     private String abs_text;
 
-    @URL
     private String cover_pic;
 
     @NotEmpty

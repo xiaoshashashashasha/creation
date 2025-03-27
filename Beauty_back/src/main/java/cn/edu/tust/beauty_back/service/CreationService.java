@@ -24,6 +24,8 @@ public interface CreationService {
     PageBean<Creation> listToExamine(Integer pageNum, Integer pageSize, String title, Integer class_id, Integer tag_id, Integer examine);
     //获取图文关联的标签
     List<Tag> getTagsByCId(Integer creation_id);
+    //分页获取他人图文内容
+    PageBean<Creation> otherList(Integer pageNum, Integer pageSize, Integer user_id);
 
     //关联标签
     void connectTag(Integer creation_id, Integer tag_id);
@@ -32,4 +34,6 @@ public interface CreationService {
     //审核图文内容
     void examine(Integer creation_id, Integer examine,String review_comments);
 
+    //更新图文封面
+    void updateCover(String coverUrl, Integer creation_id);
 }

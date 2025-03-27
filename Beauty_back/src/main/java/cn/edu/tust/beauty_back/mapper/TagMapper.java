@@ -16,7 +16,7 @@ public interface TagMapper {
             "values(#{tag_name},now())")
     void add(Tag tag);
 
-    //无分页获取所有标签
+    //获取所有标签
     @Select("select * from beauty_tags")
     List<Tag> list();
 
@@ -28,4 +28,7 @@ public interface TagMapper {
     @Select("select * from beauty_tags where tag_id = #{tag_id}")
     Tag findTagById(Integer tag_id);
 
+    //根据标签名获取标签
+    @Select("select * from beauty_tags where tag_name = #{tag_name}")
+    Tag findTagByName(String tag_name);
 }

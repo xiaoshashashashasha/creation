@@ -30,13 +30,21 @@ public class OfflineServiceImpl implements OfflineService {
     }
 
     @Override
-    public OfflineRequest requestInfo(Integer request_id) {
-        return offlineMapper.requestInfo(request_id);
+    public PageBean<Offline> offlineList(Integer pageNum, Integer pageSize, String offline_city) {
+        PageBean<Offline> pb = new PageBean<>();
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<Offline> list = offlineMapper.offlineList(offline_city);
+        Page<Offline> p = (Page<Offline>) list;
+        pb.setTotal(p.getTotal());
+        pb.setItems(p.getResult());
+
+        return pb;
     }
 
     @Override
-    public List<Offline> offlineList(Integer manager_id) {
-        return offlineMapper.offlineList(manager_id);
+    public List<Offline> myOfflineList(Integer manager_id) {
+        return offlineMapper.myOfflineList(manager_id);
     }
 
     @Override
@@ -50,11 +58,22 @@ public class OfflineServiceImpl implements OfflineService {
     }
 
     @Override
-    public void addMember(OfflineMember offlineMember) {
+    public Integer addMember(OfflineMember offlineMember) {
         //根据user_name获取user_id
         User user = userMapper.findByUserName(offlineMember.getUser_name());
+        if (user == null) {
+            return 1;
+        }
         offlineMember.setUser_id(user.getUser_id());
-        offlineMapper.addMember(offlineMember);
+
+        User u = offlineMapper.findMenberByUId(offlineMember.getOffline_id(), offlineMember.getUser_id());
+        if (u == null) {
+            offlineMapper.addMember(offlineMember);
+            return 0;
+        }
+
+
+        return 2;
     }
 
     @Override
@@ -95,5 +114,10 @@ public class OfflineServiceImpl implements OfflineService {
     @Override
     public void delOffline(Integer offline_id) {
         offlineMapper.delOffline(offline_id);
+    }
+
+    @Override
+    public void updateCover(String coverUrl, Integer offline_id) {
+        offlineMapper.updateCover(coverUrl, offline_id);
     }
 }

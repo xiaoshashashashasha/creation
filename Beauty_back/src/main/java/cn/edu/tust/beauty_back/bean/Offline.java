@@ -17,6 +17,10 @@ public class Offline {
     @Pattern(regexp = "^\\S{3,12}$")
     private String offline_name;
 
+    private String offline_pic;
+
+    private String offline_content;
+
     @NotEmpty
     @Pattern(regexp = "^\\S{3,99}$")
     private String offline_position;

@@ -60,4 +60,9 @@ public class HairStyleServiceImpl implements HairStyleService {
     public void del(Integer hairstyle_id) {
         hairStyleMapper.del(hairstyle_id);
     }
+
+    @Override
+    public void updateCover(String coverUrl, Integer hairstyle_id) {
+        hairStyleMapper.updateCover(coverUrl, hairstyle_id);
+    }
 }

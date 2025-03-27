@@ -1,5 +1,6 @@
 package cn.edu.tust.beauty_back.service.impl;
 
+import cn.edu.tust.beauty_back.bean.Follow;
 import cn.edu.tust.beauty_back.mapper.FollowMapper;
 import cn.edu.tust.beauty_back.service.FollowService;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
@@ -50,5 +51,18 @@ public class FollowServiceImpl implements FollowService {
 
         List<Integer> list_id = followMapper.listFollower(followed_id);
         return list_id;
+    }
+
+    @Override
+    public Integer followInfo(int followed_id) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        int follower_id = (int) map.get("user_id");
+
+        Follow follow = followMapper.followInfo(follower_id,followed_id);
+        if (follow != null) {
+            return 0;
+        }
+
+        return 1;
     }
 }

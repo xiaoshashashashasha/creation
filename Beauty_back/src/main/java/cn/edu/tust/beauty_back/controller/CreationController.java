@@ -7,6 +7,7 @@ import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,19 +26,30 @@ public class CreationController {
     private UserService userService;
 
     /**
-     * 发布图文内容
+     * 发布图文内容,将examine设置为2
      **/
     @PostMapping("/add")
     public Result add(@RequestBody @Validated Creation creation) {
+        creation.setExamine(2);
         creationService.add(creation);
         return Result.success();
     }
 
     /**
-     * 编辑图文内容
+     * 上传图文封面
+     **/
+    @PatchMapping("/updateCover")
+    public Result updateCover(@RequestParam @URL String coverUrl, @RequestParam @NotNull Integer creation_id){
+        creationService.updateCover(coverUrl,creation_id);
+        return Result.success();
+    }
+
+    /**
+     * 编辑图文内容,将examine重置为2
      **/
     @PutMapping("/update")
     public Result update(@RequestBody @Validated Creation creation) {
+        creation.setExamine(2);
         creationService.update(creation);
         return Result.success();
     }
@@ -46,7 +58,7 @@ public class CreationController {
      * 获取详细内容
      **/
     @GetMapping("/creationInfo")
-    public Result<Creation> creationInfo(@RequestParam int creation_id) {
+    public Result<Creation> creationInfo(@RequestParam @NotNull Integer creation_id) {
         Creation creation = creationService.getCreationByCId(creation_id);
         return Result.success(creation);
     }
@@ -63,6 +75,16 @@ public class CreationController {
         return Result.success(pb);
 
     }
+
+    /**
+     * 分页获取他人发布的图文列表
+     **/
+    @GetMapping("/otherList")
+    public Result<PageBean<Creation>> otherList(Integer pageNum, Integer pageSize,@RequestParam @NotNull Integer user_id) {
+        PageBean<Creation> pb = creationService.otherList(pageNum, pageSize, user_id);
+        return Result.success(pb);
+    }
+
 
     /**
      * 多参数分页查询图文内容

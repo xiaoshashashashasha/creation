@@ -26,4 +26,8 @@ public interface ClassMapper {
     //根据id删除分类
     @Delete("delete from beauty_classes where class_id = #{class_id}")
     void delClassById(int class_id);
+
+    //根据分类名查找分类
+    @Select("select * from beauty_classes where class_name = #{class_name}")
+    Class findByClassName(String class_name);
 }

@@ -1,5 +1,6 @@
 package cn.edu.tust.beauty_back.mapper;
 
+import cn.edu.tust.beauty_back.bean.Follow;
 import cn.edu.tust.beauty_back.bean.User;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
@@ -27,4 +28,8 @@ public interface FollowMapper {
     //获取粉丝id列表
     @Select("select follower_id from beauty_follow where followed_id = #{followed_id}")
     List<Integer> listFollower(int followed_id);
+
+    //获取关注状态
+    @Select("select * from beauty_follow where follower_id = #{follower_id} and followed_id = #{followed_id}")
+    Follow followInfo(int follower_id, int followed_id);
 }

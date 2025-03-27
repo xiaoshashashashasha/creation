@@ -3,6 +3,7 @@ package cn.edu.tust.beauty_back.mapper;
 import cn.edu.tust.beauty_back.bean.Offline;
 import cn.edu.tust.beauty_back.bean.OfflineMember;
 import cn.edu.tust.beauty_back.bean.OfflineRequest;
+import cn.edu.tust.beauty_back.bean.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -22,9 +23,12 @@ public interface OfflineMapper {
     @Select("select * from offline_request where request_id = #{request_id}")
     OfflineRequest requestInfo(Integer request_id);
 
+    //获取门店列表
+    List<Offline> offlineList(String offline_city);
+
     //查看我的门店列表
     @Select("select * from beauty_offline where manager_id = #{manager_id}")
-    List<Offline> offlineList(Integer manager_id);
+    List<Offline> myOfflineList(Integer manager_id);
 
     //查看门店详情
     @Select("select * from beauty_offline where offline_id = #{offline_id}")
@@ -47,7 +51,7 @@ public interface OfflineMapper {
     @Delete("delete from offline_member where member_id = #{member_id}")
     void delMember(Integer member_id);
 
-    //分页获取门店申请
+    //获取门店申请列表
     @Select("select * from offline_request where examine = 2")
     List<OfflineRequest> requestListExa();
 
@@ -63,4 +67,12 @@ public interface OfflineMapper {
     //删除门店
     @Delete("delete from beauty_offline where offline_id = #{offline_id}")
     void delOffline(Integer offline_id);
+
+    //更新门店封面
+    @Update("update beauty_offline set offline_pic = #{coverUrl} where offline_id = #{offline_id}")
+    void updateCover(String coverUrl, Integer offline_id);
+
+    //根据用户id查找对应成员
+    @Select("select user_id,user_name from offline_member where offline_id = #{offline_id} and user_id = #{user_id}")
+    User findMenberByUId(Integer offline_id, Integer user_id);
 }

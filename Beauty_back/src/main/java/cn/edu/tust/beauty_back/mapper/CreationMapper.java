@@ -14,7 +14,7 @@ public interface CreationMapper {
     void add(Creation creation);
 
     //编辑图文内容
-    @Update("update beauty_creation set title = #{title}, abs_text = #{abs_text}, cover_pic = #{cover_pic}, content = #{content}, class_id = #{class_id}, updated_at = now() where creation_id = #{creation_id} and user_id = #{user_id}")
+    @Update("update beauty_creation set title = #{title}, abs_text = #{abs_text}, content = #{content}, class_id = #{class_id}, updated_at = now(), examine = #{examine} where creation_id = #{creation_id} and user_id = #{user_id}")
     void update(Creation creation);
 
     //根据标签id获取图文内容
@@ -56,7 +56,15 @@ public interface CreationMapper {
     @Select("select * from beauty_creation where user_id = #{user_id}")
     List<Creation> myList(Integer user_id);
 
+    //获取他人图文列表
+    @Select("select * from beauty_creation where user_id = #{user_id} and examine = 0")
+    List<Creation> otherList(Integer user_id);
+
     //浏览
     @Update("update beauty_creation set views = views + 1 where creation_id = #{creation_id}")
     void view(int creation_id);
+
+    //更新内容封面
+    @Update("update beauty_creation set cover_pic = #{coverUrl} where creation_id = #{creation_id}")
+    void updateCover(String coverUrl, Integer creation_id);
 }

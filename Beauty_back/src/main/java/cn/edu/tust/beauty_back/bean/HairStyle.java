@@ -18,8 +18,6 @@ public class HairStyle {
     @NotEmpty
     private String content;
 
-    @NotEmpty
-    @URL
     private String hairstyle_pic;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

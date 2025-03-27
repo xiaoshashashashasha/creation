@@ -12,16 +12,16 @@ public interface OfflineService {
     void addRequest(OfflineRequest offlineRequest);
     //查看我的门店申请列表
     List<OfflineRequest> requestList(Integer manager_id);
-    //查看申请详情
-    OfflineRequest requestInfo(Integer request_id);
+    //分页查找门店列表
+    PageBean<Offline> offlineList(Integer pageNum, Integer pageSize, String offline_city);
     //查看我的门店列表
-    List<Offline> offlineList(Integer manager_id);
+    List<Offline> myOfflineList(Integer manager_id);
     //查看门店详情
     Offline offlineInfo(Integer offline_id);
     //完善门店信息
     void improveOffline(Offline offline);
     //置入门店成员
-    void addMember(OfflineMember offlineMember);
+    Integer addMember(OfflineMember offlineMember);
     //获取成员列表
     List<OfflineMember> memberList(Integer offline_id);
     //删除门店成员
@@ -32,4 +32,6 @@ public interface OfflineService {
     void examine(Integer request_id, Integer examine, String review_comments);
     //删除门店
     void delOffline(Integer offline_id);
+    //更新门店封面
+    void updateCover(String coverUrl, Integer offline_id);
 }

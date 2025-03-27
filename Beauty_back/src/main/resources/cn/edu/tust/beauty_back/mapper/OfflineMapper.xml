@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.tust.beauty_back.mapper.OfflineMapper">
+    <!-- 动态SQL -->
+    <select id="offlineList" resultType="cn.edu.tust.beauty_back.bean.Offline">
+        select * from beauty_offline
+        <where>
+            <if test="offline_city != null and offline_city != ''">
+                offline_city like CONCAT('%', #{offline_city}, '%')
+            </if>
+        </where>
+    </select>
+</mapper>

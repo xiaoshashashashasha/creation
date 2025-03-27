@@ -13,4 +13,6 @@ public interface FollowService {
     List<Integer> listFollowed();
     //获取粉丝列表
     List<Integer> listFollower();
+    //获取关注状态
+    Integer followInfo(int followed_id);
 }

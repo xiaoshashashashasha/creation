@@ -105,6 +105,20 @@ public class CreationServiceImpl implements CreationService {
     }
 
     @Override
+    public PageBean<Creation> otherList(Integer pageNum, Integer pageSize, Integer user_id) {
+        PageBean<Creation> pb = new PageBean<>();
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<Creation> list = creationMapper.otherList(user_id);
+
+        Page<Creation> p = (Page<Creation>) list;
+        pb.setTotal(p.getTotal());
+        pb.setItems(p.getResult());
+
+        return pb;
+    }
+
+    @Override
     public PageBean<Creation> listToExamine(Integer pageNum, Integer pageSize, String title, Integer class_id, Integer tag_id, Integer examine) {
         PageBean<Creation> pb = new PageBean<>();
         PageHelper.startPage(pageNum, pageSize);
@@ -131,6 +145,8 @@ public class CreationServiceImpl implements CreationService {
         return pb;
     }
 
+
+
     @Override
     public List<Tag> getTagsByCId(Integer creation_id) {
         List<Integer> list_Tid = creationMapper.getTIdByCId(creation_id);
@@ -140,6 +156,8 @@ public class CreationServiceImpl implements CreationService {
         }
         return list;
     }
+
+
 
     @Override
     public void connectTag(Integer creation_id, Integer tag_id) {
@@ -154,5 +172,10 @@ public class CreationServiceImpl implements CreationService {
     @Override
     public void examine(Integer creation_id, Integer examine, String review_comments) {
         creationMapper.updateExamine(creation_id,examine,review_comments);
+    }
+
+    @Override
+    public void updateCover(String coverUrl, Integer creation_id) {
+        creationMapper.updateCover(coverUrl, creation_id);
     }
 }

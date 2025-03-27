@@ -21,10 +21,14 @@ public interface HairStyleMapper {
     HairStyle getHairStyleById(int hairstyle_id);
 
     //更新发型信息
-    @Update("update beauty_hairstyle set hairstyle_name = #{hairstyle_name}, content = #{content}, hairstyle_pic = #{hairstyle_pic}, updated_at = now() where hairstyle_id = #{hairstyle_id}")
+    @Update("update beauty_hairstyle set hairstyle_name = #{hairstyle_name}, content = #{content}, updated_at = now() where hairstyle_id = #{hairstyle_id}")
     void update(HairStyle hairstyle);
 
     //删除发型信息
     @Delete("delete from beauty_hairstyle where hairstyle_id = #{hairstyle_id}")
     void del(Integer hairstyle_id);
+
+    //上传发型封面
+    @Update("update beauty_hairstyle set hairstylee_pic = #{coverUrl} where hairstyle_id = #{hairstyle_id}")
+    void updateCover(String coverUrl, Integer hairstyle_id);
 }

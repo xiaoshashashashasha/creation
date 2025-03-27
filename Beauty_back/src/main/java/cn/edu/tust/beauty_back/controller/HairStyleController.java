@@ -8,6 +8,7 @@ import cn.edu.tust.beauty_back.service.HairStyleService;
 import cn.edu.tust.beauty_back.service.UserService;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -71,6 +72,15 @@ public class HairStyleController {
         }
         return Result.error("您无权访问用户权限内容！");
 
+    }
+
+    /**
+     *上传发型封面
+     * **/
+    @PatchMapping("/updateCover")
+    public Result updateCover(@RequestParam @URL String coverUrl, @RequestParam @NotNull Integer hairstyle_id){
+        hairStyleService.updateCover(coverUrl, hairstyle_id);
+        return Result.success();
     }
 
     /**

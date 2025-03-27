@@ -7,6 +7,7 @@ import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -47,23 +48,25 @@ public class OfflineController {
         return Result.success(list);
     }
 
+
     /**
-     *查看申请详情
+     *多参数分页获取门店列表
      * **/
-    @GetMapping("/requestInfo")
-    public Result requestInfo(@RequestParam @NotNull Integer request_id){
-        OfflineRequest offlineRequest = offlineService.requestInfo(request_id);
-        return Result.success(offlineRequest);
+    @GetMapping("/offlineList")
+    public  Result<PageBean<Offline>> offlineList(Integer pageNum, Integer pageSize, @RequestParam(required = false) String offline_city){
+        PageBean<Offline> pb = offlineService.offlineList(pageNum, pageSize, offline_city);
+        return Result.success(pb);
     }
+
 
     /**
      *查看我的门店列表
      * **/
-    @GetMapping("/offlineList")
-    public Result<List<Offline>> offlineList(){
+    @GetMapping("/myOfflineList")
+    public Result<List<Offline>> myOfflineList(){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer manager_id = (Integer) map.get("user_id");
-        List<Offline> list = offlineService.offlineList(manager_id);
+        List<Offline> list = offlineService.myOfflineList(manager_id);
         return Result.success(list);
     }
 
@@ -77,12 +80,34 @@ public class OfflineController {
     }
 
     /**
+     *上传门店封面
+     * **/
+    @PatchMapping("/updateCover")
+    public Result updateCover(@RequestParam @NotNull @URL String coverUrl,@RequestParam @NotNull Integer offline_id){
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer user_id = (Integer) map.get("user_id");
+        Offline offline = offlineService.offlineInfo(offline_id);
+        if (offline.getManager_id() == user_id) {
+            offlineService.updateCover(coverUrl,offline_id);
+            return Result.success();
+        }
+        return Result.error("您无权执行该操作！");
+
+    }
+
+    /**
      *完善门店信息
      * **/
     @PatchMapping("/improveOffline")
     public Result improveOffline(@RequestBody @Validated Offline offline){
-        offlineService.improveOffline(offline);
-        return Result.success();
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer user_id = (Integer) map.get("user_id");
+        Offline o = offlineService.offlineInfo(offline.getOffline_id());
+        if (o.getManager_id() == user_id) {
+            offlineService.improveOffline(offline);
+            return Result.success();
+        }
+        return Result.error("您无权执行该操作！");
     }
 
     /**
@@ -90,8 +115,13 @@ public class OfflineController {
      * **/
     @PostMapping("/addMember")
     public Result addMember(@RequestBody @Validated OfflineMember offlineMember){
-        offlineService.addMember(offlineMember);
-        return Result.success();
+        Integer code = offlineService.addMember(offlineMember);
+        if (code == 0){
+            return Result.success();
+        }else if (code == 1){
+            return Result.error("用户不存在！");
+        }
+        return Result.error("该成员已存在！");
     }
 
     /**
@@ -153,11 +183,11 @@ public class OfflineController {
     public Result delOffline(@RequestParam @NotNull Integer offline_id){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
-        User user = userService.findByUserId(user_id);
-        if (user.getRole() == 1) {
+        Offline offline = offlineService.offlineInfo(offline_id);
+        if (offline.getManager_id() == user_id) {
             offlineService.delOffline(offline_id);
             return Result.success();
         }
-        return Result.error("您无权访问该内容！");
+        return Result.error("您无权执行该操作！");
     }
 }
