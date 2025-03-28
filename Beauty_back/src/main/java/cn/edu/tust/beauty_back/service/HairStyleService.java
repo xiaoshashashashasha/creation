@@ -15,6 +15,4 @@ public interface HairStyleService {
     void update(HairStyle hairStyle);
     //删除发型信息
     void del(Integer hairstyle_id);
-    //上传发型封面
-    void updateCover(String coverUrl, Integer hairstyle_id);
 }

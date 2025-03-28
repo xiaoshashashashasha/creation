@@ -116,8 +116,4 @@ public class OfflineServiceImpl implements OfflineService {
         offlineMapper.delOffline(offline_id);
     }
 
-    @Override
-    public void updateCover(String coverUrl, Integer offline_id) {
-        offlineMapper.updateCover(coverUrl, offline_id);
-    }
 }

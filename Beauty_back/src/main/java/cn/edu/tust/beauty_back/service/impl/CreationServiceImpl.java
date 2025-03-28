@@ -174,8 +174,4 @@ public class CreationServiceImpl implements CreationService {
         creationMapper.updateExamine(creation_id,examine,review_comments);
     }
 
-    @Override
-    public void updateCover(String coverUrl, Integer creation_id) {
-        creationMapper.updateCover(coverUrl, creation_id);
-    }
 }

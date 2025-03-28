@@ -2,6 +2,7 @@ package cn.edu.tust.beauty_back.bean;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import org.hibernate.validator.constraints.URL;
@@ -18,6 +19,8 @@ public class HairStyle {
     @NotEmpty
     private String content;
 
+    @URL
+    @NotNull
     private String hairstyle_pic;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -74,14 +74,6 @@ public class HairStyleController {
 
     }
 
-    /**
-     *上传发型封面
-     * **/
-    @PatchMapping("/updateCover")
-    public Result updateCover(@RequestParam @URL String coverUrl, @RequestParam @NotNull Integer hairstyle_id){
-        hairStyleService.updateCover(coverUrl, hairstyle_id);
-        return Result.success();
-    }
 
     /**
      *删除发型信息

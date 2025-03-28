@@ -34,6 +34,4 @@ public interface CreationService {
     //审核图文内容
     void examine(Integer creation_id, Integer examine,String review_comments);
 
-    //更新图文封面
-    void updateCover(String coverUrl, Integer creation_id);
 }

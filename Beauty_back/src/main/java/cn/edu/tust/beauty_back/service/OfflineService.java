@@ -32,6 +32,4 @@ public interface OfflineService {
     void examine(Integer request_id, Integer examine, String review_comments);
     //删除门店
     void delOffline(Integer offline_id);
-    //更新门店封面
-    void updateCover(String coverUrl, Integer offline_id);
 }

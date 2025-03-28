@@ -35,7 +35,7 @@ public interface OfflineMapper {
     Offline offlineInfo(Integer offline_id);
 
     //完善门店信息
-    @Update("update beauty_offline set offline_name = #{offline_name}, offline_position = #{offline_position}, offline_phone = #{offline_phone}, updated_at = now()")
+    @Update("update beauty_offline set offline_name = #{offline_name}, offline_position = #{offline_position},offline_pic = #{offline_pic}, offline_content=#{offline_content}, offline_phone = #{offline_phone}, updated_at = now()")
     void improveOffline(Offline offline);
 
     //置入门店成员
@@ -67,10 +67,6 @@ public interface OfflineMapper {
     //删除门店
     @Delete("delete from beauty_offline where offline_id = #{offline_id}")
     void delOffline(Integer offline_id);
-
-    //更新门店封面
-    @Update("update beauty_offline set offline_pic = #{coverUrl} where offline_id = #{offline_id}")
-    void updateCover(String coverUrl, Integer offline_id);
 
     //根据用户id查找对应成员
     @Select("select user_id,user_name from offline_member where offline_id = #{offline_id} and user_id = #{user_id}")

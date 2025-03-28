@@ -79,21 +79,6 @@ public class OfflineController {
         return Result.success(offline);
     }
 
-    /**
-     *上传门店封面
-     * **/
-    @PatchMapping("/updateCover")
-    public Result updateCover(@RequestParam @NotNull @URL String coverUrl,@RequestParam @NotNull Integer offline_id){
-        Map<String, Object> map = ThreadLocalUtil.get();
-        Integer user_id = (Integer) map.get("user_id");
-        Offline offline = offlineService.offlineInfo(offline_id);
-        if (offline.getManager_id() == user_id) {
-            offlineService.updateCover(coverUrl,offline_id);
-            return Result.success();
-        }
-        return Result.error("您无权执行该操作！");
-
-    }
 
     /**
      *完善门店信息

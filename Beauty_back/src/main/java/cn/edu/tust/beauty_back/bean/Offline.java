@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import org.hibernate.validator.constraints.URL;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +18,7 @@ public class Offline {
     @Pattern(regexp = "^\\S{3,12}$")
     private String offline_name;
 
+    @URL
     private String offline_pic;
 
     private String offline_content;

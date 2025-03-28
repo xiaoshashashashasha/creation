@@ -36,15 +36,6 @@ public class CreationController {
     }
 
     /**
-     * 上传图文封面
-     **/
-    @PatchMapping("/updateCover")
-    public Result updateCover(@RequestParam @URL String coverUrl, @RequestParam @NotNull Integer creation_id){
-        creationService.updateCover(coverUrl,creation_id);
-        return Result.success();
-    }
-
-    /**
      * 编辑图文内容,将examine重置为2
      **/
     @PutMapping("/update")
