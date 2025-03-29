@@ -1,13 +1,16 @@
 <template>
   <div class="app">
-    <Login_Register class="view" />
+    <router-view>
+
+    </router-view>
+
   </div>
 
 
 </template>
 
 <script setup>
-import Login_Register from "@/views/Login_Register.vue";
+
 
 </script>
 
