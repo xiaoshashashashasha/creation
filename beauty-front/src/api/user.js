@@ -25,3 +25,10 @@ export const userLoginService = (loginData) => {
         }
     })
 }
+
+export const userListService = (params) => {
+    return request.get('/user/list', {
+        params
+    })
+}
+

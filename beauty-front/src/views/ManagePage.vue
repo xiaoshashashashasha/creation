@@ -28,48 +28,49 @@ import ChangeRole from "@/views/manage/user/ChangeRole.vue";
               class="el-menu-vertical-demo"
               @open="handleOpen"
               @close="handleClose"
+              router
           >
-            <el-sub-menu index="1">
+            <el-sub-menu >
               <template #title>
                 <el-icon>
                   <UserFilled/>
                 </el-icon>
                 <span>用户组</span>
               </template>
-              <el-menu-item index="1-1">更改权限</el-menu-item>
+              <el-menu-item index="/user/change-role">更改权限</el-menu-item>
             </el-sub-menu>
 
-            <el-sub-menu index="2">
+            <el-sub-menu >
               <template #title>
                 <el-icon>
                   <EditPen/>
                 </el-icon>
                 <span>内容组</span>
               </template>
-              <el-menu-item index="2-1">标签管理</el-menu-item>
-              <el-menu-item index="2-2">分类管理</el-menu-item>
-              <el-menu-item index="2-3">内容管理</el-menu-item>
-              <el-menu-item index="2-4">内容审核</el-menu-item>
+              <el-menu-item index="/creation/tag-manage">标签管理</el-menu-item>
+              <el-menu-item index="/creation/class-manage">分类管理</el-menu-item>
+              <el-menu-item index="/creation/creation-manage">内容管理</el-menu-item>
+              <el-menu-item index="/creation/creation-examine">内容审核</el-menu-item>
             </el-sub-menu>
 
-            <el-sub-menu index="3">
+            <el-sub-menu >
               <template #title>
                 <el-icon>
                   <document/>
                 </el-icon>
                 <span>发型组</span>
               </template>
-              <el-menu-item index="3-1">发型管理</el-menu-item>
+              <el-menu-item index="/hairstyle/hairstyle-manage">发型管理</el-menu-item>
             </el-sub-menu>
 
-            <el-sub-menu index="4">
+            <el-sub-menu >
               <template #title>
                 <el-icon>
                   <Shop/>
                 </el-icon>
                 <span>线下门店组</span>
               </template>
-              <el-menu-item index="4-1">门店审核</el-menu-item>
+              <el-menu-item index="/offline/request-manage">门店审核</el-menu-item>
             </el-sub-menu>
           </el-menu>
         </div>
@@ -77,7 +78,9 @@ import ChangeRole from "@/views/manage/user/ChangeRole.vue";
       <!--主要内容-->
       <el-main class="main">
 
-        <ChangeRole/>
+        <router-view>
+
+        </router-view>
 
       </el-main>
     </el-container>

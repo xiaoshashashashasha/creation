@@ -61,16 +61,19 @@ function handleLoginMode(val) {
   loginMode.value = val;
 }
 
-
+import {useTokenStore} from '@/stores/token'
 import {userLoginService, userRegisterService} from "@/api/user";
 import {ElMessage} from "element-plus";
 import {useRouter} from "vue-router";
+
 const router = useRouter()
+const tokenStore = useTokenStore();
 
 const register = async () => {
   try {
     let result = await userRegisterService(form_register.value);
     ElMessage.success('注册成功')
+
     router.push('/login')
   } catch (err) {
     console.log(err)
@@ -81,6 +84,11 @@ const login = async () => {
   try {
     let result = await userLoginService(form_login.value);
     ElMessage.success('登录成功')
+    //将得到的token存储到pinia中
+    tokenStore.setToken(result.data);
+
+    console.log('登录成功后的结果', result)
+    console.log('提取出的 token:', result.data)
     router.push('/')
   } catch (err) {
     console.log(err)

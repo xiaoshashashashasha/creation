@@ -1,12 +1,14 @@
 <script setup>
 
-import {reactive} from "vue";
+import {ref} from "vue";
 
-const tableData = reactive([
+
+const tableData = ref([
   {
     user_id: 1,
     username: 'admin1',
     nickname: 'A',
+    email: 'admin1@gmail.com',
     created_at: new Date(),
     updated_at: new Date(),
     role: 0
@@ -28,25 +30,36 @@ const tableData = reactive([
     role: 2
   }
 ])
+
+
 function setRoleban(row) {
-  row.role = 0
-  row.updated_at = new Date()
-
-}
-
-function setRoleuser(row) {
-  row.role = 1
-  row.updated_at = new Date()
-
-}
-
-function setRolemanager(row) {
   row.role = 2
   row.updated_at = new Date()
 
 }
 
+function setRoleuser(row) {
+  row.role = 0
+  row.updated_at = new Date()
 
+}
+
+function setRolemanager(row) {
+  row.role = 1
+  row.updated_at = new Date()
+
+}
+
+import {userListService} from "@/api/user";
+
+const userList = async ()=>{
+  const result = await userListService({
+    pageNum: 1,
+    pageSize: 10
+  });
+  tableData.value = result.data.items;
+}
+userList();
 </script>
 
 <template>
@@ -61,9 +74,10 @@ function setRolemanager(row) {
     </div>
     <!--表格部分-->
     <el-table :data="tableData" style="width: 100%">
-      <el-table-column prop="user_id" label="用户id" width="160px"/>
-      <el-table-column prop="username" label="用户名" width="320px"/>
+      <el-table-column prop="user_id" label="用户id" width="120px"/>
+      <el-table-column prop="username" label="用户名" width="240px"/>
       <el-table-column prop="nickname" label="昵称" width="160px"/>
+      <el-table-column prop="email" label="邮箱" width="200px"/>
       <el-table-column prop="created_at" label="created_at" width="240px"/>
       <el-table-column prop="updated_at" label="updated_at" width="240px"/>
       <el-table-column prop="role" label="role" width="80px"/>
