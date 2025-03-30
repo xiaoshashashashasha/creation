@@ -1,5 +1,4 @@
 <script setup>
-import Beauty_top from "@/components/beauty_top.vue";
 import {
   Document,
   EditPen,
@@ -13,11 +12,7 @@ import ChangeRole from "@/views/manage/user/ChangeRole.vue";
 
 <template>
   <el-container class="view-box">
-    <el-header class="header">
-      <el-affix>
-        <beauty_top/>
-      </el-affix>
-    </el-header>
+
 
     <el-container>
       <!--侧边栏-->

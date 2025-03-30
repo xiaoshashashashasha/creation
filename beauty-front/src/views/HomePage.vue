@@ -1,5 +1,4 @@
 <script setup>
-import Beauty_top from "@/components/beauty_top.vue";
 import CardCreation from "@/components/CardCreation.vue";
 import CardOther from "@/components/CardOther.vue";
 
@@ -8,12 +7,6 @@ console.log(window.innerWidth)
 
 <template>
   <el-container class="view-box">
-    <el-header class="header">
-      <el-affix>
-        <beauty_top/>
-      </el-affix>
-    </el-header>
-
     <el-main class="main">
         <div class="main-content">
           <el-carousel :interval="4000" type="card" class="cardpic" card-scale="0.7">
@@ -45,10 +38,10 @@ console.log(window.innerWidth)
               </div>
             </template>
             <div style="margin-top: 20px; display: flex; justify-content: center;">
-              <CardCreation class="card-creation"/>
-              <CardCreation class="card-creation"/>
-              <CardCreation class="card-creation"/>
-              <CardCreation class="card-creation"/>
+              <CardOther class="card-creation"/>
+              <CardOther class="card-creation"/>
+              <CardOther class="card-creation"/>
+              <CardOther class="card-creation"/>
             </div>
           </el-card>
 
@@ -60,10 +53,10 @@ console.log(window.innerWidth)
               </div>
             </template>
             <div style="margin-top: 20px; display: flex; justify-content: center;">
-              <CardCreation class="card-creation"/>
-              <CardCreation class="card-creation"/>
-              <CardCreation class="card-creation"/>
-              <CardCreation class="card-creation"/>
+              <CardOther class="card-creation"/>
+              <CardOther class="card-creation"/>
+              <CardOther class="card-creation"/>
+              <CardOther class="card-creation"/>
             </div>
           </el-card>
 
@@ -105,12 +98,6 @@ html, body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #2481a8;
-}
-
-.header {
-  flex-shrink: 0;
-  height: 60px;
 }
 
 .main {

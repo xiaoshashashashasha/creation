@@ -32,3 +32,14 @@ export const userListService = (params) => {
     })
 }
 
+export const userChangeRoleService = (user_id,role) => {
+    const params = new URLSearchParams()
+    params.append('user_id', user_id)
+    params.append('role', role)
+
+    return request.patch('/user/changeRole', params,{
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    })
+}

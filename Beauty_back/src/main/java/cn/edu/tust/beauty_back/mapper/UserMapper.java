@@ -36,7 +36,7 @@ public interface UserMapper {
     void updatePwd(Integer user_id, String jwt_password);
 
     //更新用户权限
-    @Update("update beauty_user set role=#{role} where user_id=#{user_id}")
+    @Update("update beauty_user set role=#{role}, updated_at=now() where user_id=#{user_id}")
     void updateRole(int user_id, int role);
 
     //分页查询所有用户，若有条件则应用条件

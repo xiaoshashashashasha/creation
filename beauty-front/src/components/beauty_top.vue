@@ -1,36 +1,59 @@
 <script setup>
-
 import ManageSwitch from "@/components/ManageSwitch.vue";
+import { defineProps } from 'vue'
+import { useRouter } from 'vue-router'
+
+const props = defineProps({
+  displayMode: {
+    type: Number,
+    default: 3
+  }
+})
+
+const router = useRouter()
+
+// 切换视图时跳转路由
+const handleModeChange = (isManage) => {
+  if (isManage) {
+    router.push('/')
+  } else {
+    router.push('/manage')
+  }
+}
 </script>
 
 <template>
-
   <div class="top-box">
     <p class="logo">Beauty</p>
-    <el-button class="plus_btn">+</el-button>
-    <manage-switch class="manage-switch"/>
-    <el-button class="creation_btn">内 容</el-button>
-    <el-button class="haristyle_btn">发 型</el-button>
-    <el-button class="offline_btn">线下门店</el-button>
-  </div>
 
+    <!-- 显示按钮部分 -->
+    <template v-if="props.displayMode !== 1">
+      <el-button class="plus_btn">+</el-button>
+      <el-button class="creation_btn">内 容</el-button>
+      <el-button class="haristyle_btn">发 型</el-button>
+      <el-button class="offline_btn">线下门店</el-button>
+    </template>
+
+    <!-- 显示切换开关 -->
+    <ManageSwitch
+        v-if="props.displayMode === 3"
+        class="manage-switch"
+        @modeChange="handleModeChange"
+    />
+  </div>
 </template>
+
 
 <style scoped>
 .top-box {
   position: relative;
   width: 100%;
   height: 60px;
-  margin: 0;
-  padding: 0;
   background: #beccd3;
 }
 
 .logo {
   font-size: 38px;
-  font-style: normal;
-  margin: 0;
-  padding: 0;
   font-family: 'Segoe Script';
 }
 
