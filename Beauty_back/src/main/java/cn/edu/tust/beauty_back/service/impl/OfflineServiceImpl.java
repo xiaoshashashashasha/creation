@@ -106,7 +106,7 @@ public class OfflineServiceImpl implements OfflineService {
         offlineMapper.updateExamine(request_id,examine,review_comments);
         if (examine == 0) {
             OfflineRequest offlineRequest = offlineMapper.requestInfo(request_id);
-            offlineMapper.addOffline(offlineRequest.getManager_id());
+            offlineMapper.addOffline(offlineRequest.getManager_id(),offlineRequest.getTarget_city());
         }
 
     }

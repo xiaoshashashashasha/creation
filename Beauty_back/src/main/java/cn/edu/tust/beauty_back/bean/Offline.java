@@ -23,6 +23,8 @@ public class Offline {
 
     private String offline_content;
 
+    private String offline_city;
+
     @NotEmpty
     @Pattern(regexp = "^\\S{3,99}$")
     private String offline_position;

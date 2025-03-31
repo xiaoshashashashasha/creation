@@ -8,7 +8,6 @@ import cn.edu.tust.beauty_back.service.HairStyleService;
 import cn.edu.tust.beauty_back.service.UserService;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;

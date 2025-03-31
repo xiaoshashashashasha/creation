@@ -1,5 +1,8 @@
 import request from "@/utils/request";
 
+/**
+ * Tag
+ * **/
 export const creationTagList = (params) =>{
     return request.get('/tag/list',{
         params
@@ -19,7 +22,9 @@ export const creationTagDel = (tag_id) =>{
     })
 }
 
-
+/**
+ * Class
+ * **/
 export const creationClassList = (params) =>{
     return request.get('/class/list',{
         params
@@ -39,6 +44,9 @@ export const creationClassDel = (class_id) =>{
     })
 }
 
+/**
+ * Creation
+ * **/
 export const creationListExamine = (params) =>{
     return request.get('/creation/listToExamine',{
         params
@@ -70,6 +78,18 @@ export const creationCancelConnectTag = (creation_id,tag_id) =>{
         params: {
             creation_id,
             tag_id
+        }
+    })
+}
+
+export const creationChangeClass = (creation_id,class_id) =>{
+    const params = new URLSearchParams()
+    params.append('creation_id', creation_id)
+    params.append('class_id', class_id)
+
+    return request.patch('/creation/changeClass',params,{
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
         }
     })
 }

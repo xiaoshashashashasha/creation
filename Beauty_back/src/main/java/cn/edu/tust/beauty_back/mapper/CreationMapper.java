@@ -17,8 +17,8 @@ public interface CreationMapper {
     @Update("update beauty_creation set title = #{title}, abs_text = #{abs_text},cover_pic=#{cover_pic}, content = #{content}, class_id = #{class_id}, updated_at = now(), examine = #{examine} where creation_id = #{creation_id} and user_id = #{user_id}")
     void update(Creation creation);
 
-    //根据标签id获取图文内容
-    @Select("select * from beauty_creation where creation_id = #{creation_id} and examine = 0")
+    //根据图文id获取图文内容
+    @Select("select * from beauty_creation where creation_id = #{creation_id}")
     Creation getCreationByCId(int creation_id);
 
     //删除自己发布的图文内容
@@ -64,4 +64,7 @@ public interface CreationMapper {
     @Update("update beauty_creation set views = views + 1 where creation_id = #{creation_id}")
     void view(int creation_id);
 
+    //更改分类
+    @Update("update beauty_creation set class_id = #{class_id} where creation_id = #{creation_id}")
+    void updateClass(Integer creation_id, Integer class_id);
 }

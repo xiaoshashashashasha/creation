@@ -29,6 +29,8 @@ public class Creation {
     @NotNull
     private Integer class_id;
 
+    private String class_name;
+
     private int views;
 
     private int likes;

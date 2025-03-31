@@ -60,9 +60,9 @@ public interface OfflineMapper {
     void updateExamine(Integer request_id, Integer examine, String review_comments);
 
     //创建门店框架
-    @Insert("insert into beauty_offline(manager_id, created_at, updated_at)" +
-            "values(#{manager_id},now(),now())")
-    void addOffline(Integer manager_id);
+    @Insert("insert into beauty_offline(manager_id,offline_city , created_at, updated_at)" +
+            "values(#{manager_id},#{target_city} ,now(),now())")
+    void addOffline(Integer manager_id, String target_city);
 
     //删除门店
     @Delete("delete from beauty_offline where offline_id = #{offline_id}")

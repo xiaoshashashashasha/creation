@@ -34,4 +34,6 @@ public interface CreationService {
     //审核图文内容
     void examine(Integer creation_id, Integer examine,String review_comments);
 
+    //更改分类
+    void changeClass(Integer creation_id, Integer class_id);
 }

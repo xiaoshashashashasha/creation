@@ -64,7 +64,6 @@ public class CreationController {
 
         PageBean<Creation> pb = creationService.myList(pageNum, pageSize, user_id);
         return Result.success(pb);
-
     }
 
     /**
@@ -117,14 +116,13 @@ public class CreationController {
             return Result.success();
         }
         return Result.error("您无权访问该内容！");
-
     }
 
     /**
      * 取消关联标签
      **/
     @DeleteMapping("/cancelConnect")
-    public Result cancelConnect(@NotNull Integer creation_id, @NotNull Integer tag_id) {
+    public Result cancelConnect(@RequestParam @NotNull Integer creation_id, @NotNull Integer tag_id) {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
         User user = userService.findByUserId(user_id);
@@ -154,7 +152,7 @@ public class CreationController {
      * 审核图文内容
      **/
     @PatchMapping("/examine")
-    public Result examine(@NotNull Integer creation_id, @NotNull @Min(0) @Max(1) Integer examine, String review_comments) {
+    public Result examine(@RequestParam @NotNull Integer creation_id, @NotNull @Min(0) @Max(1) Integer examine, String review_comments) {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
         User user = userService.findByUserId(user_id);
@@ -168,4 +166,18 @@ public class CreationController {
         return Result.error("您无权访问该内容！");
     }
 
+    /**
+     * 更改分类
+     **/
+    @PatchMapping("/changeClass")
+    public Result changeClass(@RequestParam @NotNull Integer creation_id, @NotNull Integer class_id) {
+        Map<String, Object> map = ThreadLocalUtil.get();
+        Integer user_id = (Integer) map.get("user_id");
+        User user = userService.findByUserId(user_id);
+        if (user.getRole() == 1) {
+            creationService.changeClass(creation_id,class_id);
+            return Result.success();
+        }
+        return Result.error("您无权访问该内容！");
+    }
 }
