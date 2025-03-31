@@ -5,6 +5,8 @@ import App from './App.vue'
 import router from './router'
 import {createPinia} from 'pinia'
 import {createPersistedState} from 'pinia-persistedstate-plugin'
+import '@wangeditor/editor/dist/css/style.css'
+
 
 
 const pinia = createPinia();

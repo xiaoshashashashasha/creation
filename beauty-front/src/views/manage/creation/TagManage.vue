@@ -69,7 +69,7 @@ onMounted(() => {
   <el-row :gutter="0">
     <!--路径部分-->
     <div class="path">
-      <p style="font-size: 20px; margin-top: 5px">更改权限</p>
+      <p style="font-size: 20px; margin-top: 5px">标签管理</p>
     </div>
 
     <!-- 搜索栏 -->
