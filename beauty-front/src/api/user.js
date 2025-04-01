@@ -43,3 +43,13 @@ export const userChangeRoleService = (user_id,role) => {
         }
     })
 }
+
+export const userCheckRoleService = () => {
+    return request.get('/user/roleCheck',{
+        params: {}
+    })
+}
+
+export const userLogoutService = () => {
+    return request.get('/user/logout')
+}

@@ -1,6 +1,5 @@
 <script setup>
-import Beauty_top from "@/components/beauty_top.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import LoginSwitch from "@/components/LoginSwitch.vue";
 
 
@@ -62,12 +61,14 @@ function handleLoginMode(val) {
 }
 
 import {useTokenStore} from '@/stores/token'
-import {userLoginService, userRegisterService} from "@/api/user";
+import {useStateStore} from '@/stores/state'
+import {userLoginService, userRegisterService,userCheckRoleService} from "@/api/user";
 import {ElMessage} from "element-plus";
-import {useRouter} from "vue-router";
+import router from "@/router";
 
-const router = useRouter()
+
 const tokenStore = useTokenStore();
+const stateStore = useStateStore();
 
 const register = async () => {
   try {
@@ -86,9 +87,9 @@ const login = async () => {
     ElMessage.success('登录成功')
     //将得到的token存储到pinia中
     tokenStore.setToken(result.data);
+    console.log(result.data);
+    await loginSta()
 
-    console.log('登录成功后的结果', result)
-    console.log('提取出的 token:', result.data)
     router.push('/')
   } catch (err) {
     console.log(err)
@@ -96,6 +97,25 @@ const login = async () => {
 
 
 }
+
+const loginSta = async () => {
+  try {
+    let res = await userCheckRoleService()
+    if (res.data !== 3) {
+      stateStore.setState(res.data)
+      router.push('/')
+    }else {
+      stateStore.setState(res.data)
+    }
+
+  }catch(err) {
+    console.log(err)
+  }
+}
+
+onMounted(()=>{
+  loginSta()
+})
 
 </script>
 

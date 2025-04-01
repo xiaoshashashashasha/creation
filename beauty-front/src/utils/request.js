@@ -2,6 +2,8 @@ import axios from 'axios'
 import {ElMessage} from "element-plus";
 import {useTokenStore} from "@/stores/token";
 
+import router from "@/router";
+
 const baseURL = '/api'
 
 const instance = axios.create({baseURL})
@@ -30,7 +32,8 @@ instance.interceptors.response.use(
         if (result.data.code === 0) {
             return result.data
         }
-        ElMessage.error(result.msg?result.msg:'服务异常')
+        console.log(result.data.msg)
+        ElMessage.error(result.data.msg?result.data.msg:'服务异常')
         return Promise.reject(result.data)
     },
     error => {
@@ -42,8 +45,9 @@ instance.interceptors.response.use(
             ElMessage.error('请求接口不存在')
         } else if (status === 401) {
             ElMessage.error('登录状态已过期，请重新登录')
+            router.push('/login')
         } else {
-            ElMessage.error(error.msg || '请求失败')
+            ElMessage.error(error.message || '请求失败')
         }
         return Promise.reject(error)
     }

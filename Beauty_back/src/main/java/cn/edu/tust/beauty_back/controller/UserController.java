@@ -260,5 +260,37 @@ public class UserController {
         return Result.error("您无权访问用户权限内容！");
     }
 
+    @GetMapping("/roleCheck")
+    public Result roleCheck(){
+        Map<String, Object> map = ThreadLocalUtil.get();
+        if(map == null){
+            return Result.success(3);
+        }
+        Integer user_id = (Integer) map.get("user_id");
+        User user = userService.findByUserId(user_id);
+        if(user.getRole() == 1) {
+           return Result.success(1);
+        }else if (user.getRole() == 0){
+            return Result.success(0);
+        }else{
+            return Result.success(2);
+        }
+    }
+
+    @GetMapping("/logout")
+    public Result loginOut(@RequestHeader("Authorization") String token) {
+        // 删除 Redis 中的 token
+        Boolean deleted = stringRedisTemplate.delete(token);
+
+        // 清除 ThreadLocal 中的用户信息
+        ThreadLocalUtil.remove();
+
+        if (Boolean.TRUE.equals(deleted)) {
+            return Result.success("登出成功");
+        } else {
+            return Result.error("Token 已失效或不存在");
+        }
+    }
+
 
 }

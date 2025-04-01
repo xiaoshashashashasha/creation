@@ -1,23 +1,39 @@
 <script setup>
 import ManageSwitch from "@/components/ManageSwitch.vue";
-import { defineProps } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import router from "@/router";
+import {useStateStore} from "@/stores/state";
+import { userLogoutService} from "@/api/user";
+import {useTokenStore} from "@/stores/token";
 
-const props = defineProps({
-  displayMode: {
-    type: Number,
-    default: 3
-  }
-})
 
-const router = useRouter()
+const stateStore = useStateStore()
 
+// 基于 role 值派生三个控制变量
+const content = computed(() => [0, 1, 2].includes(stateStore.sta))
+const create = computed(() => [0, 1].includes(stateStore.sta))
+const Mswitch = computed(() => stateStore.sta === 1)
 // 切换视图时跳转路由
 const handleModeChange = (isManage) => {
   if (isManage) {
     router.push('/')
   } else {
     router.push('/manage')
+  }
+}
+
+const logout = async () => {
+  try {
+    await userLogoutService()
+
+    const tokenStore = useTokenStore()
+    const stateStore = useStateStore()
+
+    tokenStore.removeToken()
+    stateStore.setState(3)
+    router.push('/login')
+  }catch (error) {
+    console.log(error)
   }
 }
 </script>
@@ -27,8 +43,11 @@ const handleModeChange = (isManage) => {
     <p class="logo">Beauty</p>
 
     <!-- 显示按钮部分 -->
-    <template v-if="props.displayMode !== 1">
+    <template v-if="create">
       <el-button class="plus_btn">+</el-button>
+    </template>
+
+    <template v-if="content">
       <el-button class="creation_btn">内 容</el-button>
       <el-button class="haristyle_btn">发 型</el-button>
       <el-button class="offline_btn">线下门店</el-button>
@@ -36,13 +55,13 @@ const handleModeChange = (isManage) => {
 
     <!-- 显示切换开关 -->
     <ManageSwitch
-        v-if="props.displayMode === 3"
+        v-if="Mswitch"
         class="manage-switch"
         @modeChange="handleModeChange"
     />
+    <el-button v-if="content" class="logout_btn" type="danger" @click="logout">退<br/>出</el-button>
   </div>
 </template>
-
 
 <style scoped>
 .top-box {
@@ -103,4 +122,14 @@ const handleModeChange = (isManage) => {
   top: 10px;
   left: 20%;
 }
+
+.logout_btn {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  height: 50px;
+  width: 30px;
+  border-radius: 10px;
+}
+
 </style>
