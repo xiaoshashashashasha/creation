@@ -15,7 +15,7 @@ import {
 
 const tableData = ref([])
 const pageNum = ref(1)
-const pageSize = ref(10)
+const pageSize = ref(5)
 const total = ref(0)
 const classDialogVisible = ref(false)
 const contentDialogVisible = ref(false)

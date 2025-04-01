@@ -12,7 +12,7 @@ import {uploadFile} from "@/api/fileUpload"
 import RichTextEditor from "@/components/RichTextEditor.vue";
 const tableData = ref([])
 const pageNum = ref(1)
-const pageSize = ref(6)
+const pageSize = ref(5)
 const total = ref(0)
 const dialogVisible = ref(false)
 const editDialogVisible = ref(false)

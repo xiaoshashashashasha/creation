@@ -17,3 +17,11 @@ export const offlineExamine = (request_id,examine,review_comments) => {
         }
     })
 }
+
+export const offlineInfo = (offline_id) =>{
+    return request.get('/offline/offlineInfo',{
+        params: {
+            offline_id
+        }
+    })
+}
