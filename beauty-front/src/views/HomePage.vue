@@ -1,9 +1,15 @@
 <script setup>
 import CardCreation from "@/components/CardCreation.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import CardHairstyle from "@/components/CardHairstyle.vue";
 import CardOffline from "@/components/CardOffline.vue";
+import {ElMessage} from "element-plus";
+import {creationInfo} from "@/api/creation";
 
+
+/**
+ * 内容卡片
+ * **/
 const creationIds = ref([3, 4, 5, 6])
 
 const loadingStates1  = ref({
@@ -16,6 +22,9 @@ const handleLoadingUpdate1 = (id, newLoadingState) => {
   loadingStates1.value[id] = newLoadingState
 }
 
+/**
+ * 发型卡片
+ * **/
 const hairstyleIds = ref([7, 8, 9, 10])
 
 const loadingStates2  = ref({
@@ -28,6 +37,9 @@ const handleLoadingUpdate2 = (id, newLoadingState) => {
   loadingStates2.value[id] = newLoadingState
 }
 
+/**
+ * 门店卡片
+ * **/
 const offlineIds = ref([4, 5, 6, 7])
 
 const loadingStates3  = ref({
@@ -39,6 +51,51 @@ const loadingStates3  = ref({
 const handleLoadingUpdate3 = (id, newLoadingState) => {
   loadingStates3.value[id] = newLoadingState
 }
+
+/**
+ * 轮播图
+ * **/
+
+const carouselData = ref([]); // 用于存储轮播图的数据
+const loadingStates = ref({
+  3: true,
+  4: true,
+  5: true,
+  6: true
+});
+
+// 获取轮播图数据
+const fetchCarouselData = async () => {
+  try {
+    const ids = [3, 4, 5, 6];
+    const data = [];
+
+    for (const id of ids) {
+      loadingStates.value[id] = true; // 开始加载状态
+      const response = await creationInfo(id);
+      if (response && response.data) {
+        data.push({
+          id: id,
+          image: response.data.cover_pic,
+          title: response.data.title,
+        });
+        loadingStates.value[id] = false; // 数据加载完毕，更新加载状态
+      } else {
+        ElMessage.error("数据加载失败");
+      }
+    }
+
+    // 将获取到的数据存入 carouselData
+    carouselData.value = data;
+  } catch (error) {
+    ElMessage.error("加载轮播图数据失败");
+    console.error("Error fetching carousel data:", error);
+  }
+};
+
+onMounted(() => {
+  fetchCarouselData();
+});
 </script>
 
 <template>
@@ -46,8 +103,9 @@ const handleLoadingUpdate3 = (id, newLoadingState) => {
     <el-main class="main">
       <div class="main-content">
         <el-carousel :interval="4000" type="card" class="cardpic" card-scale="0.7">
-          <el-carousel-item v-for="item in 4" :key="item" style="width: 600px">
-            <h3 text="2xl" justify="center">{{ item }}</h3>
+          <el-carousel-item v-for="item in carouselData" :key="item.id" style="width: 600px">
+            <img v-if="!loadingStates[item.id]" :src="item.image" alt="轮播图图片" class="carousel-item"/>
+            <div v-if="!loadingStates[item.id]" class="carousel-title">{{ item.title }}</div>
           </el-carousel-item>
         </el-carousel>
 
@@ -188,5 +246,17 @@ html, body {
 
 .card-creation {
   margin: 0 50px;
+}
+.carousel-item{
+  object-fit: cover;
+  width: 100%;
+}
+
+.carousel-title {
+  position: absolute;
+  top: 0;
+  background: rgba(0, 0, 0, 0.2); /* 半透明背景 */
+  width: 100%;
+  text-align: center;
 }
 </style>

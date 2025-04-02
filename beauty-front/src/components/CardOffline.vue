@@ -1,4 +1,3 @@
-<!-- components/ArticleCard.vue -->
 <template>
   <div class="article-card">
     <el-skeleton :loading="loading" animated>
@@ -11,7 +10,10 @@
 
       <template #default>
         <img :src="image" alt="文章图片" class="card-image" />
-        <div class="card-title">{{ title }}</div>
+        <div class="card-header">
+          <div class="card-title">{{ title }}</div>
+          <div class="card-city">{{ city }}</div>
+        </div>
       </template>
     </el-skeleton>
   </div>
@@ -19,9 +21,8 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import {nextTick} from "vue-demi";
-import {offlineInfo} from "@/api/offline";
-
+import { nextTick } from "vue-demi";
+import { offlineInfo } from "@/api/offline";
 
 const props = defineProps({
   offline_id: {
@@ -36,6 +37,7 @@ const props = defineProps({
 
 const image = ref('')
 const title = ref('')
+const city = ref('')
 const loading = ref(true)
 
 const fetchData = async () => {
@@ -44,6 +46,7 @@ const fetchData = async () => {
     if (res && res.data) {
       image.value = res.data.offline_pic
       title.value = res.data.offline_name
+      city.value = res.data.offline_city
       nextTick(() => {
         loading.value = false // 更新 loading 状态
         emit('update-loading3', false)
@@ -82,25 +85,29 @@ const emit = defineEmits(['update-loading3'])
   object-fit: cover;
 }
 
-.card-title,
-.card-summary {
-  width: 100%;
-  height: 50px;
-  line-height: 50px;
-  padding: 0 10px;
+.card-header {
+  display: flex;
+  justify-content: space-between; /* Make title and city appear on the same row with space between them */
+  align-items: center;
+  padding: 10px;
+}
+
+.card-title {
   font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  flex-grow: 1; /* Ensures the title takes all available space */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.card-title {
-  font-weight: bold;
-  color: #333;
-  border-bottom: 1px solid #f0f0f0;
+.card-city {
+  font-size: 14px;
+  font-weight: normal;
+  color: #666;
+  text-align: right; /* Align city to the right */
+  margin-left: 10px; /* Optional margin between title and city */
 }
 
-.card-summary {
-  color: #666;
-}
 </style>
