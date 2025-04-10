@@ -1,5 +1,5 @@
 <template>
-  <div class="article-card">
+  <div class="article-card" @click="toContent">
     <el-skeleton :loading="loading" animated>
       <template #template>
         <!-- 图片骨架 -->
@@ -20,6 +20,7 @@
 import { ref, onMounted } from 'vue'
 import {hairstyleInfo} from "@/api/hairstyle";
 import {nextTick} from "vue-demi";
+import {useRouter} from "vue-router";
 
 
 const props = defineProps({
@@ -36,6 +37,12 @@ const props = defineProps({
 const image = ref('')
 const title = ref('')
 const loading = ref(true)
+const router = useRouter()
+
+const toContent = ()=>{
+  router.push(`/content/hairstyle/${props.hairstyle_id}`)
+}
+
 
 const fetchData = async () => {
   try {

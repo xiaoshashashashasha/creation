@@ -1,5 +1,5 @@
 <template>
-  <div class="article-card">
+  <div class="article-card" @click="toContent">
     <el-skeleton :loading="loading" animated>
       <template #template>
         <!-- 图片骨架 -->
@@ -23,6 +23,7 @@
 import {ref, onMounted} from 'vue'
 import {creationInfo} from '@/api/creation'
 import {nextTick} from "vue-demi";
+import {useRouter} from "vue-router";
 
 // 组件的props
 const props = defineProps({
@@ -40,6 +41,11 @@ const image = ref('')
 const title = ref('')
 const abs_text = ref('')
 const loading = ref(true)
+const router = useRouter()
+
+const toContent = ()=>{
+  router.push(`/content/creation/${props.creation_id}`)
+}
 
 const fetchData = async () => {
   try {

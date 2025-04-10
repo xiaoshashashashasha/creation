@@ -5,6 +5,7 @@ import CardHairstyle from "@/components/CardHairstyle.vue";
 import CardOffline from "@/components/CardOffline.vue";
 import {ElMessage} from "element-plus";
 import {creationInfo} from "@/api/creation";
+import router from "@/router";
 
 
 /**
@@ -93,6 +94,11 @@ const fetchCarouselData = async () => {
   }
 };
 
+const toContent = (id) => {
+  router.push(`/content/creation/${id}`)
+}
+
+
 onMounted(() => {
   fetchCarouselData();
 });
@@ -103,7 +109,11 @@ onMounted(() => {
     <el-main class="main">
       <div class="main-content">
         <el-carousel :interval="4000" type="card" class="cardpic" card-scale="0.7">
-          <el-carousel-item v-for="item in carouselData" :key="item.id" style="width: 600px">
+          <el-carousel-item
+              v-for="item in carouselData"
+              :key="item.id"
+              style="width: 600px"
+              @click="toContent(item.id)">
             <img v-if="!loadingStates[item.id]" :src="item.image" alt="轮播图图片" class="carousel-item"/>
             <div v-if="!loadingStates[item.id]" class="carousel-title">{{ item.title }}</div>
           </el-carousel-item>
@@ -226,7 +236,6 @@ html, body {
   margin: 0;
   text-align: center;
 }
-
 .el-carousel__item {
   background-color: #99a9bf;
 }

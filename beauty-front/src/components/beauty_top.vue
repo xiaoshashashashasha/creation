@@ -49,7 +49,7 @@ const logout = async () => {
 
     <template v-if="content">
       <el-button class="creation_btn">内 容</el-button>
-      <el-button class="haristyle_btn">发 型</el-button>
+      <el-button class="hairstyle_btn">发 型</el-button>
       <el-button class="offline_btn">线下门店</el-button>
     </template>
 
@@ -97,7 +97,7 @@ const logout = async () => {
   border-radius: 10px;
 }
 
-.haristyle_btn {
+.hairstyle_btn {
   position: absolute;
   font-size: 26px;
   top: 5px;

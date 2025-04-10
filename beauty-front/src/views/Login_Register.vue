@@ -87,7 +87,7 @@ const login = async () => {
     ElMessage.success('登录成功')
     //将得到的token存储到pinia中
     tokenStore.setToken(result.data);
-    console.log(result.data);
+
     await loginSta()
 
     router.push('/')

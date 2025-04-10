@@ -53,3 +53,36 @@ export const userCheckRoleService = () => {
 export const userLogoutService = () => {
     return request.get('/user/logout')
 }
+
+export const userOtherInfoService = (user_id) => {
+    return request.get('/user/otherInfo',{
+        params:{
+            user_id
+        }
+    })
+}
+
+export const userFollowInfoService = (followed_id) => {
+    return request.get('/user/followInfo',{
+        params:{
+            followed_id
+        }
+    })
+}
+
+export const userFollowService = (followed_id) => {
+    return request.post('/user/follow', null, {
+        params: {
+            followed_id
+        }
+    })
+}
+
+
+export const userCancelFollowService = (followed_id) => {
+    return request.delete('/user/cancelFollow',{
+        params:{
+            followed_id
+        }
+    })
+}

@@ -1,5 +1,5 @@
 <template>
-  <div class="article-card">
+  <div class="article-card" @click="toContent">
     <el-skeleton :loading="loading" animated>
       <template #template>
         <!-- 图片骨架 -->
@@ -23,6 +23,7 @@
 import { ref, onMounted } from 'vue'
 import { nextTick } from "vue-demi";
 import { offlineInfo } from "@/api/offline";
+import {useRouter} from "vue-router";
 
 const props = defineProps({
   offline_id: {
@@ -39,6 +40,11 @@ const image = ref('')
 const title = ref('')
 const city = ref('')
 const loading = ref(true)
+const router = useRouter()
+
+const toContent = ()=>{
+  router.push(`/content/offline/${props.offline_id}`)
+}
 
 const fetchData = async () => {
   try {
