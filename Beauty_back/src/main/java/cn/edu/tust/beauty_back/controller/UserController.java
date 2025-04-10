@@ -87,8 +87,8 @@ public class UserController {
      *获取其他用户信息
      * **/
     @GetMapping("/otherInfo")
-    public Result otherInfo(@RequestParam @NotNull String username){
-        User user = userService.findByUserName(username);
+    public Result otherInfo(@RequestParam @NotNull Integer user_id){
+        User user = userService.findByUserId(user_id);
         return Result.success(user);
     }
 
@@ -168,7 +168,7 @@ public class UserController {
      *获取关注状态 0为已关注，1为未关注
      * **/
     @GetMapping("/followInfo")
-    public Result followInfo(int followed_id) {
+    public Result followInfo(Integer followed_id) {
         Integer state =  followService.followInfo(followed_id);
         return Result.success(state);
     }
@@ -177,7 +177,7 @@ public class UserController {
      *关注他人
      * **/
     @PostMapping("/follow")
-    public Result follow(int followed_id){
+    public Result follow(Integer followed_id){
         Integer state = followService.followInfo(followed_id);
         if (state == 1) {
             followService.add(followed_id);
@@ -191,7 +191,7 @@ public class UserController {
      *取消关注
      * **/
     @DeleteMapping("/cancelFollow")
-    public Result cancelFollow(@RequestParam int followed_id){
+    public Result cancelFollow(@RequestParam Integer followed_id){
         Integer state = followService.followInfo(followed_id);
         if (state == 1) {
             return Result.error("您未关注对方！");

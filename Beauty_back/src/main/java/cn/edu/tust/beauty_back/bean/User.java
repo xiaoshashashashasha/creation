@@ -34,6 +34,8 @@ public class User {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updated_at;
+
+    private String user_pic;
     private int following_count; //关注数
     private int followers_count; //粉丝数
 
