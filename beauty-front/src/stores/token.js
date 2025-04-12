@@ -7,7 +7,6 @@ export const useTokenStore = defineStore('token', () => {
 
     const setToken = (newtoken) => {
         token.value = newtoken
-        console.log(token.value+"token设置成功")
     }
 
     const removeToken = () => {

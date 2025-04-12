@@ -12,7 +12,10 @@ import CreationExamine from "@/views/manage/creation/CreationExamine.vue";
 import HairstyleManage from "@/views/manage/hairstyle/HairstyleManage.vue";
 import RequestManage from "@/views/manage/offline/RequestManage.vue";
 import {useTokenStore} from "@/stores/token";
-import ContentPage from "@/views/contentPage.vue";
+import ContentPage from "@/views/ContentPage.vue";
+import CreationsPage from "@/views/CreationsPage.vue";
+import HairstylesPage from "@/views/HairstylesPage.vue";
+import OfflinesPage from "@/views/OfflinesPage.vue";
 
 
 //定义路由关系
@@ -26,6 +29,21 @@ const routes = [
     {
         path: "/content/:type/:id",
         component: ContentPage,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/creations",
+        component: CreationsPage,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/hairstyles",
+        component: HairstylesPage,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/offlines",
+        component: OfflinesPage,
         meta: {requiresAuth: true}
     },
     {

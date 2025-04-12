@@ -22,6 +22,18 @@ const handleModeChange = (isManage) => {
   }
 }
 
+const toCreations = ()=>{
+  router.push(`/creations`)
+}
+
+const toHairstyles = ()=>{
+  router.push(`/hairstyles`)
+}
+
+const toOfflines = () => {
+  router.push(`/offlines`)
+}
+
 const logout = async () => {
   try {
     await userLogoutService()
@@ -48,9 +60,9 @@ const logout = async () => {
     </template>
 
     <template v-if="content">
-      <el-button class="creation_btn">内 容</el-button>
-      <el-button class="hairstyle_btn">发 型</el-button>
-      <el-button class="offline_btn">线下门店</el-button>
+      <el-button class="creation_btn" @click="toCreations">内 容</el-button>
+      <el-button class="hairstyle_btn" @click="toHairstyles">发 型</el-button>
+      <el-button class="offline_btn" @click="toOfflines">线下门店</el-button>
     </template>
 
     <!-- 显示切换开关 -->

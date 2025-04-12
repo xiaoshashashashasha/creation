@@ -25,3 +25,9 @@ export const offlineInfo = (offline_id) =>{
         }
     })
 }
+
+export const offlineList = (params) =>{
+    return request.get('/offline/offlineList',{
+        params
+    })
+}

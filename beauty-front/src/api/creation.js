@@ -115,3 +115,9 @@ export const creationExamine = (creation_id,examine,review_comments) =>{
     })
 }
 
+export const creationList = (params) =>{
+    return request.get('/creation/list',{
+        params
+    })
+}
+

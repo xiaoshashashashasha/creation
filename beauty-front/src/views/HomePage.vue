@@ -6,116 +6,121 @@ import CardOffline from "@/components/CardOffline.vue";
 import {ElMessage} from "element-plus";
 import {creationInfo} from "@/api/creation";
 import router from "@/router";
+import {hairstyleInfo} from "@/api/hairstyle";
+import {offlineInfo} from "@/api/offline";
+import { ArrowRight } from '@element-plus/icons-vue'
 
-
-/**
- * 内容卡片
- * **/
+// 内容数据
 const creationIds = ref([3, 4, 5, 6])
+const creationData = ref([])
+const loadingStates1 = ref({})
 
-const loadingStates1  = ref({
-  3: true,
-  4: true,
-  5: true,
-  6: true
-});
-const handleLoadingUpdate1 = (id, newLoadingState) => {
-  loadingStates1.value[id] = newLoadingState
-}
-
-/**
- * 发型卡片
- * **/
+// 发型数据
 const hairstyleIds = ref([7, 8, 9, 10])
+const hairstyleData = ref([])
+const loadingStates2 = ref({})
 
-const loadingStates2  = ref({
-  7: true,
-  8: true,
-  9: true,
-  10: true
-});
-const handleLoadingUpdate2 = (id, newLoadingState) => {
-  loadingStates2.value[id] = newLoadingState
-}
-
-/**
- * 门店卡片
- * **/
+// 门店数据
 const offlineIds = ref([4, 5, 6, 7])
+const offlineData = ref([])
+const loadingStates3 = ref({})
 
-const loadingStates3  = ref({
-  4: true,
-  5: true,
-  6: true,
-  7: true
-});
-const handleLoadingUpdate3 = (id, newLoadingState) => {
-  loadingStates3.value[id] = newLoadingState
+// 轮播图数据
+const carouselData = ref([])
+const carouselLoading = ref({})
+
+const toCreations = ()=>{
+  router.push(`/creations`)
 }
 
-/**
- * 轮播图
- * **/
+const toHairstyles = ()=>{
+  router.push(`/hairstyles`)
+}
 
-const carouselData = ref([]); // 用于存储轮播图的数据
-const loadingStates = ref({
-  3: true,
-  4: true,
-  5: true,
-  6: true
-});
+const toOfflines = () => {
+  router.push(`/offlines`)
+}
 
-// 获取轮播图数据
-const fetchCarouselData = async () => {
-  try {
-    const ids = [3, 4, 5, 6];
-    const data = [];
-
-    for (const id of ids) {
-      loadingStates.value[id] = true; // 开始加载状态
-      const response = await creationInfo(id);
-      if (response && response.data) {
-        data.push({
-          id: id,
-          image: response.data.cover_pic,
-          title: response.data.title,
-        });
-        loadingStates.value[id] = false; // 数据加载完毕，更新加载状态
-      } else {
-        ElMessage.error("数据加载失败");
-      }
+const fetchCreationData = async (ids, dataList, loadingStates) => {
+  for (const id of ids) {
+    loadingStates.value[id] = true
+    const res = await creationInfo(id)
+    if (res && res.data) {
+      dataList.value.push(res.data)
+    } else {
+      ElMessage.error('数据加载失败')
     }
-
-    // 将获取到的数据存入 carouselData
-    carouselData.value = data;
-  } catch (error) {
-    ElMessage.error("加载轮播图数据失败");
-    console.error("Error fetching carousel data:", error);
+    console.log(res.data)
+    loadingStates.value[id] = false
+    console.log(id +''+ loadingStates.value[id])
   }
-};
 
-const toContent = (id) => {
-  router.push(`/content/creation/${id}`)
 }
 
+
+const fetchHairstyleData = async (ids, dataList, loadingStates) => {
+  for (const id of ids) {
+    loadingStates.value[id] = true
+    const res = await hairstyleInfo(id)
+    if (res && res.data) {
+      dataList.value.push(res.data)
+    } else {
+      ElMessage.error('数据加载失败')
+    }
+    loadingStates.value[id] = false
+  }
+}
+
+
+const fetchOfflineData = async (ids, dataList, loadingStates) => {
+  for (const id of ids) {
+    loadingStates.value[id] = true
+    const res = await offlineInfo(id)
+    if (res && res.data) {
+      dataList.value.push(res.data)
+    } else {
+      ElMessage.error('数据加载失败')
+    }
+    loadingStates.value[id] = false
+  }
+}
+
+
+// 跳转
+const toContent = (type, id) => {
+  router.push(`/content/${type}/${id}`)
+}
 
 onMounted(() => {
-  fetchCarouselData();
-});
+  creationIds.value.forEach(id => {
+    loadingStates1.value[id] = true
+  })
+  hairstyleIds.value.forEach(id => {
+    loadingStates2.value[id] = true
+  })
+  offlineIds.value.forEach(id => {
+    loadingStates3.value[id] = true
+  })
+
+  // 加载数据
+  fetchCreationData(creationIds.value, creationData, loadingStates1)
+  fetchHairstyleData(hairstyleIds.value, hairstyleData, loadingStates2)
+  fetchOfflineData(offlineIds.value, offlineData, loadingStates3)
+  fetchCreationData([3, 4, 5, 6], carouselData, carouselLoading)
+})
+
 </script>
+
 
 <template>
   <el-container class="view-box">
     <el-main class="main">
       <div class="main-content">
+        <!-- 轮播图 -->
         <el-carousel :interval="4000" type="card" class="cardpic" card-scale="0.7">
-          <el-carousel-item
-              v-for="item in carouselData"
-              :key="item.id"
-              style="width: 600px"
-              @click="toContent(item.id)">
-            <img v-if="!loadingStates[item.id]" :src="item.image" alt="轮播图图片" class="carousel-item"/>
-            <div v-if="!loadingStates[item.id]" class="carousel-title">{{ item.title }}</div>
+          <el-carousel-item v-for="item in carouselData" :key="item.id" @click="toContent('creation', item.id)">
+            <img v-if="!carouselLoading[item.id]" :src="item.cover_pic" alt="轮播图" class="carousel-item" />
+            <div v-if="!carouselLoading[item.id]" class="carousel-title">{{ item.title }}</div>
           </el-carousel-item>
         </el-carousel>
 
@@ -123,18 +128,17 @@ onMounted(() => {
           <template #header>
             <div class="card-header">
               <span>内容</span>
-              <span>更多</span>
+              <el-button type="primary" link size="large" @click="toCreations" class="more-btn">
+                更多
+                <el-icon style="margin-left: 4px;">
+                  <ArrowRight />
+                </el-icon>
+              </el-button>
             </div>
           </template>
+
           <div style="margin-top: 20px; display: flex; justify-content: center;">
-            <CardCreation
-                v-for="id in creationIds"
-                :key="id"
-                :creation_id="id"
-                :loading="loadingStates1[id]"
-                @update-loading1="handleLoadingUpdate1(id, $event)"
-                class="card-creation"
-            />
+            <CardCreation style="margin-left: 40px;margin-right: 40px" v-for="item in creationData" :key="item.creation_id" :data="item" :loading="loadingStates1[item.creation_id]" />
           </div>
         </el-card>
 
@@ -142,18 +146,16 @@ onMounted(() => {
           <template #header>
             <div class="card-header">
               <span>发型</span>
-              <span>更多</span>
+              <el-button type="primary" link size="large" @click="toHairstyles" class="more-btn">
+                更多
+                <el-icon style="margin-left: 4px;">
+                  <ArrowRight />
+                </el-icon>
+              </el-button>
             </div>
           </template>
           <div style="margin-top: 20px; display: flex; justify-content: center;">
-            <CardHairstyle
-                v-for="id in hairstyleIds"
-                :key="id"
-                :hairstyle_id="id"
-                :loading="loadingStates2[id]"
-                @update-loading2="handleLoadingUpdate2(id, $event)"
-                class="card-creation"
-            />
+            <CardHairstyle style="margin-left: 40px;margin-right: 40px" v-for="item in hairstyleData" :key="item.hairstyle_id" :data="item" :loading="loadingStates2[item.hairstyle_id]" />
           </div>
         </el-card>
 
@@ -161,18 +163,16 @@ onMounted(() => {
           <template #header>
             <div class="card-header">
               <span>线下门店</span>
-              <span>更多</span>
+              <el-button type="primary" link size="large" @click="toOfflines" class="more-btn">
+                更多
+                <el-icon style="margin-left: 4px;">
+                  <ArrowRight />
+                </el-icon>
+              </el-button>
             </div>
           </template>
           <div style="margin-top: 20px; display: flex; justify-content: center;">
-            <CardOffline
-                v-for="id in offlineIds"
-                :key="id"
-                :offline_id="id"
-                :loading="loadingStates3[id]"
-                @update-loading3="handleLoadingUpdate3(id, $event)"
-                class="card-creation"
-            />
+            <CardOffline style="margin-left: 40px;margin-right: 40px" v-for="item in offlineData" :key="item.offline_id" :data="item" :loading="loadingStates3[item.offline_id]" />
           </div>
         </el-card>
 
@@ -251,6 +251,17 @@ html, body {
   align-items: center;
   font-size: 18px;
   font-weight: bold;
+}
+
+.more-btn {
+  color: #409EFF;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s;
+}
+
+.more-btn:hover {
+  color: #66b1ff;
 }
 
 .card-creation {
