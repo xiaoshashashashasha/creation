@@ -86,3 +86,9 @@ export const userCancelFollowService = (followed_id) => {
         }
     })
 }
+
+export const userInfoService = () => {
+    return request.get('/user/myInfo',{
+        params:{}
+    })
+}

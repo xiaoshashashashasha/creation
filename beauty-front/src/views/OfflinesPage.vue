@@ -109,6 +109,12 @@ const backToHome = () => {
 </template>
 
 <style scoped>
+.main-content {
+  flex: 1;
+  width: 1720px;
+  margin: 0 auto;
+  background: #fff;
+}
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -124,7 +130,7 @@ const backToHome = () => {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 108px;
+  gap: 58px;
   padding: 20px;
 }
 </style>

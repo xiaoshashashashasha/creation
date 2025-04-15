@@ -3,7 +3,7 @@ import ManageSwitch from "@/components/ManageSwitch.vue";
 import { computed } from 'vue'
 import router from "@/router";
 import {useStateStore} from "@/stores/state";
-import { userLogoutService} from "@/api/user";
+import {userLogoutService} from "@/api/user";
 import {useTokenStore} from "@/stores/token";
 
 

@@ -27,24 +27,32 @@ instance.interceptors.request.use(
 
 // 响应拦截器
 instance.interceptors.response.use(
-    result => {
-        if (result.data.code === 0) {
-            return result.data
+    res => {
+        if (res.data.code === 0) {
+            return res.data
         }
-        console.log(result.data.msg)
-        ElMessage.error(result.data.msg?result.data.msg:'服务异常')
-        return Promise.reject(result.data)
+        ElMessage.error(res.data.msg || '服务异常')
+        return Promise.reject(res.data)
     },
     error => {
         const status = error.response?.status
+        const tokenStore = useTokenStore()
 
-        if (status === 500) {
+        if (status === 401) {
+            ElMessage.error('登录状态已过期，请重新登录')
+
+            // 清空token
+            tokenStore.removeToken()
+
+            // 避免多次跳转
+            if (router.currentRoute.value.path !== '/login') {
+                router.push('/login')
+            }
+
+        } else if (status === 500) {
             ElMessage.error('服务器内部错误，请稍后重试')
         } else if (status === 404) {
             ElMessage.error('请求接口不存在')
-        } else if (status === 401) {
-            ElMessage.error('登录状态已过期，请重新登录')
-            router.push('/login')
         } else {
             ElMessage.error(error.message || '请求失败')
         }

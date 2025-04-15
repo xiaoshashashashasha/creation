@@ -56,35 +56,36 @@ public class CreationServiceImpl implements CreationService {
 
     @Override
     public PageBean<Creation> list(Integer pageNum, Integer pageSize, String title, Integer class_id, Integer tag_id) {
-
-        //实现思路：1.根据title、class_id和examine交由mapper获取creation的list1
-        //2.根据tag_id获取关联creation_id的list2
-        //3.校验list1，将与list2中id对应的creation加入list3
-        //4.封装list3提交
         PageBean<Creation> pb = new PageBean<>();
+
         PageHelper.startPage(pageNum, pageSize);
+        List<Creation> list_1 = creationMapper.list(title, class_id);
 
-        List<Creation> list_1 = creationMapper.list(title,class_id);
-
-        if(tag_id != null){
+        if (tag_id != null) {
             List<Integer> list_2 = creationMapper.getCIdByTId(tag_id);
-            List<Creation> list_3 = list_1.stream()
+
+            List<Creation> filteredList = list_1.stream()
                     .filter(creation -> list_2.contains(creation.getCreation_id()))
                     .collect(Collectors.toList());
 
-            Page<Creation> p = (Page<Creation>) list_3;
-            pb.setTotal(p.getTotal());
-            pb.setItems(p.getResult());
+            int total = filteredList.size();
+            int fromIndex = Math.min((pageNum - 1) * pageSize, total);
+            int toIndex = Math.min(fromIndex + pageSize, total);
+            List<Creation> paged = filteredList.subList(fromIndex, toIndex);
 
+            pb.setTotal(total);
+            pb.setItems(paged);
             return pb;
         }
 
-        Page p = (Page) list_1;
+        // 没有 tag_id，直接走 PageHelper 分页
+        Page<Creation> p = (Page<Creation>) list_1;
         pb.setTotal(p.getTotal());
         pb.setItems(p.getResult());
 
         return pb;
     }
+
 
     @Override
     public void del(int creation_id) {
