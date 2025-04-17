@@ -1,6 +1,6 @@
 <script setup>
-import {ref, onMounted} from "vue"
-import {ElMessage} from "element-plus"
+import { ref, onMounted } from "vue"
+import { ElMessage } from "element-plus"
 import {
   hairstyleList,
   hairstyleInfo,
@@ -8,8 +8,9 @@ import {
   hairstyleUpdate,
   hairstyleAdd
 } from "@/api/hairstyle"
-import {uploadFile} from "@/api/fileUpload"
-import RichTextEditor from "@/components/RichTextEditor.vue";
+import { uploadFile } from "@/api/fileUpload"
+import RichTextEditor from "@/components/RichTextEditor.vue"
+
 const tableData = ref([])
 const pageNum = ref(1)
 const pageSize = ref(5)
@@ -20,13 +21,18 @@ const detail = ref(null)
 const editForm = ref({})
 const keyWord = ref("")
 
-
 const createDialogVisible = ref(false)
 const createForm = ref({
   hairstyle_name: "",
   hairstyle_pic: "",
   content: ""
 })
+
+const decodeHTML = (htmlStr) => {
+  const textarea = document.createElement('textarea')
+  textarea.innerHTML = htmlStr
+  return textarea.value
+}
 
 const fetchData = async () => {
   try {
@@ -60,6 +66,7 @@ const handlePageChange = (newPage) => {
 const openDetailDialog = async (id) => {
   try {
     const res = await hairstyleInfo(id)
+    res.data.content = decodeHTML(res.data.content)
     detail.value = res.data
     dialogVisible.value = true
   } catch (err) {
@@ -70,9 +77,11 @@ const openDetailDialog = async (id) => {
 const openEditDialog = async (id) => {
   try {
     const res = await hairstyleInfo(id)
-    editForm.value = { ...res.data }
+    editForm.value = {
+      ...res.data,
+      content: decodeHTML(res.data.content)
+    }
     editDialogVisible.value = true
-
   } catch (err) {
     ElMessage.error(err.msg || "获取发型详情失败")
   }
@@ -88,7 +97,7 @@ const handleDelete = async (id) => {
   }
 }
 
-const handleCustomUpload = async ({file}) => {
+const handleCustomUpload = async ({ file }) => {
   try {
     const res = await uploadFile(file)
     editForm.value.hairstyle_pic = res.data
@@ -98,7 +107,7 @@ const handleCustomUpload = async ({file}) => {
   }
 }
 
-const handleCreateUpload = async ({file}) => {
+const handleCreateUpload = async ({ file }) => {
   try {
     const res = await uploadFile(file)
     createForm.value.hairstyle_pic = res.data
@@ -123,11 +132,11 @@ const openCreateDialog = () => {
   createForm.value = {
     hairstyle_name: "",
     hairstyle_pic: "",
-    content: ""
+    content: "<p><br></p>"
   }
   createDialogVisible.value = true
-
 }
+
 const handleCreateSubmit = async () => {
   if (!createForm.value.hairstyle_name) {
     return ElMessage.warning("请输入发型名称")
@@ -146,6 +155,7 @@ onMounted(() => {
   fetchData()
 })
 </script>
+
 
 <template>
   <el-row :gutter="0">

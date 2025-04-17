@@ -47,3 +47,15 @@ export const myOfflineList = (params) =>{
         params
     })
 }
+
+export const improveOffline = (params) =>{
+    return request.patch('/offline/improveOffline', params)
+}
+
+export const delOffline = (offline_id) =>{
+    return request.delete('/offline/delOffline',{
+        params: {
+            offline_id
+        }
+    })
+}
