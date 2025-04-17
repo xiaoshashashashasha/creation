@@ -35,7 +35,7 @@ public interface OfflineMapper {
     Offline offlineInfo(Integer offline_id);
 
     //完善门店信息
-    @Update("update beauty_offline set offline_name = #{offline_name}, offline_position = #{offline_position},offline_pic = #{offline_pic}, offline_content=#{offline_content}, offline_phone = #{offline_phone}, updated_at = now()")
+    @Update("update beauty_offline set offline_name = #{offline_name}, offline_position = #{offline_position},offline_pic = #{offline_pic}, offline_content=#{offline_content}, offline_phone = #{offline_phone}, updated_at = now() where offline_id =  #{offline_id}")
     void improveOffline(Offline offline);
 
     //置入门店成员
