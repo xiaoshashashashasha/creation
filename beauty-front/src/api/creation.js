@@ -121,3 +121,8 @@ export const creationList = (params) =>{
     })
 }
 
+export const myCreationList = (params)=>{
+    return request.get('/creation/myList',{
+        params
+    })
+}

@@ -184,6 +184,9 @@ public class UserController {
             state = 0;
             return Result.success(state);
         }
+        if (state == 2) {
+            return Result.success(state);
+        }
         return Result.error("您已关注对方！");
     }
 

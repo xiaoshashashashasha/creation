@@ -11,11 +11,11 @@ public interface OfflineService {
     //申请创建线下门店
     void addRequest(OfflineRequest offlineRequest);
     //查看我的门店申请列表
-    List<OfflineRequest> requestList(Integer manager_id);
+    PageBean<OfflineRequest> requestList(Integer pageNum, Integer pageSize, Integer manager_id);
     //分页查找门店列表
     PageBean<Offline> offlineList(Integer pageNum, Integer pageSize, String offline_city);
     //查看我的门店列表
-    List<Offline> myOfflineList(Integer manager_id);
+    PageBean<Offline> myOfflineList(Integer pageNum, Integer pageSize, Integer manager_id);
     //查看门店详情
     Offline offlineInfo(Integer offline_id);
     //完善门店信息

@@ -1,13 +1,15 @@
 <script setup>
-import {useRoute} from 'vue-router'
-import {creationInfo} from '@/api/creation'
-import {hairstyleInfo} from '@/api/hairstyle'
-import {offlineInfo} from '@/api/offline'
-import {ref, onMounted} from 'vue'
-import {userCancelFollowService, userFollowInfoService, userFollowService, userOtherInfoService} from "@/api/user";
-import {ElMessage} from "element-plus";
+import { useRoute, useRouter } from 'vue-router'
+import { creationInfo } from '@/api/creation'
+import { hairstyleInfo } from '@/api/hairstyle'
+import { offlineInfo } from '@/api/offline'
+import { ref, onMounted } from 'vue'
+import { userCancelFollowService, userFollowInfoService, userFollowService, userOtherInfoService } from "@/api/user"
+import { ElMessage } from "element-plus"
 
 const route = useRoute()
+const router = useRouter()
+
 const detail = ref({})
 const content = ref('')
 const userInfo = ref({})
@@ -17,6 +19,10 @@ const followLoading = ref(false)
 
 const type = route.params.type
 const id = route.params.id
+
+const backToHome = () => {
+  router.push('/')
+}
 
 const fetchData = async () => {
   try {
@@ -93,6 +99,19 @@ onMounted(() => {
         </template>
 
         <template #default>
+          <div style="width: 100%; background-color: #f6f3f3; padding-top: 10px; margin: 0;">
+            <!-- 返回按钮 -->
+            <el-button
+                type="primary"
+                icon="el-icon-arrow-left"
+                plain
+                @click="backToHome"
+                style="margin-bottom: 10px; margin-left: 10px;"
+            >
+              返回首页
+            </el-button>
+          </div>
+
           <div v-if="type === 'creation'" class="creater">
             <div class="avatar-box">
               <img :src="userInfo.user_pic" alt="cover" />
@@ -102,9 +121,10 @@ onMounted(() => {
               <el-button
                   :loading="followLoading"
                   @click="follow"
-                  style="width: 100px; height: 40px; margin-left: 10px; margin-top: 20px; font-size: 18px"
+                  :disabled="followState === 2"
+                  style="width: 140px; height: 40px; margin-left: 10px; margin-top: 20px; font-size: 18px"
               >
-                {{ followState === 0 ? '取消关注' : '关注' }}
+                {{ followState === 2 ? '不可关注自己' : (followState === 0 ? '取消关注' : '关注') }}
               </el-button>
             </div>
           </div>
@@ -118,7 +138,7 @@ onMounted(() => {
                 style="width: 100%; max-width: 400px; display: block; margin: 0 auto;"
                 alt="cover"
             />
-            <div class="content" v-html="content"></div>
+            <div class="content" v-html="content" />
           </div>
         </template>
       </el-skeleton>
@@ -164,7 +184,7 @@ onMounted(() => {
   display: block;
   width: 1720px;
   margin: 0 auto;
-  padding-top: 20px;
+  padding-top: 0;
   background: #fff;
 }
 

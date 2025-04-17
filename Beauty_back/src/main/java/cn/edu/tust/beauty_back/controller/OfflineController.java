@@ -41,11 +41,11 @@ public class OfflineController {
      *查看我的门店申请
      * **/
     @GetMapping("/requestList")
-    public Result<List<OfflineRequest>> requestList(){
+    public Result<PageBean<OfflineRequest>> requestList(Integer pageNum, Integer pageSize){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer manager_id = (Integer) map.get("user_id");
-        List<OfflineRequest> list = offlineService.requestList(manager_id);
-        return Result.success(list);
+        PageBean<OfflineRequest> pb = offlineService.requestList(pageNum, pageSize, manager_id);
+        return Result.success(pb);
     }
 
 
@@ -63,11 +63,11 @@ public class OfflineController {
      *查看我的门店列表
      * **/
     @GetMapping("/myOfflineList")
-    public Result<List<Offline>> myOfflineList(){
+    public Result<PageBean<Offline>> myOfflineList(Integer pageNum, Integer pageSize){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer manager_id = (Integer) map.get("user_id");
-        List<Offline> list = offlineService.myOfflineList(manager_id);
-        return Result.success(list);
+        PageBean<Offline> pb = offlineService.myOfflineList(pageNum, pageSize, manager_id);
+        return Result.success(pb);
     }
 
     /**

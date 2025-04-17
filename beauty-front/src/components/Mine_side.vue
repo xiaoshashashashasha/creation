@@ -14,16 +14,15 @@
         </div>
 
         <!-- 菜单区域 -->
-        <el-menu class="menu" :default-active="activeMenu" unique-opened>
-          <el-menu-item index="1">账号详细</el-menu-item>
-          <el-menu-item index="2">我的钱包</el-menu-item>
-
-          <el-menu-item index="3">我的内容</el-menu-item>
+        <el-menu class="menu"  unique-opened>
+          <el-menu-item index="1" @click="goToMyInfo">账号详细</el-menu-item>
+          <el-menu-item index="2" @click="goToMyWallet">我的钱包</el-menu-item>
+          <el-menu-item index="3" @click="goToMyCreation">我的内容</el-menu-item>
 
           <el-sub-menu index="4">
             <template #title>我的门店</template>
-            <el-menu-item index="4-1">门店列表</el-menu-item>
-            <el-menu-item index="4-2">门店申请</el-menu-item>
+            <el-menu-item index="4-1" @click="goToMyOffline">门店列表</el-menu-item>
+            <el-menu-item index="4-2" @click="goToMyRequest">门店申请</el-menu-item>
           </el-sub-menu>
 
           <el-sub-menu index="5">
@@ -63,10 +62,14 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue'
 import { useStateStore } from '@/stores/state'
+import { useTokenStore } from '@/stores/token'
+import { useRouter } from 'vue-router'
 import { userInfoService, userCollectionService, userFollowService, userFansService } from '@/api/user'
 
-const state = useStateStore()
-const mine = computed(() => [0, 1, 2].includes(state.sta))
+const router = useRouter()
+const tokenStore = useTokenStore()
+const stateStore = useStateStore()
+const mine = computed(() => [0, 1, 2].includes(stateStore.sta))
 
 const isOpen = ref(false)
 const activeMenu = ref('1')
@@ -76,19 +79,53 @@ const collections = ref([])
 const follows = ref([])
 const fans = ref([])
 
+const goToMyInfo = () => {
+  router.push('/myInfo')
+  isOpen.value = false
+}
+
+const goToMyWallet = ()=>{
+  router.push('/myWallet')
+  isOpen.value = false
+}
+
+const goToMyCreation = ()=>{
+  router.push('/myCreation')
+  isOpen.value = false
+}
+
+const goToMyRequest = ()=>{
+  router.push('/myRequest')
+  isOpen.value = false
+}
+const goToMyOffline = ()=>{
+  router.push('/myOffline')
+  isOpen.value = false
+}
+
 const toggleSidebar = async () => {
   isOpen.value = !isOpen.value
   if (isOpen.value) {
-    await fetchUserData()  // 侧边栏打开时更新用户信息
+    await fetchUserData()
   }
 }
 
 
 const fetchUserData = async () => {
-  const res = await userInfoService()
-  userInfo.value = res.data
-  console.log(res.data)
+  try {
+    const res = await userInfoService()
+    userInfo.value = res.data
+  } catch (err) {
+    if (err?.response?.status === 401) {
+      // 静默处理，不弹出消息
+      console.warn('[Sidebar] 未登录，跳过用户信息拉取')
+    } else {
+      console.error(err)
+      ElMessage.error(err.msg || '用户信息加载失败')
+    }
+  }
 }
+
 
 // const fetchCollections = async () => {
 //   const res = await userCollectionService()
@@ -106,6 +143,9 @@ const fetchUserData = async () => {
 // }
 
 onMounted(() => {
+  if (!tokenStore.token){
+    return
+  }
   fetchUserData()
   // fetchCollections()
   // fetchFollows()
@@ -140,6 +180,12 @@ onMounted(() => {
 
 .my-btn.open {
   right: 200px;
+}
+
+::v-deep(.el-menu-item:hover) {
+  background-color: #f0f9ff;
+  color: #409EFF;
+  transition: all 0.3s ease;
 }
 
 .sidebar-content {

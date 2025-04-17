@@ -39,7 +39,7 @@ instance.interceptors.response.use(
         const tokenStore = useTokenStore()
 
         if (status === 401) {
-            ElMessage.error('登录状态已过期，请重新登录')
+            ElMessage.error('尚未登录，请登录')
 
             // 清空token
             tokenStore.removeToken()

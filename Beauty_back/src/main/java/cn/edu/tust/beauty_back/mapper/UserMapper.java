@@ -41,4 +41,21 @@ public interface UserMapper {
 
     //分页查询所有用户，若有条件则应用条件
     List<User> list(Integer user_id, String keyWord);
+
+    //更新关注数+
+    @Update("update beauty_user set following_count = following_count + 1 where user_id = #{follower_id}")
+    void followingCountadd(int follower_id);
+
+    //更新关注数-
+    @Update("update beauty_user set following_count = following_count - 1 where user_id = #{follower_id}")
+    void followingCountles(int follower_id);
+
+    //更新粉丝数+
+    @Update("update beauty_user set followers_count = followers_count + 1 where user_id = #{followed_id}")
+    void followersCountadd(int followed_id);
+
+    //更新粉丝数-
+    @Update("update beauty_user set followers_count = followers_count - 1 where user_id = #{followed_id}")
+    void followersCountles(int followed_id);
+
 }

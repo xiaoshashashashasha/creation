@@ -2,6 +2,7 @@ package cn.edu.tust.beauty_back.service.impl;
 
 import cn.edu.tust.beauty_back.bean.Follow;
 import cn.edu.tust.beauty_back.mapper.FollowMapper;
+import cn.edu.tust.beauty_back.mapper.UserMapper;
 import cn.edu.tust.beauty_back.service.FollowService;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,8 @@ import java.util.Map;
 public class FollowServiceImpl implements FollowService {
     @Autowired
     private FollowMapper followMapper;
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public void add(int followed_id) {
@@ -22,6 +25,9 @@ public class FollowServiceImpl implements FollowService {
         int follower_id = (int) map.get("user_id");
 
         followMapper.add(follower_id,followed_id);
+        userMapper.followingCountadd(follower_id);
+        userMapper.followersCountadd(followed_id);
+
     }
 
     @Override
@@ -31,6 +37,9 @@ public class FollowServiceImpl implements FollowService {
         int follower_id = (int) map.get("user_id");
 
         followMapper.del(follower_id,followed_id);
+        userMapper.followingCountles(follower_id);
+        userMapper.followersCountles(followed_id);
+
     }
 
     @Override
@@ -57,6 +66,9 @@ public class FollowServiceImpl implements FollowService {
     public Integer followInfo(int followed_id) {
         Map<String, Object> map = ThreadLocalUtil.get();
         int follower_id = (int) map.get("user_id");
+        if(follower_id==followed_id){
+            return 2;  //不可关注自己
+        }
 
         Follow follow = followMapper.followInfo(follower_id,followed_id);
         if (follow != null) {

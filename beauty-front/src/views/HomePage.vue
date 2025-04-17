@@ -88,6 +88,7 @@ const fetchOfflineData = async (ids, dataList, loadingStates) => {
 
 // 跳转
 const toContent = (type, id) => {
+  console.log(type + "----" + id)
   router.push(`/content/${type}/${id}`)
 }
 
@@ -118,9 +119,9 @@ onMounted(() => {
       <div class="main-content">
         <!-- 轮播图 -->
         <el-carousel :interval="4000" type="card" class="cardpic" card-scale="0.7">
-          <el-carousel-item v-for="item in carouselData" :key="item.id" @click="toContent('creation', item.id)">
-            <img v-if="!carouselLoading[item.id]" :src="item.cover_pic" alt="轮播图" class="carousel-item" />
-            <div v-if="!carouselLoading[item.id]" class="carousel-title">{{ item.title }}</div>
+          <el-carousel-item v-for="item in carouselData" :key="item.id" @click="toContent('creation', item.creation_id)">
+            <img v-if="!carouselLoading[item.creation_id]" :src="item.cover_pic" alt="轮播图" class="carousel-item" />
+            <div v-if="!carouselLoading[item.creation_id]" class="carousel-title">{{ item.title }}</div>
           </el-carousel-item>
         </el-carousel>
 

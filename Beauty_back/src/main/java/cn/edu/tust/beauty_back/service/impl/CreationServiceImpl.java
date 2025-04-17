@@ -96,11 +96,11 @@ public class CreationServiceImpl implements CreationService {
     }
 
     @Override
-    public PageBean<Creation> myList(Integer pageNum, Integer pageSize, Integer user_id) {
+    public PageBean<Creation> myList(Integer pageNum, Integer pageSize, Integer user_id,Integer examine) {
         PageBean<Creation> pb = new PageBean<>();
         PageHelper.startPage(pageNum, pageSize);
 
-        List<Creation> list = creationMapper.myList(user_id);
+        List<Creation> list = creationMapper.myList(user_id,examine);
         for(Creation creation : list){
             Class c = classMapper.findClassById(creation.getClass_id());
             creation.setClass_name(c.getClass_name());

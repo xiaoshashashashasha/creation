@@ -109,7 +109,10 @@ const loginSta = async () => {
     }
 
   }catch(err) {
-    console.log(err)
+    // eslint-disable-next-line no-empty
+    if(err?.response?.status === 401){
+
+    }
   }
 }
 

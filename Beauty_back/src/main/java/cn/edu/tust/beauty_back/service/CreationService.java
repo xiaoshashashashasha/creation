@@ -19,7 +19,7 @@ public interface CreationService {
     void del(int creation_id);
 
     //分页获取我发布的图文列表
-    PageBean<Creation> myList(Integer pageNum, Integer pageSize, Integer user_id);
+    PageBean<Creation> myList(Integer pageNum, Integer pageSize, Integer user_id ,Integer examine);
     //多参数分页查询审核图文
     PageBean<Creation> listToExamine(Integer pageNum, Integer pageSize, String title, Integer class_id, Integer tag_id, Integer examine);
     //获取图文关联的标签

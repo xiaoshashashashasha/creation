@@ -31,3 +31,19 @@ export const offlineList = (params) =>{
         params
     })
 }
+
+export const offlineRequestList = (params) =>{
+    return request.get('/offline/requestList',{
+        params
+    })
+}
+
+export const addRequest = (params)=>{
+    return request.post('/offline/addRequest',params)
+}
+
+export const myOfflineList = (params) =>{
+    return request.get('/offline/myOfflineList',{
+        params
+    })
+}

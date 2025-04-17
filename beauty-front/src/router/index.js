@@ -1,5 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
-
+import {useTokenStore} from "@/stores/token";
 
 import Login_Register from "@/views/Login_Register.vue";
 import HomePage from "@/views/HomePage.vue";
@@ -11,11 +11,15 @@ import CreationManage from "@/views/manage/creation/CreationManage.vue";
 import CreationExamine from "@/views/manage/creation/CreationExamine.vue";
 import HairstyleManage from "@/views/manage/hairstyle/HairstyleManage.vue";
 import RequestManage from "@/views/manage/offline/RequestManage.vue";
-import {useTokenStore} from "@/stores/token";
 import ContentPage from "@/views/ContentPage.vue";
 import CreationsPage from "@/views/CreationsPage.vue";
 import HairstylesPage from "@/views/HairstylesPage.vue";
 import OfflinesPage from "@/views/OfflinesPage.vue";
+import MyInfoPage from "@/views/Mine/MyInfoPage.vue";
+import MyWallet from "@/views/Mine/MyWallet.vue";
+import MyCreations from "@/views/Mine/MyCreations.vue";
+import MyRequest from "@/views/Mine/MyRequest.vue";
+import MyOffline from "@/views/Mine/MyOffline.vue";
 
 
 //定义路由关系
@@ -44,6 +48,31 @@ const routes = [
     {
         path: "/offlines",
         component: OfflinesPage,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/myInfo",
+        component: MyInfoPage,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/myWallet",
+        component: MyWallet,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/myCreation",
+        component: MyCreations,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/myRequest",
+        component: MyRequest,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/myOffline",
+        component: MyOffline,
         meta: {requiresAuth: true}
     },
     {

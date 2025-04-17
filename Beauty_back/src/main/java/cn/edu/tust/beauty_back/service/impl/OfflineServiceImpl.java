@@ -25,8 +25,16 @@ public class OfflineServiceImpl implements OfflineService {
     }
 
     @Override
-    public List<OfflineRequest> requestList(Integer manager_id) {
-        return offlineMapper.requestList(manager_id);
+    public PageBean<OfflineRequest> requestList(Integer pageNum, Integer pageSize, Integer manager_id) {
+        PageBean<OfflineRequest> pb = new PageBean<>();
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<OfflineRequest> list = offlineMapper.requestList(manager_id);
+        Page<OfflineRequest> p = (Page<OfflineRequest>) list;
+        pb.setTotal(p.getTotal());
+        pb.setItems(p.getResult());
+
+        return pb;
     }
 
     @Override
@@ -43,8 +51,15 @@ public class OfflineServiceImpl implements OfflineService {
     }
 
     @Override
-    public List<Offline> myOfflineList(Integer manager_id) {
-        return offlineMapper.myOfflineList(manager_id);
+    public PageBean<Offline> myOfflineList(Integer pageNum, Integer pageSize, Integer manager_id) {
+        PageBean<Offline> pb = new PageBean<>();
+        PageHelper.startPage(pageNum, pageSize);
+
+        List<Offline> list = offlineMapper.myOfflineList(manager_id);
+        Page<Offline> p = (Page<Offline>) list;
+        pb.setTotal(p.getTotal());
+        pb.setItems(p.getResult());
+        return pb;
     }
 
     @Override

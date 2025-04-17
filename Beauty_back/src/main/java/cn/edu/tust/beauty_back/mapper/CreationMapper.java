@@ -53,8 +53,8 @@ public interface CreationMapper {
     void updateExamine(Integer creation_id, Integer examine, String review_comments);
 
     //获取我发布的图文列表
-    @Select("select * from beauty_creation where user_id = #{user_id}")
-    List<Creation> myList(Integer user_id);
+    @Select("select * from beauty_creation where user_id = #{user_id} and examine = #{examine}")
+    List<Creation> myList(Integer user_id, Integer examine);
 
     //获取他人图文列表
     @Select("select * from beauty_creation where user_id = #{user_id} and examine = 0")

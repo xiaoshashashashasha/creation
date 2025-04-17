@@ -57,11 +57,11 @@ public class CreationController {
      * 分页获取我发布的图文列表
      **/
     @GetMapping("/myList")
-    public Result<PageBean<Creation>> myList(Integer pageNum, Integer pageSize) {
+    public Result<PageBean<Creation>> myList(Integer pageNum, Integer pageSize, Integer examine) {
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
 
-        PageBean<Creation> pb = creationService.myList(pageNum, pageSize, user_id);
+        PageBean<Creation> pb = creationService.myList(pageNum, pageSize, user_id, examine);
         return Result.success(pb);
     }
 
