@@ -25,11 +25,7 @@ const followLoading = ref(false)
 const type = route.params.type
 const id = route.params.id
 
-const backToHome = () => {
-  router.push('/')
-}
 
-// 🛠 解码 HTML 实体，防止标签不被渲染
 const decodeHTML = (htmlStr) => {
   const textarea = document.createElement('textarea')
   textarea.innerHTML = htmlStr
@@ -116,10 +112,10 @@ onMounted(() => {
                 type="primary"
                 icon="el-icon-arrow-left"
                 plain
-                @click="backToHome"
+                @click="router.back()"
                 style="margin-bottom: 10px; margin-left: 10px;"
             >
-              返回首页
+              返回
             </el-button>
           </div>
 

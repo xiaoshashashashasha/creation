@@ -84,6 +84,7 @@ onMounted(() => {
   flex: 1;
   width: 100%;
   max-width: 1000px;
+  height: 685px;
   margin: 40px auto;
   background: #fff;
   padding: 30px;

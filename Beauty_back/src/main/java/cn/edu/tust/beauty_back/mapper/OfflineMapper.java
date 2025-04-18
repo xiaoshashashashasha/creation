@@ -69,6 +69,6 @@ public interface OfflineMapper {
     void delOffline(Integer offline_id);
 
     //根据用户id查找对应成员
-    @Select("select user_id,user_name from offline_member where offline_id = #{offline_id} and user_id = #{user_id}")
-    User findMenberByUId(Integer offline_id, Integer user_id);
+    @Select("select user_id from offline_member where offline_id = #{offline_id} and user_id = #{user_id}")
+    User findMemberByUId(Integer offline_id, Integer user_id);
 }

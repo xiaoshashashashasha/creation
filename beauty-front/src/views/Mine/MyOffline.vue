@@ -83,7 +83,7 @@ const viewDetails = (store) => {
 }
 
 const manageMembers = (store) => {
-  router.push(`/offline/${store.offline_id}/members`)
+  router.push(`/myOffline/${store.offline_id}/members`)
 }
 
 const cancelStore = (store) => {
@@ -192,7 +192,9 @@ onMounted(() => {
 .main-content {
   flex: 1;
   width: 1720px;
+  height: 765px;
   margin: 0 auto;
+  margin-bottom: 10px;
   background: #f5f7fa;
   padding: 20px;
 }

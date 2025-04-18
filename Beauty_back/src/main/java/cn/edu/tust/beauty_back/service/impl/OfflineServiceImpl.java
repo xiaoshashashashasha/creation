@@ -74,14 +74,14 @@ public class OfflineServiceImpl implements OfflineService {
 
     @Override
     public Integer addMember(OfflineMember offlineMember) {
-        //根据user_name获取user_id
-        User user = userMapper.findByUserName(offlineMember.getUser_name());
+        //根据username获取user_id
+        User user = userMapper.findByUserName(offlineMember.getUsername());
         if (user == null) {
             return 1;
         }
         offlineMember.setUser_id(user.getUser_id());
 
-        User u = offlineMapper.findMenberByUId(offlineMember.getOffline_id(), offlineMember.getUser_id());
+        User u = offlineMapper.findMemberByUId(offlineMember.getOffline_id(), offlineMember.getUser_id());
         if (u == null) {
             offlineMapper.addMember(offlineMember);
             return 0;
@@ -93,7 +93,14 @@ public class OfflineServiceImpl implements OfflineService {
 
     @Override
     public List<OfflineMember> memberList(Integer offline_id) {
-        return offlineMapper.memberList(offline_id);
+        List<OfflineMember> list = offlineMapper.memberList(offline_id);
+        for (OfflineMember offlineMember : list) {
+            User user = userMapper.findByUserId(offlineMember.getUser_id());
+            offlineMember.setUsername(user.getUsername());
+            offlineMember.setNickname(user.getNickname());
+        }
+
+        return list;
     }
 
     @Override

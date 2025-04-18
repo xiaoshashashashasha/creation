@@ -59,3 +59,23 @@ export const delOffline = (offline_id) =>{
         }
     })
 }
+
+export const memberList = (offline_id) =>{
+    return request.get('/offline/memberList',{
+        params:{
+            offline_id
+        }
+    })
+}
+
+export const addMember = (params) =>{
+    return request.post('/offline/addMember',params)
+}
+
+export const delMember = (member_id) =>{
+    return request.delete('/offline/delMember',{
+        params: {
+            member_id
+        }
+    })
+}

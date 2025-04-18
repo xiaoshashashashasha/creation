@@ -19,7 +19,9 @@ public class OfflineMember {
     private Integer user_id;
 
     @NotNull
-    private String user_name;
+    private String username;
+
+    private String nickname;
 
     @NotEmpty
     @Pattern(regexp = "^\\S{1,10}$")

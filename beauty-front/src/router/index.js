@@ -20,6 +20,7 @@ import MyWallet from "@/views/Mine/MyWallet.vue";
 import MyCreations from "@/views/Mine/MyCreations.vue";
 import MyRequest from "@/views/Mine/MyRequest.vue";
 import MyOffline from "@/views/Mine/MyOffline.vue";
+import MyMember from "@/views/Mine/myMember.vue";
 
 
 //定义路由关系
@@ -73,6 +74,11 @@ const routes = [
     {
         path: "/myOffline",
         component: MyOffline,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/myOffline/:id/members",
+        component: MyMember,
         meta: {requiresAuth: true}
     },
     {
