@@ -21,6 +21,8 @@ import MyCreations from "@/views/Mine/MyCreations.vue";
 import MyRequest from "@/views/Mine/MyRequest.vue";
 import MyOffline from "@/views/Mine/MyOffline.vue";
 import MyMember from "@/views/Mine/myMember.vue";
+import OtherInfoPage from "@/views/OtherInfoPage.vue";
+import OtherCreationPage from "@/views/OtherCreationPage.vue";
 
 
 //定义路由关系
@@ -82,16 +84,26 @@ const routes = [
         meta: {requiresAuth: true}
     },
     {
+        path: "/otherInfo/:id",
+        component: OtherInfoPage,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/otherCreation/:id",
+        component: OtherCreationPage,
+        meta: {requiresAuth: true}
+    },
+    {
         path: "/manage",
         component: ManagePage,
         children: [
-            {path: "/user/change-role", component: ChangeRole},
-            {path: "/creation/class-manage", component: ClassManage},
-            {path: "/creation/tag-manage", component: TagManage},
-            {path: "/creation/creation-manage", component: CreationManage},
-            {path: "/creation/creation-examine", component: CreationExamine},
-            {path: "/hairstyle/hairstyle-manage", component: HairstyleManage},
-            {path: "/offline/request-manage", component: RequestManage},
+            {path: "/manage/user/change-role", component: ChangeRole},
+            {path: "/manage/creation/class-manage", component: ClassManage},
+            {path: "/manage/creation/tag-manage", component: TagManage},
+            {path: "/manage/creation/creation-manage", component: CreationManage},
+            {path: "/manage/creation/creation-examine", component: CreationExamine},
+            {path: "/manage/hairstyle/hairstyle-manage", component: HairstyleManage},
+            {path: "/manage/offline/request-manage", component: RequestManage},
         ],
         meta: {requiresAuth: true}
     }

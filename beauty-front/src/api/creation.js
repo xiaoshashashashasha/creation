@@ -126,3 +126,9 @@ export const myCreationList = (params)=>{
         params
     })
 }
+
+export const otherCreationList = (params) =>{
+    return request.get('/creation/otherList',{
+        params
+    })
+}

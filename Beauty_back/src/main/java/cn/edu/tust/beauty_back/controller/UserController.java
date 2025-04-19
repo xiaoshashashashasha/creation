@@ -165,7 +165,7 @@ public class UserController {
     }
 
     /**
-     *获取关注状态 0为已关注，1为未关注
+     *获取关注状态 0为已关注，1为未关注，2为自己
      * **/
     @GetMapping("/followInfo")
     public Result followInfo(Integer followed_id) {

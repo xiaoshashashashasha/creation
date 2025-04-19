@@ -43,7 +43,7 @@ const handleClose = (key) => {
                 <el-icon><UserFilled/></el-icon>
                 <span>用户组</span>
               </template>
-              <el-menu-item index="/user/change-role">更改权限</el-menu-item>
+              <el-menu-item index="/manage/user/change-role">更改权限</el-menu-item>
             </el-sub-menu>
 
             <el-sub-menu index="creation">
@@ -51,10 +51,10 @@ const handleClose = (key) => {
                 <el-icon><EditPen/></el-icon>
                 <span>内容组</span>
               </template>
-              <el-menu-item index="/creation/tag-manage">标签管理</el-menu-item>
-              <el-menu-item index="/creation/class-manage">分类管理</el-menu-item>
-              <el-menu-item index="/creation/creation-manage">内容管理</el-menu-item>
-              <el-menu-item index="/creation/creation-examine">内容审核</el-menu-item>
+              <el-menu-item index="/manage/creation/tag-manage">标签管理</el-menu-item>
+              <el-menu-item index="/manage/creation/class-manage">分类管理</el-menu-item>
+              <el-menu-item index="/manage/creation/creation-manage">内容管理</el-menu-item>
+              <el-menu-item index="/manage/creation/creation-examine">内容审核</el-menu-item>
             </el-sub-menu>
 
             <el-sub-menu index="hairstyle">
@@ -62,7 +62,7 @@ const handleClose = (key) => {
                 <el-icon><Document/></el-icon>
                 <span>发型组</span>
               </template>
-              <el-menu-item index="/hairstyle/hairstyle-manage">发型管理</el-menu-item>
+              <el-menu-item index="/manage/hairstyle/hairstyle-manage">发型管理</el-menu-item>
             </el-sub-menu>
 
             <el-sub-menu index="offline">
@@ -70,7 +70,7 @@ const handleClose = (key) => {
                 <el-icon><Shop/></el-icon>
                 <span>线下门店组</span>
               </template>
-              <el-menu-item index="/offline/request-manage">门店审核</el-menu-item>
+              <el-menu-item index="/manage/offline/request-manage">门店审核</el-menu-item>
             </el-sub-menu>
           </el-menu>
         </div>

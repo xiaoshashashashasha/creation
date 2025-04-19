@@ -1,10 +1,12 @@
 <script setup>
 import ManageSwitch from "@/components/ManageSwitch.vue";
-import { computed } from 'vue'
 import router from "@/router";
+import { computed, ref, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import {useStateStore} from "@/stores/state";
 import {userLogoutService} from "@/api/user";
 import {useTokenStore} from "@/stores/token";
+import {watchEffect} from "vue-demi";
 
 
 const stateStore = useStateStore()
@@ -13,14 +15,7 @@ const stateStore = useStateStore()
 const content = computed(() => [0, 1, 2].includes(stateStore.sta))
 const create = computed(() => [0, 1].includes(stateStore.sta))
 const Mswitch = computed(() => stateStore.sta === 1)
-// 切换视图时跳转路由
-const handleModeChange = (isManage) => {
-  if (isManage) {
-    router.push('/')
-  } else {
-    router.push('/manage')
-  }
-}
+
 
 const toCreations = ()=>{
   router.push(`/creations`)
@@ -48,6 +43,33 @@ const logout = async () => {
     console.log(error)
   }
 }
+
+const route = useRoute()
+
+const isManageMode = ref(route.path.startsWith('/manage'))
+
+
+
+watchEffect(() => {
+  const currentPath = route.path
+  isManageMode.value = !currentPath.startsWith('/manage')
+  console.log(isManageMode.value)
+})
+
+
+const handleModeChange = (value) => {
+  isManageMode.value = value
+  if (value) {
+    // 切换到普通视图
+    router.push('/')
+  } else {
+    // 切换到管理视图
+    router.push('/manage')
+  }
+}
+
+
+
 </script>
 
 <template>
@@ -65,12 +87,14 @@ const logout = async () => {
       <el-button class="offline_btn" @click="toOfflines">线下门店</el-button>
     </template>
 
-    <!-- 显示切换开关 -->
     <ManageSwitch
         v-if="Mswitch"
         class="manage-switch"
+        v-model="isManageMode"
         @modeChange="handleModeChange"
     />
+
+
     <el-button v-if="content" class="logout_btn" type="danger" @click="logout">退<br/>出</el-button>
   </div>
 </template>

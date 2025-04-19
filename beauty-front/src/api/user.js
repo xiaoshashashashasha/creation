@@ -92,3 +92,15 @@ export const userInfoService = () => {
         params:{}
     })
 }
+
+export const listFollowedService = ()=>{
+    return request.get('/user/listFollowed',{
+        params:{}
+    })
+}
+
+export const listFollowerService = ()=>{
+    return request.get('/user/listFollower',{
+        params:{}
+    })
+}
