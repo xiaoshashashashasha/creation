@@ -1,10 +1,14 @@
 <template>
   <div class="editor-wrapper" v-if="visible">
-    <Toolbar v-if="editorRef" :editor="editorRef" mode="default" />
+    <Toolbar
+        v-if="editorRef"
+        :editor="editorRef"
+        mode="default"
+    />
     <Editor
         :defaultConfig="editorConfig"
         mode="default"
-        style="height: 300px; width: 100%; overflow-y: auto"
+        style="height: 360px; width: 100%; overflow-y: auto"
         @onCreated="handleEditorCreated"
         @onChange="handleEditorChange"
     />
@@ -12,12 +16,11 @@
 </template>
 
 <script setup>
-import { shallowRef, watch, onBeforeUnmount, nextTick } from 'vue'
+import { shallowRef, onBeforeUnmount, watch } from 'vue'
 import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 import '@wangeditor/editor/dist/css/style.css'
 import { uploadFile } from '@/api/fileUpload'
 import { ElMessage } from 'element-plus'
-import { decode } from 'html-entities'
 
 const props = defineProps({
   modelValue: String,
@@ -25,7 +28,9 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
-const editorRef = shallowRef()
+const editorRef = shallowRef(null)
+
+defineExpose({ editorRef })
 
 const editorConfig = {
   placeholder: '请输入内容...',
@@ -45,18 +50,14 @@ const editorConfig = {
 }
 
 const handleEditorChange = (editor) => {
-  const html = decode(editor.getHtml())
-  emit('update:modelValue', html)
+  emit('update:modelValue', editor.getHtml())
 }
 
 const handleEditorCreated = (editor) => {
   editorRef.value = editor
-  nextTick(() => {
-    if (props.modelValue) {
-      editor.clear()
-      editor.setHtml(props.modelValue)
-    }
-  })
+  if (props.modelValue) {
+    editor.setHtml(props.modelValue)
+  }
 }
 
 watch(() => props.visible, (val) => {
@@ -65,6 +66,13 @@ watch(() => props.visible, (val) => {
     editorRef.value = null
   }
 })
+
+watch(() => props.modelValue, (val) => {
+  if (editorRef.value && val !== editorRef.value.getHtml()) {
+    editorRef.value.setHtml(val || '<p><br></p>')
+  }
+})
+
 
 onBeforeUnmount(() => {
   if (editorRef.value) {

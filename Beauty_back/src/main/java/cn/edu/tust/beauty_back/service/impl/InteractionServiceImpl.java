@@ -9,12 +9,15 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class InteractionServiceImpl implements InteractionService {
     @Autowired
     InteractionMapper interactionMapper;
+    @Autowired
+    private CreationMapper creationMapper;
 
     @Override
     public void editorial(Comment comment) {
@@ -61,6 +64,10 @@ public class InteractionServiceImpl implements InteractionService {
     @Override
     public Like likeInfo(Integer creation_id, Integer user_id) {
         Like like = interactionMapper.likeInfo(creation_id, user_id);
+        if (like == null){
+            like = new Like();
+            like.setLike_state(1);
+        }
         return like;
     }
 
@@ -84,22 +91,41 @@ public class InteractionServiceImpl implements InteractionService {
     @Override
     public Favorite collectInfo(Integer creation_id, Integer user_id) {
         Favorite favorite = interactionMapper.favoriteInfo(creation_id,user_id);
+        if (favorite == null){
+            favorite = new Favorite();
+            favorite.setFavorite_state(1);
+        }
         return favorite;
     }
 
     @Override
-    public PageBean<Favorite> listFavorite(Integer pageNum, Integer pageSize, Integer user_id) {
-
-        PageBean<Favorite> pb = new PageBean<>();
-        PageHelper.startPage(pageNum, pageSize);
+    public PageBean<Creation> listFavorite(Integer pageNum, Integer pageSize, Integer user_id) {
+        PageBean<Creation> pb = new PageBean<>();
 
         List<Favorite> list = interactionMapper.listFavorite(user_id);
 
-        Page<Favorite> p = (Page<Favorite>) list;
+        List<Creation> creationList = new ArrayList<>();
+        for (Favorite favorite : list) {
+            Creation c = creationMapper.getCreationByCId(favorite.getCreation_id());
+            if (c != null) {
+                creationList.add(c);
+            }
+        }
 
-        pb.setTotal(p.getTotal());
-        pb.setItems(p.getResult());
+        // 手动分页
+        int total = creationList.size();
+        int startIndex = (pageNum - 1) * pageSize;
+        int endIndex = Math.min(startIndex + pageSize, total);
+
+        if (startIndex > endIndex) {
+            pb.setItems(new ArrayList<>());
+        } else {
+            pb.setItems(creationList.subList(startIndex, endIndex));
+        }
+
+        pb.setTotal((long) total);
 
         return pb;
     }
+
 }

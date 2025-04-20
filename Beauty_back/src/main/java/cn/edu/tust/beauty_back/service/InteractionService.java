@@ -1,10 +1,7 @@
 package cn.edu.tust.beauty_back.service;
 
 
-import cn.edu.tust.beauty_back.bean.Comment;
-import cn.edu.tust.beauty_back.bean.Favorite;
-import cn.edu.tust.beauty_back.bean.Like;
-import cn.edu.tust.beauty_back.bean.PageBean;
+import cn.edu.tust.beauty_back.bean.*;
 
 public interface InteractionService {
     //发表评论
@@ -22,5 +19,5 @@ public interface InteractionService {
     //获取收藏状态
     Favorite collectInfo(Integer creation_id, Integer user_id);
     //分页获取我的收藏列表
-    PageBean<Favorite> listFavorite(Integer pageNum, Integer pageSize, Integer user_id);
+    PageBean<Creation> listFavorite(Integer pageNum, Integer pageSize, Integer user_id);
 }

@@ -53,11 +53,9 @@ public class InteractionController {
      *点赞&取消点赞
      * **/
     @PatchMapping("/likeCreation")
-    public Result likeCreation(@NotNull Integer creation_id){
+    public Result likeCreation(@RequestBody @Validated Like like){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
-        Like like = new Like();
-        like.setCreation_id(creation_id);
         like.setUser_id(user_id);
         like = interactionService.likeCreation(like);
         return Result.success(like.getLike_state());
@@ -78,11 +76,9 @@ public class InteractionController {
      *收藏&取消收藏
      * **/
     @PatchMapping("/collectCreation")
-    public Result collectCreation(@NotNull Integer creation_id){
+    public Result collectCreation(@RequestBody @Validated Favorite favorite){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
-        Favorite favorite = new Favorite();
-        favorite.setCreation_id(creation_id);
         favorite.setUser_id(user_id);
         favorite = interactionService.collectCreation(favorite);
         return Result.success(favorite.getFavorite_state());
@@ -103,10 +99,10 @@ public class InteractionController {
      *分页查询我的收藏列表
      * **/
     @GetMapping("/listFavorite")
-    public Result<PageBean<Favorite>> listFavorite(Integer pageNum , Integer pageSize){
+    public Result<PageBean<Creation>> listFavorite(Integer pageNum , Integer pageSize){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
-        PageBean<Favorite> pb = interactionService.listFavorite(pageNum,pageSize,user_id);
+        PageBean<Creation> pb = interactionService.listFavorite(pageNum,pageSize,user_id);
         return Result.success(pb);
     }
 

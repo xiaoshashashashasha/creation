@@ -132,3 +132,73 @@ export const otherCreationList = (params) =>{
         params
     })
 }
+
+export const addCreation = (params) =>{
+    return request.post('/creation/add',params)
+}
+
+export const updateCreation = (params) =>{
+    return request.put('/creation/update',params)
+}
+
+export const delCreation = (creation_id) =>{
+    return request.delete('/creation/del',{
+        params: {
+            creation_id
+        }
+    })
+}
+
+/**
+ * Interaction
+ * **/
+
+export const favoriteList = (params) =>{
+    return request.get('/Interaction/listFavorite',{
+        params
+    })
+}
+
+export const collectInfo = (creation_id) =>{
+    return request.get('/Interaction/collectInfo',{
+        params:{
+            creation_id
+        }
+    })
+}
+
+export const collectCreation = (params) =>{
+    return request.patch('/Interaction/collectCreation',params)
+}
+
+export const likeInfo = (creation_id) =>{
+    return request.get('/Interaction/likeInfo',{
+        params:{
+            creation_id
+        }
+    })
+}
+
+export const likeCreation = (params) => {
+    return request.patch('/Interaction/likeCreation', params)
+}
+
+export const listComment = (params) =>{
+    return request.get('/Interaction/listComment',{
+        params
+    })
+}
+
+export const editorial = (params) =>{
+    return request.post('/Interaction/editorial',params)
+}
+
+export const delComment = (comment_id) =>{
+    return request.delete('/Interaction/delComment',{
+        params:{
+            comment_id
+        }
+    })
+}
+
+

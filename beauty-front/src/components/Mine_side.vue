@@ -1,6 +1,6 @@
 <template>
-  <div v-if="mine" class="sidebar-container">
-    <!-- 我的按钮 -->
+  <div v-if="mine && !isManageRoute" class="sidebar-container">
+  <!-- 我的按钮 -->
     <div :class="['my-btn', isOpen ? 'open' : '']" @click="toggleSidebar">
       我<br>的
     </div>
@@ -76,7 +76,10 @@ import { useStateStore } from '@/stores/state'
 import { useTokenStore } from '@/stores/token'
 import { useRouter } from 'vue-router'
 import { userInfoService, listFollowedService, listFollowerService } from '@/api/user'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
+const isManageRoute = computed(() => route.path.startsWith('/manage'))
 const router = useRouter()
 const tokenStore = useTokenStore()
 const stateStore = useStateStore()
@@ -104,7 +107,7 @@ const goToMyCreation = ()=>{
 }
 
 const goToMyCollection = ()=>{
-  router.push('/myCreation')
+  router.push('/myFavorites')
   isOpen.value = false
 }
 

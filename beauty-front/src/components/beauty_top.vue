@@ -16,6 +16,9 @@ const content = computed(() => [0, 1, 2].includes(stateStore.sta))
 const create = computed(() => [0, 1].includes(stateStore.sta))
 const Mswitch = computed(() => stateStore.sta === 1)
 
+const toCreate = ()=>{
+  router.push(`/create`)
+}
 
 const toCreations = ()=>{
   router.push(`/creations`)
@@ -78,7 +81,7 @@ const handleModeChange = (value) => {
 
     <!-- 显示按钮部分 -->
     <template v-if="create">
-      <el-button class="plus_btn">+</el-button>
+      <el-button class="plus_btn" @click="toCreate">+</el-button>
     </template>
 
     <template v-if="content">

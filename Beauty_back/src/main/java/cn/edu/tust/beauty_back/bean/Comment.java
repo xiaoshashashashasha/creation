@@ -14,8 +14,9 @@ public class Comment {
     @NotNull
     private Integer creation_id;
 
-    @NotNull
     private Integer user_id;
+
+    private String nickname;
 
     @NotEmpty
     private String content;

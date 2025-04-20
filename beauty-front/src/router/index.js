@@ -23,6 +23,8 @@ import MyOffline from "@/views/Mine/MyOffline.vue";
 import MyMember from "@/views/Mine/myMember.vue";
 import OtherInfoPage from "@/views/OtherInfoPage.vue";
 import OtherCreationPage from "@/views/OtherCreationPage.vue";
+import MyFavorites from "@/views/Mine/MyFavorites.vue";
+import CreateCreationPage from "@/views/CreateCreationPage.vue";
 
 
 //定义路由关系
@@ -54,6 +56,11 @@ const routes = [
         meta: {requiresAuth: true}
     },
     {
+        path: "/create",
+        component: CreateCreationPage,
+        meta: {requiresAuth: true}
+    },
+    {
         path: "/myInfo",
         component: MyInfoPage,
         meta: {requiresAuth: true}
@@ -61,6 +68,11 @@ const routes = [
     {
         path: "/myWallet",
         component: MyWallet,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/myFavorites",
+        component: MyFavorites,
         meta: {requiresAuth: true}
     },
     {

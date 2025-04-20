@@ -92,6 +92,8 @@ const toContent = (type, id) => {
   router.push(`/content/${type}/${id}`)
 }
 
+
+
 onMounted(() => {
   creationIds.value.forEach(id => {
     loadingStates1.value[id] = true
