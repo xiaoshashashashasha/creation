@@ -19,15 +19,15 @@
           <el-menu-item index="2" @click="goToMyWallet">我的钱包</el-menu-item>
           <el-menu-item index="3" @click="goToMyCreation">我的内容</el-menu-item>
           <el-menu-item index="4" @click="goToMyCollection">我的收藏</el-menu-item>
-
-          <el-sub-menu index="5">
+          <el-menu-item index="5">我的消息</el-menu-item>
+          <el-sub-menu index="6">
             <template #title>我的门店</template>
-            <el-menu-item index="4-1" @click="goToMyOffline">门店列表</el-menu-item>
-            <el-menu-item index="4-2" @click="goToMyRequest">门店申请</el-menu-item>
+            <el-menu-item index="6-1" @click="goToMyOffline">门店列表</el-menu-item>
+            <el-menu-item index="6-2" @click="goToMyRequest">门店申请</el-menu-item>
           </el-sub-menu>
 
 
-          <el-sub-menu index="6">
+          <el-sub-menu index="7">
             <template #title>我的关注</template>
             <el-menu-item v-if="follows.length === 0" disabled>
               暂无关注
@@ -44,7 +44,7 @@
             </el-menu-item>
           </el-sub-menu>
 
-          <el-sub-menu index="7">
+          <el-sub-menu index="8">
             <template #title>我的粉丝</template>
             <el-menu-item v-if="fans.length === 0" disabled>
               暂无粉丝

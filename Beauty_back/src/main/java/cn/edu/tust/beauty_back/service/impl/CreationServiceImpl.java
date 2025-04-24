@@ -101,7 +101,7 @@ public class CreationServiceImpl implements CreationService {
         PageHelper.startPage(pageNum, pageSize);
 
         List<Creation> list = creationMapper.myList(user_id,examine);
-        for(Creation creation : list){
+        for (Creation creation : list){
             Class c = classMapper.findClassById(creation.getClass_id());
             creation.setClass_name(c.getClass_name());
         }

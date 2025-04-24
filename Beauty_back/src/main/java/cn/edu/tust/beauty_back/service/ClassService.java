@@ -3,7 +3,6 @@ package cn.edu.tust.beauty_back.service;
 import cn.edu.tust.beauty_back.bean.Class;
 import cn.edu.tust.beauty_back.bean.PageBean;
 
-import java.util.List;
 
 public interface ClassService {
     //新增分类

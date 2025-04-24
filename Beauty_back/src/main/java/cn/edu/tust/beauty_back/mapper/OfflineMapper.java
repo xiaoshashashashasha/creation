@@ -68,7 +68,11 @@ public interface OfflineMapper {
     @Delete("delete from beauty_offline where offline_id = #{offline_id}")
     void delOffline(Integer offline_id);
 
-    //根据用户id查找对应成员
+    //根据用户id和门店id查找对应成员是否存在
     @Select("select user_id from offline_member where offline_id = #{offline_id} and user_id = #{user_id}")
     User findMemberByUId(Integer offline_id, Integer user_id);
+
+    //根据成员id寻找对应成员
+    @Select("select * from offline_member where member_id = #{member_id}")
+    OfflineMember findMemberByMId(Integer member_id);
 }

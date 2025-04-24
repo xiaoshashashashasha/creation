@@ -7,7 +7,6 @@ import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.URL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +40,7 @@ public class OfflineController {
      *查看我的门店申请
      * **/
     @GetMapping("/requestList")
-    public Result<PageBean<OfflineRequest>> requestList(Integer pageNum, Integer pageSize){
+    public Result<PageBean<OfflineRequest>> requestList(@RequestParam Integer pageNum, Integer pageSize){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer manager_id = (Integer) map.get("user_id");
         PageBean<OfflineRequest> pb = offlineService.requestList(pageNum, pageSize, manager_id);
@@ -63,7 +62,7 @@ public class OfflineController {
      *查看我的门店列表
      * **/
     @GetMapping("/myOfflineList")
-    public Result<PageBean<Offline>> myOfflineList(Integer pageNum, Integer pageSize){
+    public Result<PageBean<Offline>> myOfflineList(@RequestParam Integer pageNum, Integer pageSize){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer manager_id = (Integer) map.get("user_id");
         PageBean<Offline> pb = offlineService.myOfflineList(pageNum, pageSize, manager_id);
@@ -131,7 +130,7 @@ public class OfflineController {
      *分页获取门店申请
      * **/
     @GetMapping("/requestListExa")
-    public Result<PageBean<OfflineRequest>> requestListExa(Integer pageNum, Integer pageSize){
+    public Result<PageBean<OfflineRequest>> requestListExa(@RequestParam Integer pageNum, Integer pageSize){
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer user_id = (Integer) map.get("user_id");
         User user = userService.findByUserId(user_id);
