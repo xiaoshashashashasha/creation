@@ -17,7 +17,6 @@ const decodeAndCleanHTML = (htmlStr) => {
   textarea.innerHTML = htmlStr
   const decoded = textarea.value
 
-  // 清理掉真正没内容的空段落，但保留 <p><br></p>
   return decoded.replace(/<p>(&nbsp;|\s|<span[^>]*><\/span>)*<\/p>/gi, '')
 }
 
@@ -86,6 +85,11 @@ const manageMembers = (store) => {
   router.push(`/myOffline/${store.offline_id}/members`)
 }
 
+const manageReservations = (store) => {
+  router.push(`/myOffline/${store.offline_id}/reservation`)
+}
+
+
 const cancelStore = (store) => {
   ElMessageBox.confirm(
       `确认要注销门店「${store.offline_name}」吗？`,
@@ -137,6 +141,7 @@ onMounted(() => {
           <el-button size="small" @click="viewDetails(row)">查看详情</el-button>
           <el-button size="small" type="primary" @click="openEditDialog(row)">编辑</el-button>
           <el-button size="small" type="warning" @click="manageMembers(row)">成员管理</el-button>
+          <el-button size="small" type="success" @click="manageReservations(row)">管理预约</el-button> <!-- ✨新增 -->
           <el-button size="small" type="danger" @click="cancelStore(row)">注销</el-button>
         </template>
       </el-table-column>

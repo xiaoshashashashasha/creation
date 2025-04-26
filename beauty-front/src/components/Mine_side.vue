@@ -20,14 +20,15 @@
           <el-menu-item index="3" @click="goToMyCreation">我的内容</el-menu-item>
           <el-menu-item index="4" @click="goToMyCollection">我的收藏</el-menu-item>
           <el-menu-item index="5">我的消息</el-menu-item>
-          <el-sub-menu index="6">
+          <el-menu-item index="6" @click="goToMyReservation">我的预约</el-menu-item>
+          <el-sub-menu index="7">
             <template #title>我的门店</template>
-            <el-menu-item index="6-1" @click="goToMyOffline">门店列表</el-menu-item>
-            <el-menu-item index="6-2" @click="goToMyRequest">门店申请</el-menu-item>
+            <el-menu-item index="7-1" @click="goToMyOffline">门店列表</el-menu-item>
+            <el-menu-item index="7-2" @click="goToMyRequest">门店申请</el-menu-item>
           </el-sub-menu>
 
 
-          <el-sub-menu index="7">
+          <el-sub-menu index="8">
             <template #title>我的关注</template>
             <el-menu-item v-if="follows.length === 0" disabled>
               暂无关注
@@ -44,7 +45,7 @@
             </el-menu-item>
           </el-sub-menu>
 
-          <el-sub-menu index="8">
+          <el-sub-menu index="9">
             <template #title>我的粉丝</template>
             <el-menu-item v-if="fans.length === 0" disabled>
               暂无粉丝
@@ -121,8 +122,13 @@ const goToMyOffline = ()=>{
 }
 
 const goToOtherInfo = (user_id) => {
-  isOpen.value = false
   router.push(`/otherInfo/${user_id}`)
+  isOpen.value = false
+}
+
+const goToMyReservation = ()=>{
+  router.push('/myReservation')
+  isOpen.value = false
 }
 
 

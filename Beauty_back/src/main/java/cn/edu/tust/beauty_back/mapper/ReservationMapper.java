@@ -22,15 +22,15 @@ public interface ReservationMapper {
     Reservation Info(Integer reservation_id);
 
     //取消预约
-    @Delete("delete from offline_reservation where reservation_id = #{reservation_id}")
+    @Delete("delete from offline_reservation where reservation_id = #{reservation_id} and status = 0")
     void del(Integer reservation_id);
 
     //评价
-    @Update("update offline_reservation set point = #{point}, comment = #{comment}, status = #{3}, evaluate_at = now(), updated_at = now() where reservation_id = #{reservation_id}")
+    @Update("update offline_reservation set point = #{point}, comment = #{comment}, status = 3, evaluate_at = now(), updated_at = now() where reservation_id = #{reservation_id} and status = 1")
     void evalute(Integer reservation_id, Integer point, String comment);
 
     //获取评价列表
-    @Select("select reservation_id, user_id, point, comment, evaluate_at from offline_reservation where offline_id = #{offline_id}")
+    @Select("select reservation_id, user_id, point, comment, evaluate_at from offline_reservation where offline_id = #{offline_id} and status = 3")
     List<Reservation> commentList(Integer offline_id);
 
     //带参获取门店下预约
@@ -38,6 +38,6 @@ public interface ReservationMapper {
     List<Reservation> offlineList(Integer offline_id, Integer status);
 
     //核销预约
-    @Update("update offline_reservation set reservation_id = #{reservation_id}, status = #{status}, updated_at = now()")
+    @Update("update offline_reservation set  status = #{status}, updated_at = now() where reservation_id = #{reservation_id} and status = 0")
     void updateStatus(Integer reservation_id, Integer status);
 }

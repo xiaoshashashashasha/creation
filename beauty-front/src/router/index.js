@@ -25,6 +25,8 @@ import OtherInfoPage from "@/views/OtherInfoPage.vue";
 import OtherCreationPage from "@/views/OtherCreationPage.vue";
 import MyFavorites from "@/views/Mine/MyFavorites.vue";
 import CreateCreationPage from "@/views/CreateCreationPage.vue";
+import MyReservation from "@/views/Mine/MyReservation.vue";
+import MyOfflineReservation from "@/views/Mine/MyOfflineReservation.vue";
 
 
 //定义路由关系
@@ -76,6 +78,11 @@ const routes = [
         meta: {requiresAuth: true}
     },
     {
+        path: "/myReservation",
+        component: MyReservation,
+        meta: {requiresAuth: true}
+    },
+    {
         path: "/myCreation",
         component: MyCreations,
         meta: {requiresAuth: true}
@@ -93,6 +100,11 @@ const routes = [
     {
         path: "/myOffline/:id/members",
         component: MyMember,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/myOffline/:offline_id/reservation",
+        component: MyOfflineReservation,
         meta: {requiresAuth: true}
     },
     {
