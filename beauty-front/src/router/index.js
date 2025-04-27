@@ -20,13 +20,14 @@ import MyWallet from "@/views/Mine/MyWallet.vue";
 import MyCreations from "@/views/Mine/MyCreations.vue";
 import MyRequest from "@/views/Mine/MyRequest.vue";
 import MyOffline from "@/views/Mine/MyOffline.vue";
-import MyMember from "@/views/Mine/myMember.vue";
+import MyMember from "@/views/Mine/MyMember.vue";
 import OtherInfoPage from "@/views/OtherInfoPage.vue";
 import OtherCreationPage from "@/views/OtherCreationPage.vue";
 import MyFavorites from "@/views/Mine/MyFavorites.vue";
 import CreateCreationPage from "@/views/CreateCreationPage.vue";
 import MyReservation from "@/views/Mine/MyReservation.vue";
 import MyOfflineReservation from "@/views/Mine/MyOfflineReservation.vue";
+import MyMessage from "@/views/Mine/MyMessage.vue";
 
 
 //定义路由关系
@@ -75,6 +76,11 @@ const routes = [
     {
         path: "/myFavorites",
         component: MyFavorites,
+        meta: {requiresAuth: true}
+    },
+    {
+        path: "/myMessage",
+        component: MyMessage,
         meta: {requiresAuth: true}
     },
     {

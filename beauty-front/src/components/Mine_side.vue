@@ -19,7 +19,13 @@
           <el-menu-item index="2" @click="goToMyWallet">我的钱包</el-menu-item>
           <el-menu-item index="3" @click="goToMyCreation">我的内容</el-menu-item>
           <el-menu-item index="4" @click="goToMyCollection">我的收藏</el-menu-item>
-          <el-menu-item index="5">我的消息</el-menu-item>
+          <el-menu-item index="5" @click="goToMyMessage">
+            <div class="menu-item-with-badge">
+              <span>我的消息</span>
+              <el-badge :value="unReadCount" :max="99" v-if="unReadCount > 0" class="unread-badge" />
+            </div>
+          </el-menu-item>
+
           <el-menu-item index="6" @click="goToMyReservation">我的预约</el-menu-item>
           <el-sub-menu index="7">
             <template #title>我的门店</template>
@@ -78,6 +84,8 @@ import { useTokenStore } from '@/stores/token'
 import { useRouter } from 'vue-router'
 import { userInfoService, listFollowedService, listFollowerService } from '@/api/user'
 import { useRoute } from 'vue-router'
+import { getUnReadCount } from '@/api/prMessage'
+
 
 const route = useRoute()
 const isManageRoute = computed(() => route.path.startsWith('/manage'))
@@ -91,6 +99,7 @@ const isOpen = ref(false)
 const userInfo = ref({})
 const follows = ref([])
 const fans = ref([])
+const unReadCount = ref(0)
 
 const goToMyInfo = () => {
   router.push('/myInfo')
@@ -126,6 +135,11 @@ const goToOtherInfo = (user_id) => {
   isOpen.value = false
 }
 
+const goToMyMessage = ()=>{
+  router.push('/myMessage')
+  isOpen.value = false
+}
+
 const goToMyReservation = ()=>{
   router.push('/myReservation')
   isOpen.value = false
@@ -135,9 +149,27 @@ const goToMyReservation = ()=>{
 const toggleSidebar = async () => {
   isOpen.value = !isOpen.value
   if (isOpen.value) {
-    await fetchUserData()
+    await Promise.all([
+      fetchUserData(),
+      fetchUnReadCount()
+    ])
   }
 }
+
+
+const fetchUnReadCount = async () => {
+  try {
+    const res = await getUnReadCount()
+    if (res.code === 0) {
+      unReadCount.value = res.data || 0
+    } else {
+      console.error('获取未读消息数失败:', res.msg)
+    }
+  } catch (err) {
+    console.error('拉取未读消息数出错:', err)
+  }
+}
+
 
 
 const fetchUserData = async () => {
@@ -146,7 +178,6 @@ const fetchUserData = async () => {
     userInfo.value = res.data
   } catch (err) {
     if (err?.response?.status === 401) {
-      // 静默处理，不弹出消息
       console.warn('[Sidebar] 未登录，跳过用户信息拉取')
     } else {
       console.error(err)
@@ -166,13 +197,15 @@ const fetchFans = async () => {
 }
 
 onMounted(() => {
-  if (!tokenStore.token){
+  if (!tokenStore.token) {
     return
   }
   fetchUserData()
   fetchFollows()
   fetchFans()
+  fetchUnReadCount()
 })
+
 </script>
 
 
@@ -261,5 +294,19 @@ onMounted(() => {
   border-radius: 50%;
   margin-right: 8px;
 }
+
+.menu-item-with-badge {
+  display: flex;
+  align-items: center;
+}
+
+.unread-badge {
+  margin-left: 8px;
+  display: inline-flex;
+  align-items: center;
+}
+
+
+
 </style>
 
