@@ -1,11 +1,16 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { userInfoService } from '@/api/user'
+import { userInfoService,updateUserPicService } from '@/api/user'
+import { uploadFile } from '@/api/fileUpload'
 import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 
+const showAvatarDialog = ref(false)
+const selectedFile = ref(null)
+const uploading = ref(false)
+const avatarPreviewUrl = ref('')
 const userInfo = ref({})
 const roleMap = {
   0: '普通用户',
@@ -25,6 +30,52 @@ const fetchUserInfo = async () => {
 const backToHome = () => {
   router.push('/')
 }
+
+
+// 打开弹窗
+const openAvatarDialog = () => {
+  showAvatarDialog.value = true
+  selectedFile.value = null
+}
+
+const closeAvatarDialog = () => {
+  showAvatarDialog.value = false
+  selectedFile.value = null
+  avatarPreviewUrl.value = ''
+}
+
+
+// 选择文件
+const handleFileChange = (file) => {
+  selectedFile.value = file.raw
+  avatarPreviewUrl.value = URL.createObjectURL(file.raw)
+}
+
+
+// 上传并更新头像
+const uploadAndUpdateAvatar = async () => {
+  if (!selectedFile.value) {
+    ElMessage.warning('请先选择文件')
+    return
+  }
+  try {
+    uploading.value = true
+    const res = await uploadFile(selectedFile.value)
+    const avatarUrl = res.data  // 后端返回的图片地址
+
+    await updateUserPicService(avatarUrl)
+
+    ElMessage.success('头像更新成功！')
+    showAvatarDialog.value = false
+    await fetchUserInfo()  // 重新拉取用户信息，更新头像
+  } catch (err) {
+    console.error('上传或更新失败', err)
+    ElMessage.error('上传失败')
+  } finally {
+    uploading.value = false
+  }
+}
+
 
 onMounted(() => {
   fetchUserInfo()
@@ -66,16 +117,44 @@ onMounted(() => {
               </el-descriptions-item>
             </el-descriptions>
 
-            <!-- 👇 添加操作按钮 -->
+            <!-- 操作按钮 -->
             <div class="actions">
               <el-button type="warning" plain style="margin-right: 12px">修改密码</el-button>
-              <el-button type="primary" plain>更换头像</el-button>
+              <el-button type="primary" plain @click="openAvatarDialog">更换头像</el-button>
             </div>
           </div>
         </div>
       </div>
     </el-main>
   </el-container>
+
+  <!-- 更新头像 -->
+  <el-dialog v-model="showAvatarDialog" title="上传新头像" width="400px" @close="closeAvatarDialog">
+    <!-- 本地预览 -->
+    <div v-if="avatarPreviewUrl" style="text-align: center; margin-bottom: 20px;">
+      <img :src="avatarPreviewUrl" alt="预览头像" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;" />
+    </div>
+
+    <el-upload
+        class="upload-demo"
+        :show-file-list="false"
+        :before-upload="() => false"
+    @change="handleFileChange"
+    >
+    <el-button type="primary">选择文件</el-button>
+    </el-upload>
+
+    <div style="margin-top: 20px; text-align: right;">
+      <el-button @click="closeAvatarDialog">取消</el-button>
+      <el-button
+          type="success"
+          @click="uploadAndUpdateAvatar"
+          :loading="uploading"
+      >上传并保存</el-button>
+    </div>
+  </el-dialog>
+
+
 </template>
 
 

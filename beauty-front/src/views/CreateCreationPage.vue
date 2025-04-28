@@ -4,9 +4,12 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { uploadFile } from '@/api/fileUpload'
 import { addCreation, creationClassList } from '@/api/creation'
-import RichTextEditor from '@/components/RichTextEditor.vue'
+import RichTextEditor from '@/components/part/RichTextEditor.vue'
 
 const router = useRouter()
+
+const coverPreviewUrl = ref('')
+const coverImageFile = ref(null)
 
 const form = ref({
   title: '',
@@ -19,27 +22,28 @@ const form = ref({
 const classOptions = ref([])
 const loading = ref(false)
 
-const handleUpload = async ({ file }) => {
-  try {
-    const res = await uploadFile(file)
-    form.value.cover_pic = res.data
-    ElMessage.success('上传成功')
-  } catch {
-    ElMessage.error('上传失败')
-  }
+const handleUpload = ({ file }) => {
+  coverImageFile.value = file
+  coverPreviewUrl.value = URL.createObjectURL(file)
 }
 
+
 const handleSubmit = async () => {
-  const { title, abs_text, cover_pic, content, class_id } = form.value
+  const { title, abs_text, content, class_id } = form.value
   const isEmptyContent = !content || content.trim() === '' || content === '<p><br></p>'
 
-  if (!title || !abs_text || !cover_pic || isEmptyContent || !class_id) {
+  if (!title || !abs_text || (!form.value.cover_pic && !coverPreviewUrl.value) || isEmptyContent || !class_id) {
     return ElMessage.warning('请完整填写所有信息')
   }
 
   loading.value = true
   try {
-    console.log('提交内容:', form.value)
+    // 统一处理图片上传
+    if (coverImageFile.value) {
+      const res = await uploadFile(coverImageFile.value)
+      form.value.cover_pic = res.data
+    }
+
     await addCreation({ ...form.value })
     ElMessage.success('发布成功')
     router.back()
@@ -80,7 +84,8 @@ onMounted(() => {
       <el-form :model="form" label-width="80px">
         <el-form-item label="封面">
           <div class="upload-box">
-            <img v-if="form.cover_pic" :src="form.cover_pic" class="cover-img" />
+            <img v-if="coverPreviewUrl" :src="coverPreviewUrl" class="cover-img" />
+            <img v-else-if="form.cover_pic" :src="form.cover_pic" class="cover-img" />
             <el-upload :http-request="handleUpload" :show-file-list="false" accept="image/*">
               <el-button type="primary">上传封面</el-button>
             </el-upload>
@@ -99,11 +104,11 @@ onMounted(() => {
         </el-form-item>
 
         <el-form-item label="标题">
-          <el-input v-model="form.title" placeholder="1~10字" maxlength="10" show-word-limit />
+          <el-input v-model="form.title" placeholder="1~16字" maxlength="16" style="width: 200px" show-word-limit />
         </el-form-item>
 
         <el-form-item label="摘要">
-          <el-input v-model="form.abs_text" placeholder="1~30字" maxlength="30" show-word-limit />
+          <el-input v-model="form.abs_text" placeholder="1~30字" maxlength="30" style="width: 400px;" show-word-limit />
         </el-form-item>
       </el-form>
     </div>
@@ -120,7 +125,7 @@ onMounted(() => {
 
 <style scoped>
 .creation-page {
-  max-width: 1080px;
+  width: 1720px;
   margin: 0 auto;
   padding: 20px;
   background-color: #fff;

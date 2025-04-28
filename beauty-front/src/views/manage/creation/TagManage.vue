@@ -7,10 +7,10 @@ import { creationTagList, creationTagAdd, creationTagDel } from "@/api/creation"
 const tableData = ref([])
 const tagNameInput = ref('')
 const pageNum = ref(1)
-const pageSize = ref(5) // 可自行修改每页数量
+const pageSize = ref(5)
 const total = ref(0)
 
-// 获取标签列表（带分页）
+// 获取标签列表
 const fetchTagList = async () => {
   try {
     const result = await creationTagList({

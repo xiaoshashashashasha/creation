@@ -15,7 +15,7 @@ import {
 } from '@/api/creation'
 import {hairstyleInfo} from '@/api/hairstyle'
 import {offlineInfo, memberList} from '@/api/offline'
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, watch} from 'vue'
 import {
   userCancelFollowService,
   userFollowInfoService,
@@ -27,7 +27,7 @@ import {offlineCommentList, addReservation} from '@/api/reservation'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {Icon} from '@iconify/vue'
 import {enableCache} from '@iconify/vue'
-import RichTextEditor from '@/components/RichTextEditor.vue'
+import RichTextEditor from '@/components/part/RichTextEditor.vue'
 import {ArrowLeft, Delete, Edit} from '@element-plus/icons-vue'
 import {uploadFile} from '@/api/fileUpload'
 
@@ -57,6 +57,8 @@ const commentPageSize = ref(10)
 const loadingComments = ref(false)
 const currentUserId = ref(null)
 const commentEditorRef = ref(null)
+const coverPreviewUrl = ref('')
+const coverImageFile = ref(null)
 
 const editDialogVisible = ref(false)
 const form = ref({
@@ -70,6 +72,41 @@ const form = ref({
 const classOptions = ref([])
 const formLoading = ref(false)
 
+
+/**
+ * 用户部分
+ * */
+const follow = async () => {
+  if (followLoading.value) return
+  followLoading.value = true
+
+  try {
+    let res
+    if (followState.value === 1) {
+      res = await userFollowService(detail.value.user_id)
+      if (res.code === 0) {
+        ElMessage.success('关注成功')
+        followState.value = 0
+      }
+    } else {
+      res = await userCancelFollowService(detail.value.user_id)
+      if (res.code === 0) {
+        ElMessage.success('取消关注成功')
+        followState.value = 1
+      }
+    }
+  } catch (error) {
+    ElMessage.error('操作失败')
+  } finally {
+    followLoading.value = false
+  }
+}
+
+
+/**
+ * 内容部分
+ * */
+//拉取分类列表
 const fetchClassOptions = async () => {
   try {
     const res = await creationClassList({pageNum: 1, pageSize: 100})
@@ -79,9 +116,9 @@ const fetchClassOptions = async () => {
   }
 }
 
-
+//打开编辑弹窗
 const openEditDialog = async () => {
-  // 1. 拉取数据并做 article→div 替换
+
   const res = await creationInfo(detail.value.creation_id)
   form.value = {
     ...res.data,
@@ -89,21 +126,27 @@ const openEditDialog = async () => {
         .replace(/<article[^>]*>/gi, '<div>')
         .replace(/<\/article>/gi, '</div>')
   }
-  // 2. 预加载分类
+  //预加载分类
   await fetchClassOptions()
-  // 3. 最后再打开对话框，让编辑器第一次挂载时就拿到完整的 HTML
+
   editDialogVisible.value = true
 }
 
-
+//提交编辑内容
 const handleEditSubmit = async () => {
-  const {title, abs_text, cover_pic, content, class_id} = form.value
-  if (!title || !abs_text || !cover_pic || !content || !class_id) {
+  const { title, abs_text, cover_pic, content, class_id } = form.value
+  if (!title || !abs_text || (!cover_pic && !coverPreviewUrl.value) || !content || !class_id) {
     return ElMessage.warning('请完整填写所有信息')
   }
   formLoading.value = true
   try {
-    await updateCreation({...form.value})
+    // 如果本地有新的图片，先上传
+    if (coverImageFile.value) {
+      const res = await uploadFile(coverImageFile.value)
+      form.value.cover_pic = res.data  // 更新成服务器返回的正式图片地址
+    }
+
+    await updateCreation({ ...form.value })
     ElMessage.success('保存成功')
     editDialogVisible.value = false
     fetchData()
@@ -114,21 +157,27 @@ const handleEditSubmit = async () => {
   }
 }
 
-const handleCoverUpload = async ({file}) => {
-  try {
-    const res = await uploadFile(file)
-    form.value.cover_pic = res.data
-    ElMessage.success('上传成功')
-  } catch (e) {
-    ElMessage.error('上传失败')
-  }
+
+const handleCoverUpload = ({ file }) => {
+  coverImageFile.value = file
+  coverPreviewUrl.value = URL.createObjectURL(file)
 }
+
+watch(editDialogVisible, (val) => {
+  if (!val) {
+    coverPreviewUrl.value = ''
+    coverImageFile.value = null
+  }
+})
+
 
 const decodeHTML = (htmlStr) => {
   const textarea = document.createElement('textarea')
   textarea.innerHTML = htmlStr
   return textarea.value
 }
+
+
 
 const fetchLikeCollect = async () => {
   try {
@@ -184,6 +233,69 @@ const handleDeleteCreation = async () => {
     if (err !== 'cancel') {
       ElMessage.error('删除失败')
     }
+  }
+}
+
+const fetchComments = async () => {
+  try {
+    loadingComments.value = true
+    const res = await listComment({
+      pageNum: commentPageNum.value,
+      pageSize: commentPageSize.value,
+      creation_id: Number(id)
+    })
+    comments.value = res.data.items
+    commentTotal.value = res.data.total
+  } catch (e) {
+    ElMessage.error('评论加载失败')
+  } finally {
+    loadingComments.value = false
+  }
+}
+
+
+const submitComment = async () => {
+  if (!commentInput.value.trim()) {
+    return ElMessage.warning('评论内容不能为空')
+  }
+  try {
+    await editorial({
+      creation_id: Number(id),
+      content: commentInput.value.trim()
+    })
+    commentInput.value = ''
+    commentEditorRef.value?.editorRef?.clear()
+    ElMessage.success('评论成功')
+    fetchComments()
+  } catch (e) {
+    ElMessage.error('评论失败')
+  }
+}
+
+
+const handleCommentPageChange = (val) => {
+  commentPageNum.value = val
+  fetchComments()
+}
+
+
+const handleDelete = async (cid) => {
+  try {
+    await delComment(cid)
+    ElMessage.success('已删除')
+    fetchComments()
+  } catch (e) {
+    ElMessage.error('删除失败')
+  }
+}
+
+
+const fechCurrentUserId = async () => {
+  try {
+    const res = await userInfoService()
+    currentUserId.value = res.data.user_id
+  } catch (err) {
+    console.error('获取当前用户失败')
   }
 }
 
@@ -263,7 +375,9 @@ const generateTimeOptions = () => {
   timeOptions.value = times
 }
 
+
 const dateOptions = ref([])
+
 
 const generateDateOptions = () => {
   const today = new Date()
@@ -277,14 +391,6 @@ const generateDateOptions = () => {
     dates.push(`${yyyy}-${MM}-${dd}`)
   }
   dateOptions.value = dates
-}
-
-
-const disabledDate = (date) => {
-  const today = new Date()
-  const max = new Date()
-  max.setDate(today.getDate() + 7)
-  return date < today || date > max
 }
 
 
@@ -326,10 +432,6 @@ const submitReservation = async () => {
     reserveLoading.value = false
   }
 }
-
-
-
-
 
 
 const fetchOfflineComments = async () => {
@@ -407,92 +509,7 @@ const fetchData = async () => {
   }
 }
 
-const follow = async () => {
-  if (followLoading.value) return
-  followLoading.value = true
 
-  try {
-    let res
-    if (followState.value === 1) {
-      res = await userFollowService(detail.value.user_id)
-      if (res.code === 0) {
-        ElMessage.success('关注成功')
-        followState.value = 0
-      }
-    } else {
-      res = await userCancelFollowService(detail.value.user_id)
-      if (res.code === 0) {
-        ElMessage.success('取消关注成功')
-        followState.value = 1
-      }
-    }
-  } catch (error) {
-    ElMessage.error('操作失败')
-  } finally {
-    followLoading.value = false
-  }
-}
-
-
-const fetchComments = async () => {
-  try {
-    loadingComments.value = true
-    const res = await listComment({
-      pageNum: commentPageNum.value,
-      pageSize: commentPageSize.value,
-      creation_id: Number(id)
-    })
-    comments.value = res.data.items
-    commentTotal.value = res.data.total
-  } catch (e) {
-    ElMessage.error('评论加载失败')
-  } finally {
-    loadingComments.value = false
-  }
-}
-
-
-const submitComment = async () => {
-  if (!commentInput.value.trim()) {
-    return ElMessage.warning('评论内容不能为空')
-  }
-  try {
-    await editorial({
-      creation_id: Number(id),
-      content: commentInput.value.trim()
-    })
-    commentInput.value = ''
-    commentEditorRef.value?.editorRef?.clear()
-    ElMessage.success('评论成功')
-    fetchComments()
-  } catch (e) {
-    ElMessage.error('评论失败')
-  }
-}
-
-const handleCommentPageChange = (val) => {
-  commentPageNum.value = val
-  fetchComments()
-}
-
-const handleDelete = async (cid) => {
-  try {
-    await delComment(cid)
-    ElMessage.success('已删除')
-    fetchComments()
-  } catch (e) {
-    ElMessage.error('删除失败')
-  }
-}
-
-const fechCurrentUserId = async () => {
-  try {
-    const res = await userInfoService()
-    currentUserId.value = res.data.user_id
-  } catch (err) {
-    console.error('获取当前用户失败')
-  }
-}
 
 onMounted(() => {
   fetchData()
@@ -552,7 +569,7 @@ onMounted(() => {
             </div>
 
             <div v-if="type === 'creation'" class="action-bar-top" :class="{ disabled: detail.examine !== 0 }">
-              <!-- 点赞按钮们 -->
+              <!-- 互动按钮集 -->
               <el-tooltip content="点赞" placement="bottom">
                 <el-button circle @click="toggleLike" :disabled="detail.examine !== 0">
                   <Icon :icon="likeState === 0 ? 'mdi:thumb-up' : 'mdi:thumb-up-outline'" width="36" height="36"/>
@@ -610,6 +627,7 @@ onMounted(() => {
 
             <div class="content" v-html="content"/>
 
+            <!-- 内容评论区 -->
             <div v-if="type === 'creation' && detail.examine === 0" class="comment-section">
               <h2 style="margin-bottom: 20px">评论区</h2>
 
@@ -617,6 +635,7 @@ onMounted(() => {
                   ref="commentEditorRef"
                   v-model="commentInput"
                   :visible="true"
+                  style="height: 280px"
               />
 
               <div style="text-align: right; margin-top: 10px">
@@ -721,21 +740,35 @@ onMounted(() => {
       >
         <el-form :model="form" label-width="80px">
           <el-form-item label="标题">
-            <el-input v-model="form.title" maxlength="50" show-word-limit/>
+            <el-input v-model="form.title" maxlength="16" show-word-limit/>
           </el-form-item>
 
           <el-form-item label="摘要">
-            <el-input v-model="form.abs_text" maxlength="100" show-word-limit/>
+            <el-input v-model="form.abs_text" maxlength="30" show-word-limit/>
           </el-form-item>
 
           <el-form-item label="封面">
             <div style="display: flex; align-items: center; gap: 16px">
-              <img v-if="form.cover_pic" :src="form.cover_pic" style="width: 160px; height: 100px; object-fit: cover"/>
-              <el-upload :show-file-list="false" :http-request="handleCoverUpload" accept="image/*">
+              <img
+                  v-if="coverPreviewUrl"
+                  :src="coverPreviewUrl"
+                  style="width: 160px; height: 100px; object-fit: cover"
+              />
+              <img
+                  v-else-if="form.cover_pic"
+                  :src="form.cover_pic"
+                  style="width: 160px; height: 100px; object-fit: cover"
+              />
+              <el-upload
+                  :show-file-list="false"
+                  :http-request="handleCoverUpload"
+                  accept="image/*"
+              >
                 <el-button type="primary">上传</el-button>
               </el-upload>
             </div>
           </el-form-item>
+
 
           <el-form-item label="分类">
             <el-select v-model="form.class_id" placeholder="请选择分类">

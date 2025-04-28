@@ -8,8 +8,8 @@ const tableData = ref([])
 const pageNum = ref(1)
 const pageSize = ref(10)
 const total = ref(0)
-const reasonMap = reactive({})  // 存储每一行否决原因
-const userInfoMap = reactive({}) // 存储每个 manager_id 的用户信息
+const reasonMap = reactive({})
+const userInfoMap = reactive({})
 
 // 获取店长的昵称与邮箱
 const fetchManagerInfo = async (managerId) => {

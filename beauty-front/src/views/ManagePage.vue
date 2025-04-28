@@ -8,7 +8,7 @@ import {
 
 import { ref } from 'vue'
 
-// 默认展开的菜单项 key（保持多个）
+// 默认展开的菜单项 key
 const openMenus = ref([])
 
 // 展开时添加 key

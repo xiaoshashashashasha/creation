@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { myReservationList, evaluate, deleteReservation } from '@/api/reservation'
-import RichTextEditor from '@/components/RichTextEditor.vue'
+import RichTextEditor from '@/components/part/RichTextEditor.vue'
 
 const router = useRouter()
 const tableData = ref([])

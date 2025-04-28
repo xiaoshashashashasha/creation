@@ -56,15 +56,15 @@ const toggle = () => {
   position: absolute;
   height: 54px;
   width: 35px;
-  background: linear-gradient(to bottom, #86e4d3, #60b8aa); /* 渐变绿色 */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), /* 外部阴影 */ inset 0 -2px 4px rgba(0, 0, 0, 0.2); /* 内部阴影 */
+  background: linear-gradient(to bottom, #86e4d3, #60b8aa);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 -2px 4px rgba(0, 0, 0, 0.2);
   border: 1px solid #5bb1a1;
   transition: all 0.4s ease;
   top: -8px;
 }
 
 .left {
-  left: 0px;
+  left: 0;
 }
 
 .right {
@@ -73,7 +73,6 @@ const toggle = () => {
 
 .switch-text-login,
 .switch-text-register {
-  z-index: 1;
   font-family: 'Segoe UI', sans-serif;
   font-size: 24px;
   color: #555;

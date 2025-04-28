@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import CardOffline from '@/components/CardOffline.vue'
+import CardOffline from '@/components/part/CardOffline.vue'
 import { offlineList } from '@/api/offline'
 import { ElMessage } from 'element-plus'
 

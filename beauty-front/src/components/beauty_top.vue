@@ -1,7 +1,7 @@
 <script setup>
-import ManageSwitch from "@/components/ManageSwitch.vue";
+import ManageSwitch from "@/components/part/ManageSwitch.vue";
 import router from "@/router";
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import {useStateStore} from "@/stores/state";
 import {userLogoutService} from "@/api/user";
@@ -9,9 +9,10 @@ import {useTokenStore} from "@/stores/token";
 import {watchEffect} from "vue-demi";
 
 
+const tokenStore = useTokenStore()
 const stateStore = useStateStore()
 
-// 基于 role 值派生三个控制变量
+// 基于 role 值的三个控制变量
 const content = computed(() => [0, 1, 2].includes(stateStore.sta))
 const create = computed(() => [0, 1].includes(stateStore.sta))
 const Mswitch = computed(() => stateStore.sta === 1)
@@ -36,9 +37,6 @@ const logout = async () => {
   try {
     await userLogoutService()
 
-    const tokenStore = useTokenStore()
-    const stateStore = useStateStore()
-
     tokenStore.removeToken()
     stateStore.setState(3)
     router.push('/login')
@@ -56,7 +54,6 @@ const isManageMode = ref(route.path.startsWith('/manage'))
 watchEffect(() => {
   const currentPath = route.path
   isManageMode.value = !currentPath.startsWith('/manage')
-  console.log(isManageMode.value)
 })
 
 

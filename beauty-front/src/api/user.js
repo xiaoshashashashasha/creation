@@ -104,3 +104,11 @@ export const listFollowerService = ()=>{
         params:{}
     })
 }
+
+export const updateUserPicService = (avatarUrl) => {
+    return request.patch('/user/updateAvatar', null, {
+        params: {
+            avatarUrl
+        }
+    })
+}

@@ -14,7 +14,7 @@ public class Creation {
     private Integer creation_id;
     private Integer user_id;
 
-    @Pattern(regexp = "^\\S{1,10}$")
+    @Pattern(regexp = "^\\S{1,16}$")
     private String title;
 
     @Pattern(regexp = "^\\S{1,30}$")

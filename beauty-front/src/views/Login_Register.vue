@@ -1,6 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
-import LoginSwitch from "@/components/LoginSwitch.vue";
+import LoginSwitch from "@/components/part/LoginSwitch.vue";
 
 
 const loginMode = ref(true);
@@ -72,10 +72,11 @@ const stateStore = useStateStore();
 
 const register = async () => {
   try {
-    let result = await userRegisterService(form_register.value);
+    await userRegisterService(form_register.value);
     ElMessage.success('注册成功')
 
-    router.push('/login')
+
+    loginMode.value = false;
   } catch (err) {
     console.log(err)
   }
@@ -100,24 +101,27 @@ const login = async () => {
 
 const loginSta = async () => {
   try {
-    let res = await userCheckRoleService()
+    const res = await userCheckRoleService()
     if (res.data !== 3) {
       stateStore.setState(res.data)
       router.push('/')
-    }else {
-      stateStore.setState(res.data)
     }
+  } catch (err) {
+    if (err?.response?.status === 401) {
+      console.warn('[登录页] token失效，清空用户数据，留在本页')
 
-  }catch(err) {
-    // eslint-disable-next-line no-empty
-    if(err?.response?.status === 401){
-
+    } else {
+      console.error('其他错误:', err)
+      ElMessage.error('系统异常，请稍后再试')
     }
   }
 }
 
+
 onMounted(()=>{
-  loginSta()
+  if (tokenStore.token) {
+    loginSta()
+  }
 })
 
 </script>

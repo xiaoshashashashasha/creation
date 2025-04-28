@@ -18,5 +18,5 @@ export const useStateStore = defineStore('state', () => {
         clearState
     }
 }, {
-    persist: true // ✅ 持久化存储
+    persist: true
 })

@@ -1,8 +1,8 @@
 <script setup>
-import CardCreation from "@/components/CardCreation.vue";
+import CardCreation from "@/components/part/CardCreation.vue";
 import {onMounted, ref} from "vue";
-import CardHairstyle from "@/components/CardHairstyle.vue";
-import CardOffline from "@/components/CardOffline.vue";
+import CardHairstyle from "@/components/part/CardHairstyle.vue";
+import CardOffline from "@/components/part/CardOffline.vue";
 import {ElMessage} from "element-plus";
 import {creationInfo} from "@/api/creation";
 import router from "@/router";
@@ -44,51 +44,64 @@ const toOfflines = () => {
 const fetchCreationData = async (ids, dataList, loadingStates) => {
   for (const id of ids) {
     loadingStates.value[id] = true
-    const res = await creationInfo(id)
-    if (res && res.data) {
-      dataList.value.push(res.data)
-    } else {
-      ElMessage.error('数据加载失败')
+    try {
+      const res = await creationInfo(id)
+      if (res && res.data) {
+        dataList.value.push(res.data)
+      } else {
+        ElMessage.error('内容数据加载失败')
+      }
+    } catch (err) {
+      console.warn('加载内容失败', err)
+      ElMessage.error('内容数据加载失败')
+    } finally {
+      loadingStates.value[id] = false
     }
-    console.log(res.data)
-    loadingStates.value[id] = false
-    console.log(id +''+ loadingStates.value[id])
   }
-
 }
-
 
 const fetchHairstyleData = async (ids, dataList, loadingStates) => {
   for (const id of ids) {
     loadingStates.value[id] = true
-    const res = await hairstyleInfo(id)
-    if (res && res.data) {
-      dataList.value.push(res.data)
-    } else {
-      ElMessage.error('数据加载失败')
+    try {
+      const res = await hairstyleInfo(id)
+      if (res && res.data) {
+        dataList.value.push(res.data)
+      } else {
+        ElMessage.error('发型数据加载失败')
+      }
+    } catch (err) {
+      console.warn('加载发型失败', err)
+      ElMessage.error('发型数据加载失败')
+    } finally {
+      loadingStates.value[id] = false
     }
-    loadingStates.value[id] = false
   }
 }
-
 
 const fetchOfflineData = async (ids, dataList, loadingStates) => {
   for (const id of ids) {
     loadingStates.value[id] = true
-    const res = await offlineInfo(id)
-    if (res && res.data) {
-      dataList.value.push(res.data)
-    } else {
-      ElMessage.error('数据加载失败')
+    try {
+      const res = await offlineInfo(id)
+      if (res && res.data) {
+        dataList.value.push(res.data)
+      } else {
+        ElMessage.error('门店数据加载失败')
+      }
+    } catch (err) {
+      console.warn('加载门店失败', err)
+      ElMessage.error('门店数据加载失败')
+    } finally {
+      loadingStates.value[id] = false
     }
-    loadingStates.value[id] = false
   }
 }
 
 
+
 // 跳转
 const toContent = (type, id) => {
-  console.log(type + "----" + id)
   router.push(`/content/${type}/${id}`)
 }
 
@@ -278,7 +291,7 @@ html, body {
 .carousel-title {
   position: absolute;
   top: 0;
-  background: rgba(0, 0, 0, 0.2); /* 半透明背景 */
+  background: rgba(0, 0, 0, 0.2);
   width: 100%;
   text-align: center;
 }

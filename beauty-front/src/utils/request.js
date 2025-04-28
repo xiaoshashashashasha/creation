@@ -43,10 +43,13 @@ instance.interceptors.response.use(
 
             // 清空token
             tokenStore.removeToken()
-
+            //设置顶栏不可见
+            stateStore.setState(3)
             // 避免多次跳转
             if (router.currentRoute.value.path !== '/login') {
-                router.push('/login')
+                router.push('/login').then(() => {
+                    location.reload() // 关键！刷新页面
+                })
             }
 
         } else if (status === 500) {

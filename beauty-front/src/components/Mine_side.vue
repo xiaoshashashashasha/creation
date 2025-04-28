@@ -35,7 +35,7 @@
 
 
           <el-sub-menu index="8">
-            <template #title>我的关注</template>
+            <template #title>我的关注 ({{follows.length}})</template>
             <el-menu-item v-if="follows.length === 0" disabled>
               暂无关注
             </el-menu-item>
@@ -52,7 +52,7 @@
           </el-sub-menu>
 
           <el-sub-menu index="9">
-            <template #title>我的粉丝</template>
+            <template #title>我的粉丝 ({{fans.length}})</template>
             <el-menu-item v-if="fans.length === 0" disabled>
               暂无粉丝
             </el-menu-item>
@@ -93,6 +93,7 @@ const router = useRouter()
 const tokenStore = useTokenStore()
 const stateStore = useStateStore()
 const mine = computed(() => [0, 1, 2].includes(stateStore.sta))
+
 
 const isOpen = ref(false)
 
@@ -149,10 +150,28 @@ const goToMyReservation = ()=>{
 const toggleSidebar = async () => {
   isOpen.value = !isOpen.value
   if (isOpen.value) {
-    await Promise.all([
-      fetchUserData(),
-      fetchUnReadCount()
-    ])
+    try{
+      if (fans.value && follows.value) {
+        await Promise.all([
+          fetchUserData(),
+          fetchUnReadCount()
+        ])
+      }else if (!fans.value && follows.value) {
+        await Promise.all([
+          fetchUserData(),
+          fetchUnReadCount(),
+          fetchFans()
+        ])
+      }else {
+        await Promise.all([
+          fetchUserData(),
+          fetchUnReadCount(),
+          fetchFollows()
+        ])
+      }
+    }catch (err){
+      console.error('展开侧拉栏时加载数据失败', err)
+    }
   }
 }
 
@@ -187,24 +206,42 @@ const fetchUserData = async () => {
 }
 
 const fetchFollows = async () => {
-  const res = await listFollowedService()
-  follows.value = res.data || []
+  try {
+    const res = await listFollowedService()
+    follows.value = res.data || []
+  } catch (err) {
+    console.error('获取关注列表失败:', err)
+  }
 }
 
 const fetchFans = async () => {
-  const res = await listFollowerService()
-  fans.value = res.data || []
+  try {
+    const res = await listFollowerService()
+    fans.value = res.data || []
+  } catch (err) {
+    console.error('获取粉丝列表失败:', err)
+  }
 }
 
-onMounted(() => {
+
+onMounted(async () => {
   if (!tokenStore.token) {
     return
+  } else {
+    mine.value = computed(() => [0, 1, 2].includes(stateStore.sta))
   }
-  fetchUserData()
-  fetchFollows()
-  fetchFans()
-  fetchUnReadCount()
+  try {
+    await Promise.allSettled([
+      fetchUserData(),
+      fetchFollows(),
+      fetchFans(),
+      fetchUnReadCount()
+    ])
+  } catch (err) {
+    console.warn('初始化侧拉栏时出现问题', err)
+  }
 })
+
 
 </script>
 

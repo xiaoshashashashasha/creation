@@ -4,13 +4,16 @@ import {useRouter} from 'vue-router'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {myOfflineList, improveOffline, delOffline} from '@/api/offline'
 import {uploadFile} from '@/api/fileUpload'
-import RichTextEditor from '@/components/RichTextEditor.vue'
+import RichTextEditor from '@/components/part/RichTextEditor.vue'
 
 const router = useRouter()
 const tableData = ref([])
 const pageNum = ref(1)
 const pageSize = ref(15)
 const total = ref(0)
+const offlinePreviewUrl = ref('')
+const offlineImageFile = ref(null)
+
 
 const decodeAndCleanHTML = (htmlStr) => {
   const textarea = document.createElement('textarea')
@@ -54,20 +57,28 @@ const openEditDialog = (store) => {
   editDialogVisible.value = true
 }
 
-const handleCustomUpload = async ({file}) => {
-  try {
-    const res = await uploadFile(file)
-    editForm.value.offline_pic = res.data
-    ElMessage.success('上传成功')
-  } catch (err) {
-    ElMessage.error('上传失败')
-  }
+const resetPreview = () => {
+  offlinePreviewUrl.value = ''
+  offlineImageFile.value = null
 }
+
+const handleCustomUpload = ({ file }) => {
+  offlineImageFile.value = file
+  offlinePreviewUrl.value = URL.createObjectURL(file)
+}
+
 
 const saveStoreChanges = async () => {
   try {
     editForm.value.offline_content = decodeAndCleanHTML(editForm.value.offline_content) // 修复这里
+    if (offlineImageFile.value) {
+      const res = await uploadFile(offlineImageFile.value)
+      editForm.value.offline_pic = res.data
+    }
+
+    editForm.value.offline_content = decodeAndCleanHTML(editForm.value.offline_content)
     await improveOffline(editForm.value)
+
     ElMessage.success('更新成功')
     editDialogVisible.value = false
     fetchOfflineStores()
@@ -111,6 +122,8 @@ const cancelStore = (store) => {
   })
 }
 
+
+
 onMounted(() => {
   fetchOfflineStores()
 })
@@ -141,7 +154,7 @@ onMounted(() => {
           <el-button size="small" @click="viewDetails(row)">查看详情</el-button>
           <el-button size="small" type="primary" @click="openEditDialog(row)">编辑</el-button>
           <el-button size="small" type="warning" @click="manageMembers(row)">成员管理</el-button>
-          <el-button size="small" type="success" @click="manageReservations(row)">管理预约</el-button> <!-- ✨新增 -->
+          <el-button size="small" type="success" @click="manageReservations(row)">管理预约</el-button>
           <el-button size="small" type="danger" @click="cancelStore(row)">注销</el-button>
         </template>
       </el-table-column>
@@ -159,11 +172,12 @@ onMounted(() => {
     </div>
 
     <!-- 编辑门店弹窗 -->
-    <el-dialog v-model="editDialogVisible" title="编辑门店" width="90%" top="5vh">
+    <el-dialog v-model="editDialogVisible" title="编辑门店" width="90%" top="5vh" @close="resetPreview">
       <div class="edit-store-container">
         <div class="top-section">
           <div class="left">
-            <img v-if="editForm.offline_pic" :src="editForm.offline_pic" class="preview-pic"/>
+            <img v-if="offlinePreviewUrl" :src="offlinePreviewUrl" class="preview-pic"/>
+            <img v-else-if="editForm.offline_pic" :src="editForm.offline_pic" class="preview-pic"/>
             <el-upload
                 :show-file-list="false"
                 :http-request="handleCustomUpload"

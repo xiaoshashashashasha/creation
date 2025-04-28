@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import CardCreation from '@/components/CardCreation.vue'
+import CardCreation from '@/components/part/CardCreation.vue'
 import { creationList, creationClassList, creationTagList } from '@/api/creation'
 import { ElMessage } from 'element-plus'
 
@@ -104,7 +104,7 @@ const backToHome = () => {
             </div>
           </template>
 
-          <!-- 加载中 skeleton 占位符 -->
+          <!-- skeleton -->
           <div v-if="loading" class="card-grid">
             <el-skeleton v-for="n in pageSize" :key="n" style="width: 280px; height: 240px;" animated/>
           </div>

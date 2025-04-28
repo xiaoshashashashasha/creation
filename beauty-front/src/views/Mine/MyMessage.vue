@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { getChatList, getHistory, sendMessage, setMessageRead } from '@/api/prMessage'
 import { userOtherInfoService, userInfoService } from '@/api/user'
-import RichTextEditor from "@/components/RichTextEditor.vue";
+import RichTextEditor from "@/components/part/RichTextEditor.vue";
 
 const chatList = ref([])
 const activeChat = ref(null)
@@ -23,10 +23,7 @@ const throttledHandleScroll = throttle(async () => {
   if (!chatBodyRef.value) return;
   const { scrollTop } = chatBodyRef.value;
 
-  console.log('检测滚动 scrollTop:', scrollTop)
-
   if (scrollTop <= 10 && !loadingMessages.value && !noMoreMessages.value) {
-    console.log('到顶了，加载更多');
     pageNum.value += 1
     await fetchMessages(true)
   }
@@ -127,7 +124,7 @@ const selectChat = async (chat) => {
 
   nextTick(() => {
     if (chatBodyRef.value) {
-      // 先解绑（防止重复绑定）
+      // 先解绑
       chatBodyRef.value.removeEventListener('scroll', throttledHandleScroll)
       // 再绑定新的
       chatBodyRef.value.addEventListener('scroll', throttledHandleScroll)
@@ -294,7 +291,7 @@ onUnmounted(() => {
 
 .chat-item.active {
   background: #e6f7ff;
-  box-shadow: inset 4px 0 0 #409eff; /* 左边一条蓝色高亮条 */
+  box-shadow: inset 4px 0 0 #409eff;
 }
 
 .chat-info {

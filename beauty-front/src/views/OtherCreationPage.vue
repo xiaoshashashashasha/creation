@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import CardCreation from '@/components/CardCreation.vue'
+import CardCreation from '@/components/part/CardCreation.vue'
 import { otherCreationList } from '@/api/creation'
 import { ElMessage } from 'element-plus'
 

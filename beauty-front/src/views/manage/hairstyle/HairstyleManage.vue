@@ -9,7 +9,7 @@ import {
   hairstyleAdd
 } from "@/api/hairstyle"
 import { uploadFile } from "@/api/fileUpload"
-import RichTextEditor from "@/components/RichTextEditor.vue"
+import RichTextEditor from "@/components/part/RichTextEditor.vue"
 
 const tableData = ref([])
 const pageNum = ref(1)
@@ -20,6 +20,11 @@ const editDialogVisible = ref(false)
 const detail = ref(null)
 const editForm = ref({})
 const keyWord = ref("")
+
+const editPreviewUrl = ref('')
+const createPreviewUrl = ref('')
+const editImageFile = ref(null)
+const createImageFile = ref(null)
 
 const createDialogVisible = ref(false)
 const createForm = ref({
@@ -97,28 +102,24 @@ const handleDelete = async (id) => {
   }
 }
 
-const handleCustomUpload = async ({ file }) => {
-  try {
-    const res = await uploadFile(file)
-    editForm.value.hairstyle_pic = res.data
-    ElMessage.success("上传成功")
-  } catch (err) {
-    ElMessage.error("上传失败")
-  }
+const handleCustomUpload = ({ file }) => {
+  editImageFile.value = file
+  editPreviewUrl.value = URL.createObjectURL(file) // 更新预览
 }
 
-const handleCreateUpload = async ({ file }) => {
-  try {
-    const res = await uploadFile(file)
-    createForm.value.hairstyle_pic = res.data
-    ElMessage.success("上传成功")
-  } catch (err) {
-    ElMessage.error("上传失败")
-  }
+const handleCreateUpload = ({ file }) => {
+  createImageFile.value = file
+  createPreviewUrl.value = URL.createObjectURL(file) // 更新预览
 }
+
+
 
 const handleSaveEdit = async () => {
   try {
+    if (editImageFile.value) {
+      const res = await uploadFile(editImageFile.value)
+      editForm.value.hairstyle_pic = res.data // 拿到正式图片URL
+    }
     await hairstyleUpdate(editForm.value)
     ElMessage.success("保存成功")
     editDialogVisible.value = false
@@ -127,6 +128,20 @@ const handleSaveEdit = async () => {
     ElMessage.error(err.msg || "保存失败")
   }
 }
+
+const closeEditDialog = () => {
+  editDialogVisible.value = false
+  editPreviewUrl.value = ''
+  editImageFile.value = null
+}
+
+const closeCreateDialog = () => {
+  createDialogVisible.value = false
+  createPreviewUrl.value = ''
+  createImageFile.value = null
+}
+
+
 
 const openCreateDialog = () => {
   createForm.value = {
@@ -142,6 +157,10 @@ const handleCreateSubmit = async () => {
     return ElMessage.warning("请输入发型名称")
   }
   try {
+    if (createImageFile.value) {
+      const res = await uploadFile(createImageFile.value)
+      createForm.value.hairstyle_pic = res.data
+    }
     await hairstyleAdd(createForm.value)
     ElMessage.success("新建成功")
     createDialogVisible.value = false
@@ -224,14 +243,15 @@ onMounted(() => {
     </el-dialog>
 
     <!-- 编辑弹窗 -->
-    <el-dialog v-model="editDialogVisible" title="编辑发型">
+    <el-dialog v-model="editDialogVisible" title="编辑发型" @close="closeEditDialog">
       <el-form :model="editForm" label-width="80px">
         <el-form-item label="名称">
           <el-input v-model="editForm.hairstyle_name"/>
         </el-form-item>
         <el-form-item label="封面">
           <div style="display: flex; align-items: center; gap: 20px">
-            <img v-if="editForm.hairstyle_pic" :src="editForm.hairstyle_pic" style="width: 200px; height: 120px"/>
+            <img v-if="editPreviewUrl" :src="editPreviewUrl" style="width: 200px; height: 120px; object-fit: cover"/>
+            <img v-else-if="editForm.hairstyle_pic" :src="editForm.hairstyle_pic" style="width: 200px; height: 120px; object-fit: cover"/>
             <el-upload :show-file-list="false" :http-request="handleCustomUpload" accept="image/*">
               <el-button type="primary">上传封面</el-button>
             </el-upload>
@@ -244,9 +264,6 @@ onMounted(() => {
           />
         </el-form-item>
 
-
-
-
       </el-form>
       <template #footer>
         <el-button @click="editDialogVisible = false">取消</el-button>
@@ -255,14 +272,15 @@ onMounted(() => {
     </el-dialog>
 
     <!-- 新建弹窗 -->
-    <el-dialog v-model="createDialogVisible" title="新建发型">
+    <el-dialog v-model="createDialogVisible" title="新建发型" @close="closeCreateDialog">
     <el-form :model="createForm" label-width="80px">
         <el-form-item label="名称">
           <el-input v-model="createForm.hairstyle_name"/>
         </el-form-item>
         <el-form-item label="封面">
           <div style="display: flex; align-items: center; gap: 20px">
-            <img v-if="createForm.hairstyle_pic" :src="createForm.hairstyle_pic" style="width: 200px; height: 120px"/>
+            <img v-if="createPreviewUrl" :src="createPreviewUrl" style="width: 200px; height: 120px; object-fit: cover"/>
+            <img v-else-if="createForm.hairstyle_pic" :src="createForm.hairstyle_pic" style="width: 200px; height: 120px; object-fit: cover"/>
             <el-upload :show-file-list="false" :http-request="handleCreateUpload" accept="image/*">
               <el-button type="primary">上传封面</el-button>
             </el-upload>
@@ -274,10 +292,6 @@ onMounted(() => {
             :visible="createDialogVisible"
         />
       </el-form-item>
-
-
-
-
 
     </el-form>
       <template #footer>
@@ -324,7 +338,7 @@ onMounted(() => {
   height: auto;
   display: block;
   margin: 10px 0;
-  cursor: nwse-resize; /* 显示拖拽角标 */
+  cursor: nwse-resize;
 }
 
 </style>

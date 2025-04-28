@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import CardHairstyle from '@/components/CardHairstyle.vue'
+import CardHairstyle from '@/components/part/CardHairstyle.vue'
 import { hairstyleList } from '@/api/hairstyle'
 import { ElMessage } from 'element-plus'
 
