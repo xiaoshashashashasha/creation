@@ -108,7 +108,7 @@ html, body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background: #2481a8;
+  background: #d5d1d1;
   overflow-y: hidden;
 }
 

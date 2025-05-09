@@ -112,3 +112,11 @@ export const updateUserPicService = (avatarUrl) => {
         }
     })
 }
+
+export const updatePasswordService = (oldPwd, newPwd, rePwd) => {
+    return request.patch('/user/updatePwd', {
+        old_pwd: oldPwd,
+        new_pwd: newPwd,
+        re_pwd: rePwd
+    })
+}

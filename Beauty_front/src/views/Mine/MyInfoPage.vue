@@ -1,9 +1,9 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { userInfoService,updateUserPicService } from '@/api/user'
+import { userInfoService,updateUserPicService,updatePasswordService } from '@/api/user'
 import { uploadFile } from '@/api/fileUpload'
-import { ElMessage } from 'element-plus'
+import { ElMessage,ElDialog } from 'element-plus'
 
 const router = useRouter()
 
@@ -11,6 +11,11 @@ const showAvatarDialog = ref(false)
 const selectedFile = ref(null)
 const uploading = ref(false)
 const avatarPreviewUrl = ref('')
+const showPasswordDialog = ref(false)
+const oldPassword = ref('')
+const newPassword = ref('')
+const confirmPassword = ref('')
+const updatingPassword = ref(false)
 const userInfo = ref({})
 const roleMap = {
   0: '普通用户',
@@ -29,6 +34,44 @@ const fetchUserInfo = async () => {
 
 const backToHome = () => {
   router.push('/')
+}
+
+const openPasswordDialog = () => {
+  showPasswordDialog.value = true
+  oldPassword.value = ''
+  newPassword.value = ''
+  confirmPassword.value = ''
+}
+
+const closePasswordDialog = () => {
+  showPasswordDialog.value = false
+}
+
+const handleUpdatePassword = async () => {
+  if (!oldPassword.value || !newPassword.value || !confirmPassword.value) {
+    ElMessage.warning('请填写所有密码字段')
+    return
+  }
+
+  if (newPassword.value !== confirmPassword.value) {
+    ElMessage.warning('两次密码输入不一致')
+    return
+  }
+
+  try {
+    updatingPassword.value = true
+    await updatePasswordService(oldPassword.value, newPassword.value, confirmPassword.value)
+
+    ElMessage.success('密码更新成功')
+    closePasswordDialog() // 关闭弹窗
+
+    router.push('/login')
+  } catch (err) {
+    console.error('更新密码失败', err)
+    ElMessage.error('更新密码失败，请重试')
+  } finally {
+    updatingPassword.value = false
+  }
 }
 
 
@@ -119,7 +162,7 @@ onMounted(() => {
 
             <!-- 操作按钮 -->
             <div class="actions">
-              <el-button type="warning" plain style="margin-right: 12px">修改密码</el-button>
+              <el-button type="warning" plain style="margin-right: 12px" @click="openPasswordDialog">修改密码</el-button>
               <el-button type="primary" plain @click="openAvatarDialog">更换头像</el-button>
             </div>
           </div>
@@ -127,6 +170,27 @@ onMounted(() => {
       </div>
     </el-main>
   </el-container>
+
+  <!-- 更改密码 -->
+  <el-dialog v-model="showPasswordDialog" title="修改密码" width="400px" @close="closePasswordDialog">
+    <el-form>
+      <el-form-item label="旧密码" prop="oldPassword">
+        <el-input v-model="oldPassword" type="password" placeholder="请输入旧密码"></el-input>
+      </el-form-item>
+      <el-form-item label="新密码" prop="newPassword">
+        <el-input v-model="newPassword" type="password" placeholder="请输入新密码"></el-input>
+      </el-form-item>
+      <el-form-item label="确认密码" prop="confirmPassword">
+        <el-input v-model="confirmPassword" type="password" placeholder="请输入确认密码"></el-input>
+      </el-form-item>
+    </el-form>
+
+    <div style="text-align: right;">
+      <el-button @click="closePasswordDialog">取消</el-button>
+      <el-button type="success" @click="handleUpdatePassword" :loading="updatingPassword">确认修改</el-button>
+    </div>
+  </el-dialog>
+
 
   <!-- 更新头像 -->
   <el-dialog v-model="showAvatarDialog" title="上传新头像" width="400px" @close="closeAvatarDialog">
