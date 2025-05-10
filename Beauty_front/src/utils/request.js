@@ -48,7 +48,7 @@ instance.interceptors.response.use(
             // 避免多次跳转
             if (router.currentRoute.value.path !== '/login') {
                 router.push('/login').then(() => {
-                    location.reload() // 关键！刷新页面
+                    location.reload()
                 })
             }
 

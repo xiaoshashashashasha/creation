@@ -19,6 +19,68 @@ const currentUser = ref({})
 const chatBodyRef = ref(null)
 const router = useRouter()
 
+/**
+* websocket连接
+* */
+let socket = null;
+
+// 初始化 WebSocket 连接
+const initWebSocket = async () => {
+  try {
+    // 动态获取用户 ID
+    const res = await userInfoService();
+    if (res.code === 0 && res.data) {
+      const userId = res.data.user_id; // 假设后端返回的用户 ID 是 `user_id`
+      console.log(userId)
+      const wsUrl = `ws://localhost:8080/ws/privateChat?userId=${userId}`;
+
+      console.log(wsUrl)
+      // 创建 WebSocket 连接
+      socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+        console.log("WebSocket 已连接");
+      };
+
+      socket.onmessage = (event) => {
+
+        const message = JSON.parse(event.data);
+        if (message.from_id === (activeChat.value && activeChat.value.target_id)) {
+          messages.value.push(message);
+
+          // 滚动到底部
+          nextTick(() => {
+            const chatBody = document.querySelector(".chat-body");
+            chatBody.scrollTop = chatBody.scrollHeight;
+          });
+          setMessageRead(activeChat.value.target_id)
+        }
+      };
+
+      socket.onclose = (event) => {
+        console.log("WebSocket 已关闭", event);
+      };
+
+      socket.onerror = (error) => {
+        console.error("WebSocket 发生错误", error);
+      };
+    } else {
+      console.error("获取用户信息失败");
+    }
+  } catch (error) {
+    console.error("初始化 WebSocket 时发生错误:", error);
+  }
+};
+
+// 关闭 WebSocket
+const closeWebSocket = () => {
+  if (socket) {
+    socket.close();
+    socket = null;
+  }
+};
+
+
 const throttledHandleScroll = throttle(async () => {
   if (!chatBodyRef.value) return;
   const { scrollTop } = chatBodyRef.value;
@@ -188,12 +250,14 @@ const scrollToBottom = () => {
 onMounted(async () => {
   await fetchCurrentUser()
   await fetchChatList()
+  initWebSocket();
 })
 
 onUnmounted(() => {
   if (chatBodyRef.value) {
     chatBodyRef.value.removeEventListener('scroll', throttledHandleScroll)
   }
+  closeWebSocket();
 })
 
 

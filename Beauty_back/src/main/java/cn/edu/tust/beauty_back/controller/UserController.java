@@ -55,7 +55,7 @@ public class UserController {
      *登录
      * **/
     @PostMapping("/login")
-    public Result login(@Pattern(regexp = "^\\S{3,12}$") String username, @Pattern(regexp = "^\\S{9,16}$") String password) {
+    public Result login(@Pattern(regexp = "^\\S{3,12}$") String username, @Pattern(regexp = "^\\S{8,16}$") String password) {
         //根据用户名查询用户是否存在
         User user = userService.findByUserName(username);
         if (user == null) {

@@ -15,6 +15,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //无需验证登陆状态的请求不拦截
-        registry.addInterceptor(loginInterceptor).excludePathPatterns("/user/register","/user/login");
+        registry.addInterceptor(loginInterceptor).excludePathPatterns("/user/register","/user/login", "/ws/**");
     }
 }

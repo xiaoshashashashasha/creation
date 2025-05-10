@@ -6,14 +6,11 @@ import cn.edu.tust.beauty_back.bean.Result;
 import cn.edu.tust.beauty_back.mapper.PrMessageMapper;
 import cn.edu.tust.beauty_back.service.PrMessageService;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import cn.edu.tust.beauty_back.websocket.PrivateChatEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -25,32 +22,30 @@ public class PrMessageServiceImpl implements PrMessageService {
 
     @Override
     public Result sendMessage(Map<String, Object> params) {
-        if (params == null) {
-            return Result.error("参数错误");
+        if (params == null || !params.containsKey("to_id") || !params.containsKey("content")) {
+            return Result.error("发送消息参数缺失");
         }
 
-        Object toIdObj = params.get("to_id");
-        Object contentObj = params.get("content");
-
-        if (toIdObj == null || contentObj == null) {
-            return Result.error("参数缺失");
-        }
-
-        Integer to_id = Integer.parseInt(toIdObj.toString());
-        String content = contentObj.toString();
+        Integer toId = Integer.valueOf(params.get("to_id").toString());
+        String content = params.get("content").toString();
 
         Map<String, Object> map = ThreadLocalUtil.get();
-        Integer from_id = (Integer) map.get("user_id");
+        Integer fromId = (Integer) map.get("user_id");
 
-        PrMessage msg = new PrMessage();
-        msg.setContent(content);
-        msg.setFrom_id(from_id);
-        msg.setTo_id(to_id);
+        PrMessage message = new PrMessage();
+        message.setFrom_id(fromId);
+        message.setTo_id(toId);
+        message.setContent(content);
+        message.setCreated_at(LocalDateTime.now());
 
-        prMessageMapper.sendMessage(msg);
+        prMessageMapper.sendMessage(message);
+
+        // 使用 WebSocket 推送消息
+        PrivateChatEndpoint.sendMessage(toId, message);
 
         return Result.success();
     }
+
 
 
     @Override
