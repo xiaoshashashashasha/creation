@@ -13,7 +13,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-@RequestMapping("/prMessage")
+@RequestMapping("/api/prMessage")
 public class PrMessageController {
 
     @Autowired

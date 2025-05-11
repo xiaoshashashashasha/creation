@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-@RequestMapping("/creation")
+@RequestMapping("/api/creation")
 public class CreationController {
 
     @Autowired

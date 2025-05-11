@@ -4,7 +4,7 @@ import LoginSwitch from "@/components/part/LoginSwitch.vue";
 
 
 const loginMode = ref(true);
-
+const logined = ref(false);
 
 const form_login = ref({
   username: '',
@@ -57,6 +57,17 @@ const rules_register = {
 
 
 function handleLoginMode(val) {
+  if (loginMode.value){
+    form_login.value.username = '';
+    form_login.value.password = '';
+  }else {
+    form_register.value.username = '';
+    form_register.value.password = '';
+    form_register.value.repassword = '';
+    form_register.value.nickname = '';
+    form_register.value.gender = '';
+    form_register.value.email = '';
+  }
   loginMode.value = val;
 }
 
@@ -91,6 +102,8 @@ const login = async () => {
 
     await loginSta()
 
+    logined.value = true;
+
     router.push('/')
   } catch (err) {
     console.log(err)
@@ -124,44 +137,45 @@ onMounted(()=>{
   }
 })
 
+
 </script>
 
 <template>
+  <body>
+  <div :class="{ 'slide-up': logined }" class="slide-container">
+
+  </div>
   <el-row :gutter="0">
-    <!--表单部分-->
+    <!-- 表单部分 -->
     <el-col :span="8" class="form-box">
-      <div>
+      <div :class="['state', { state1: loginMode, state2: !loginMode }]">
         <LoginSwitch @modeChange="handleLoginMode" style="margin-bottom: 20px; margin-top: 40px; left: 32%"/>
 
-        <!--登录-->
         <transition name="form-fade" mode="out-in">
           <div :key="loginMode">
+            <!-- 登录 -->
             <el-form :model="form_login" label-width="auto" class="login-form" v-if="loginMode" :rules="rules_login">
-              <el-form-item label="用户名 :" style="margin: 20px;" prop="username">
-                <el-input v-model="form_login.username" style="width: 235px; height: 35px"/>
+              <el-form-item label="用户名 :" style="margin: 20px; " prop="username">
+                <input v-model="form_login.username" style="width: 235px; height: 35px"/>
               </el-form-item>
-              <el-form-item label="密码 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px"
-                            prop="password">
-                <el-input v-model="form_login.password" style="width: 235px; height: 35px"/>
+              <el-form-item label="密码 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px" prop="password">
+                <input v-model="form_login.password" style="width: 235px; height: 35px"/>
               </el-form-item>
 
               <div style="text-align: center; margin-top: 20px;">
-                <el-button type="primary" @click="login"
-                           style="width: 160px; height: 50px; font-size: 26px; font-family: 'Poor Richard';">
+                <el-button type="primary" @click="login" style="width: 160px; height: 50px; font-size: 26px; font-family: 'Poor Richard';">
                   GoFindBeauty
                 </el-button>
               </div>
             </el-form>
 
-            <!--注册-->
-            <el-form :model="form_register" label-width="auto" class="login-form" v-else
-                     :rules="rules_register">
+            <!-- 注册 -->
+            <el-form :model="form_register" label-width="auto" class="login-form" v-else :rules="rules_register">
               <el-form-item label="用户名 :" style="margin: 20px;" prop="username">
-                <el-input v-model="form_register.username" style="width: 235px; height: 35px"/>
+                <input v-model="form_register.username" style="width: 235px; height: 35px"/>
               </el-form-item>
-              <el-form-item label="昵称 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px"
-                            prop="nickname">
-                <el-input v-model="form_register.nickname" style="width: 235px; height: 35px"/>
+              <el-form-item label="昵称 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px" prop="nickname">
+                <input v-model="form_register.nickname" style="width: 235px; height: 35px"/>
               </el-form-item>
               <el-form-item label="性别 :" style="margin-left: 20px;" prop="gender">
                 <el-radio-group v-model="form_register.gender" class="gender-radio-group">
@@ -169,23 +183,19 @@ onMounted(()=>{
                   <el-radio value="女">女</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item label="密码 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px"
-                            prop="password">
-                <el-input v-model="form_register.password" style="width: 235px; height: 35px"/>
+              <el-form-item label="密码 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px" prop="password">
+                <input v-model="form_register.password" style="width: 235px; height: 35px"/>
               </el-form-item>
-              <el-form-item label="确认密码 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px"
-                            prop="repassword">
-                <el-input v-model="form_register.repassword" style="width: 235px; height: 35px"/>
+              <el-form-item label="确认密码 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px" prop="repassword">
+                <input v-model="form_register.repassword" style="width: 235px; height: 35px"/>
               </el-form-item>
               <el-form-item label="邮箱 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px" prop="email">
-                <el-input v-model="form_register.email" style="width: 235px; height: 35px"/>
+                <input v-model="form_register.email" style="width: 235px; height: 35px"/>
               </el-form-item>
 
-
               <div style="text-align: center; margin-top: 20px;">
-                <el-button type="primary" @click="register"
-                           style="width: 240px; height: 50px; font-size: 26px; font-family: 'Poor Richard';">
-                  StratJourneyToBeauty
+                <el-button type="primary" @click="register" style="width: 240px; height: 50px; font-size: 26px; font-family: 'Poor Richard';">
+                  StartJourneyToBeauty
                 </el-button>
               </div>
             </el-form>
@@ -194,12 +204,11 @@ onMounted(()=>{
       </div>
     </el-col>
 
-
-    <!--图像部分-->
+    <!-- 图像部分 -->
     <el-col :span="16" class="pic">
-
     </el-col>
   </el-row>
+  </body>
 </template>
 
 <style scoped>
@@ -211,6 +220,8 @@ onMounted(()=>{
 html, body {
   height: 100%;
 }
+
+
 
 .el-row {
   flex: 1;
@@ -229,12 +240,8 @@ html, body {
 }
 
 .login-form {
-  background: white;
   width: 400px;
   padding: 30px 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-
 }
 
 .form-fade-enter-active,
@@ -254,14 +261,18 @@ html, body {
   transform: scale(1);
 }
 
+input {
+  background-color: transparent;
+  border: 1px solid rgba(170, 170, 170, 0.33);
+  font-family: 'Poor Richard', serif;
+  font-size: 20px;
+  color: white;
+}
+
 ::v-deep(.el-form-item__label) {
   font-family: 'Poor Richard', serif;
   font-size: 26px;
-}
-
-::v-deep(.el-input__inner) {
-  font-family: 'Poor Richard', serif;
-  font-size: 20px;
+  color: white;
 }
 
 ::v-deep(.gender-radio-group .el-radio) {
@@ -271,7 +282,24 @@ html, body {
 }
 
 .pic {
-  background: #9a578d;
   height: 100%;
+}
+
+.state {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.33);
+}
+
+.state1 {
+  height: 420px;
+  transition: all 1.4s ease;
+}
+
+.state2 {
+  height: 670px;
+  transition: all 0.6s ease;
 }
 </style>

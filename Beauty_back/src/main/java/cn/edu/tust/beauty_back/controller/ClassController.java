@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-@RequestMapping("/class")
+@RequestMapping("/api/class")
 public class ClassController {
 
     @Autowired

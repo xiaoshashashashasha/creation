@@ -11,7 +11,7 @@ import java.util.UUID;
 @RestController
 public class FileUploadController {
 
-    @PostMapping("/upload")
+    @PostMapping("/api/upload")
     public Result<String> upload(MultipartFile file) throws Exception {
         //暂存上传的文件，获取文件名
         String originalFilename = file.getOriginalFilename();

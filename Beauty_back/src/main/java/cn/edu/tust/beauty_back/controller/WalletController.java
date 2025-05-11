@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/wallet")
+@RequestMapping("/api/wallet")
 public class WalletController {
     @Autowired
     private WalletService walletService;

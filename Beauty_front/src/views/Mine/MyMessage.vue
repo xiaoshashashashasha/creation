@@ -6,6 +6,8 @@ import { ElMessage } from 'element-plus'
 import { getChatList, getHistory, sendMessage, setMessageRead } from '@/api/prMessage'
 import { userOtherInfoService, userInfoService } from '@/api/user'
 import RichTextEditor from "@/components/part/RichTextEditor.vue";
+import SharedMessage from "@/components/part/SharedMessage.vue";
+
 
 const chatList = ref([])
 const activeChat = ref(null)
@@ -118,6 +120,7 @@ const fetchChatList = async () => {
           if (userRes.data && userRes.code === 0) {
             chat.nickname = userRes.data.nickname
             chat.user_pic = userRes.data.user_pic
+
           } else {
             chat.nickname = '未知用户'
             chat.user_pic = ''
@@ -148,7 +151,7 @@ const fetchMessages = async (append = false) => {
     })
     if (res.code === 0) {
       const list = res.data || []
-
+      console.log(list)
       if (list.length === 0 && append) {
         noMoreMessages.value = true
         return
@@ -202,6 +205,7 @@ const sendMsg = async () => {
     const content = inputMessage.value.trim()
     await sendMessage({
       to_id: activeChat.value.target_id,
+      type: 0,
       content
     })
     inputMessage.value = ''
@@ -295,7 +299,14 @@ onUnmounted(() => {
         <div class="chat-body" ref="chatBodyRef" v-loading="loadingMessages">
           <div v-for="msg in messages" :key="msg.message_id" class="chat-message"
                :class="{ 'me': msg.from_id === currentUser.user_id }">
-            <div class="chat-content" v-html="msg.content"></div>
+            <div v-if="msg.type === 0" class="chat-content" v-html="msg.content"></div>
+            <SharedMessage v-else-if="msg.type === 1 || msg.type === 2"
+                           :cover_pic="msg.cover_pic"
+                           :title="msg.title"
+                           :content="msg.content"
+                           :type="msg.type"
+                           :content_id="msg.content_id"
+                            />
             <div class="chat-time">{{ new Date(msg.created_at).toLocaleString() }}</div>
           </div>
         </div>
@@ -306,7 +317,7 @@ onUnmounted(() => {
               style="height: 200px"
               :visible="true"
           />
-          <el-button type="primary" @click="sendMsg" style="height: 60px ;margin-top: 10px;">发送</el-button>
+          <el-button type="primary" @click="sendMsg" style="height: 60px; margin-top: 10px;">发送</el-button>
         </div>
       </div>
 
@@ -407,7 +418,7 @@ onUnmounted(() => {
 
 .chat-message {
   margin-bottom: 10px;
-  max-width: 60%;
+  max-width: 500px;
   word-break: break-word;
 }
 

@@ -1,8 +1,6 @@
 package cn.edu.tust.beauty_back.service.impl;
 
-import cn.edu.tust.beauty_back.bean.ChatListItem;
-import cn.edu.tust.beauty_back.bean.PrMessage;
-import cn.edu.tust.beauty_back.bean.Result;
+import cn.edu.tust.beauty_back.bean.*;
 import cn.edu.tust.beauty_back.mapper.PrMessageMapper;
 import cn.edu.tust.beauty_back.service.PrMessageService;
 import cn.edu.tust.beauty_back.utils.ThreadLocalUtil;
@@ -20,6 +18,7 @@ public class PrMessageServiceImpl implements PrMessageService {
     @Autowired
     PrMessageMapper prMessageMapper;
 
+
     @Override
     public Result sendMessage(Map<String, Object> params) {
         if (params == null || !params.containsKey("to_id") || !params.containsKey("content")) {
@@ -28,17 +27,42 @@ public class PrMessageServiceImpl implements PrMessageService {
 
         Integer toId = Integer.valueOf(params.get("to_id").toString());
         String content = params.get("content").toString();
+        Integer type = Integer.valueOf(params.get("type").toString());
+        Integer contentId = 0;
+        if (type != 0) {
+            contentId = Integer.valueOf(params.get("content_id").toString());
+        }
+
 
         Map<String, Object> map = ThreadLocalUtil.get();
         Integer fromId = (Integer) map.get("user_id");
 
         PrMessage message = new PrMessage();
+
+        if (type == 1){
+            CreationShare cs = prMessageMapper.getCInfo(contentId);
+            message.setTitle(cs.getTitle());
+            message.setCover_pic(cs.getCover_pic());
+        }else if (type == 2){
+            HairstyleShare hs = prMessageMapper.getHInfo(contentId);
+            message.setTitle(hs.getHairstyle_name());
+            message.setCover_pic(hs.getHairstyle_pic());
+        }
+
+
         message.setFrom_id(fromId);
         message.setTo_id(toId);
         message.setContent(content);
         message.setCreated_at(LocalDateTime.now());
+        message.setType(type);
+        message.setContent_id(contentId);
 
-        prMessageMapper.sendMessage(message);
+        if (type == 0){
+            prMessageMapper.sendMessage(message);
+        }else {
+            prMessageMapper.sendMessageB(message);
+        }
+
 
         // 使用 WebSocket 推送消息
         PrivateChatEndpoint.sendMessage(toId, message);
@@ -87,6 +111,7 @@ public class PrMessageServiceImpl implements PrMessageService {
         Integer user_id = (Integer) map.get("user_id");
 
         List<ChatListItem> list = prMessageMapper.getChatList(user_id);
+
         return Result.success(list);
     }
 }

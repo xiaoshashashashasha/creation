@@ -1,6 +1,8 @@
 package cn.edu.tust.beauty_back.mapper;
 
 import cn.edu.tust.beauty_back.bean.ChatListItem;
+import cn.edu.tust.beauty_back.bean.CreationShare;
+import cn.edu.tust.beauty_back.bean.HairstyleShare;
 import cn.edu.tust.beauty_back.bean.PrMessage;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Insert;
@@ -13,9 +15,14 @@ import java.util.List;
 @Mapper
 public interface PrMessageMapper {
     //发送消息
-    @Insert("insert into beauty_prmessage(from_id, to_id, content, created_at)" +
-            "values(#{from_id}, #{to_id}, #{content}, now())")
+    @Insert("insert into beauty_prmessage(from_id, to_id, content, created_at, type, content_id)" +
+            "values(#{from_id}, #{to_id}, #{content}, #{created_at}, #{type}, #{content_id} )")
     void sendMessage(PrMessage msg);
+
+    //发送消息
+    @Insert("insert into beauty_prmessage(from_id, to_id, content, created_at, type, content_id, cover_pic, title)" +
+            "values(#{from_id}, #{to_id}, #{content}, #{created_at}, #{type}, #{content_id}, #{cover_pic}, #{title} )")
+    void sendMessageB(PrMessage msg);
 
     //获取历史消息
     @Select("""
@@ -67,6 +74,9 @@ public interface PrMessageMapper {
     """)
     List<ChatListItem> getChatList(Integer user_id);
 
+    @Select("select cover_pic,title from beauty_creation where creation_id = #{contentId}")
+    CreationShare getCInfo(Integer contentId);
 
-
+    @Select("select hairstyle_name,hairstyle_pic from beauty_hairstyle where hairstyle_id = #{contentId}")
+    HairstyleShare getHInfo(Integer contentId);
 }

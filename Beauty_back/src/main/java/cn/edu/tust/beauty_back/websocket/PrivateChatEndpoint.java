@@ -35,6 +35,7 @@ public class PrivateChatEndpoint {
             // 发送 JSON 格式的连接成功消息
             String connectMsg = "{\"type\": \"connection\", \"status\": \"success\", \"message\": \"连接成功\"}";
             session.getBasicRemote().sendText(connectMsg);
+            System.out.println("用户ID"+userId+"连接成功");
         } catch (IOException e) {
             System.out.println("向用户 " + userId + " 发送连接成功消息失败: " + e.getMessage());
             e.printStackTrace();
@@ -115,7 +116,11 @@ public class PrivateChatEndpoint {
                 .append("\"type\": \"message\", ")
                 .append("\"from_id\": ").append(message.getFrom_id()).append(", ")
                 .append("\"content\": \"").append(message.getContent()).append("\", ")
-                .append("\"created_at\": \"").append(timestamp).append("\"")
+                .append("\"created_at\": \"").append(timestamp).append("\", ")
+                .append("\"type\": ").append(message.getType()).append(", ")
+                .append("\"content_id\": ").append(message.getType()).append(", ")
+                .append("\"cover_pic\": \"").append(message.getCover_pic()).append("\", ")
+                .append("\"title\": \"").append(message.getTitle()).append("\"")
                 .append("}");
         return formattedMsg.toString();
     }

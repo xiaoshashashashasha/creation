@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-@RequestMapping("/offline")
+@RequestMapping("/api/offline")
 public class OfflineController {
 
     @Autowired

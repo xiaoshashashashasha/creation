@@ -16,7 +16,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-@RequestMapping("/hairstyle")
+@RequestMapping("/api/hairstyle")
 public class HairStyleController {
 
     @Autowired

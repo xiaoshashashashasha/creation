@@ -12,7 +12,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-@RequestMapping("/Interaction")
+@RequestMapping("/api/Interaction")
 public class InteractionController {
     @Autowired
     private InteractionService interactionService;

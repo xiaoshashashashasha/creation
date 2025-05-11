@@ -9,12 +9,8 @@ module.exports = defineConfig({
       '/api': {
         target: 'http://localhost:8080', // 后端地址
         changeOrigin: true, // 修改源
-        // 确保不重写路径，保留 /api 前缀
-        pathRewrite: {
-          '^/api': '/api'
-        }
       },
-      '/ws': {
+      '/ws/privateChat': {
         target: 'http://localhost:8080', // 后端地址
         changeOrigin: true, // 修改源
         ws: true // 启用 WebSocket 代理

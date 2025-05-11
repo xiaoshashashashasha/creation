@@ -234,7 +234,6 @@ html, body {
 
 .main {
   flex: 1;
-  background: #ededed;
   overflow-y: visible;
 }
 

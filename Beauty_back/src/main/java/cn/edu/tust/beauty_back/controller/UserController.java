@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 @Validated
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     @Autowired

@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @Validated
-@RequestMapping("/tag")
+@RequestMapping("/api/tag")
 public class TagController {
     @Autowired
     private TagService tagService;
