@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, nextTick, onUnmounted } from 'vue'
 import { throttle } from 'lodash-es'
-import { useRouter } from 'vue-router'
+import {useRoute, useRouter} from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { getChatList, getHistory, sendMessage, setMessageRead } from '@/api/prMessage'
 import { userOtherInfoService, userInfoService } from '@/api/user'
@@ -20,6 +20,8 @@ const noMoreMessages = ref(false)
 const currentUser = ref({})
 const chatBodyRef = ref(null)
 const router = useRouter()
+const route = useRoute()
+
 
 /**
 * websocket连接
@@ -32,11 +34,10 @@ const initWebSocket = async () => {
     // 动态获取用户 ID
     const res = await userInfoService();
     if (res.code === 0 && res.data) {
-      const userId = res.data.user_id; // 假设后端返回的用户 ID 是 `user_id`
-      console.log(userId)
+      const userId = res.data.user_id;
+
       const wsUrl = `ws://localhost:8080/ws/privateChat?userId=${userId}`;
 
-      console.log(wsUrl)
       // 创建 WebSocket 连接
       socket = new WebSocket(wsUrl);
 
@@ -95,6 +96,36 @@ const throttledHandleScroll = throttle(async () => {
 
 const goBack = () => router.back()
 
+//带参的跳转
+const goToPrMessage = () => {
+  const i = ref(0);
+  const isnewMessage = ref(false);
+  const id = route.params.id
+  for (const chat of chatList.value) {
+    i.value = i.value++;
+    //若匹配到则直接选择对应聊天
+    if (chat.target_id == id) {
+      selectChat(chat,isnewMessage.value);
+      break;
+    }
+    if (i.value === chatList.value.length - 1) {
+      isnewMessage.value = true;
+    }
+  }
+  //若未匹配到则渲染一个新的聊天
+  if (isnewMessage.value) {
+    const newchat = {
+      target_id: id,
+      lastMessage: null,
+      lastTime: null,
+      unReadCount: 0
+    }
+    selectChat(newchat,isnewMessage.value);
+  }
+
+
+}
+
 const fetchCurrentUser = async () => {
   try {
     const res = await userInfoService()
@@ -140,21 +171,43 @@ const fetchChatList = async () => {
   }
 }
 
-const fetchMessages = async (append = false) => {
+const fetchMessages = async (append = false, retryCount = 0, bol = false) => {
   if (!activeChat.value) return
   loadingMessages.value = true
   try {
-    const res = await getHistory({
-      pageNum: pageNum.value,
-      pageSize: pageSize.value,
-      target_id: activeChat.value.target_id
-    })
+    let params = {}
+    if (bol){
+       params={
+        pageNum: 1,
+        pageSize: pageSize.value,
+        target_id: activeChat.value.target_id
+      }
+    }else {
+        params={
+        pageNum: pageNum.value,
+        pageSize: pageSize.value,
+        target_id: activeChat.value.target_id
+      }
+    }
+    const res = await getHistory(params)
     if (res.code === 0) {
       const list = res.data || []
-      console.log(list)
       if (list.length === 0 && append) {
-        noMoreMessages.value = true
-        return
+        if (retryCount < 2) {
+          //防止因为滚动检测出错导致pageNum初始为2而无法获取到短聊天的问题
+          if (messages.value.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await fetchMessages(append, retryCount + 1, true);
+            return;
+          }else {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            await fetchMessages(append, retryCount + 1, false);
+            return;
+          }
+        } else {
+          noMoreMessages.value = true;
+          return;
+        }
       }
 
       if (append) {
@@ -179,20 +232,39 @@ const fetchMessages = async (append = false) => {
   }
 }
 
-const selectChat = async (chat) => {
+const selectChat = async (chat,bol) => {
   activeChat.value = chat
   pageNum.value = 1
   messages.value = []
   await setMessageRead(chat.target_id)
   await fetchMessages()
-  await fetchChatList()
+  if (route.params.id == chat.target_id && bol) {
+    try {
+      const userRes = await userOtherInfoService(chat.target_id)
+      if (userRes.data && userRes.code === 0) {
+        chat.nickname = userRes.data.nickname
+        chat.user_pic = userRes.data.user_pic
+
+      } else {
+        chat.nickname = '未知用户';
+        chat.user_pic = '';
+      }
+    } catch {
+      chat.nickname = '未知用户';
+      chat.user_pic = '';
+    }
+    //插入新聊天
+    chatList.value.unshift(chat);
+  }else {
+    await fetchChatList();
+  }
 
   nextTick(() => {
     if (chatBodyRef.value) {
       // 先解绑
-      chatBodyRef.value.removeEventListener('scroll', throttledHandleScroll)
+      chatBodyRef.value.removeEventListener('scroll', throttledHandleScroll);
       // 再绑定新的
-      chatBodyRef.value.addEventListener('scroll', throttledHandleScroll)
+      chatBodyRef.value.addEventListener('scroll', throttledHandleScroll);
     }
   })
 }
@@ -217,9 +289,11 @@ const sendMsg = async () => {
       from_id: currentUser.value.user_id,
       to_id: activeChat.value.target_id,
       content: content,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      type:0
     }
-    messages.value.push(newMessage)
+    messages.value.push(newMessage);
+
 
     // 手动滚到底部
     await nextTick()
@@ -252,14 +326,18 @@ const scrollToBottom = () => {
 
 
 onMounted(async () => {
-  await fetchCurrentUser()
-  await fetchChatList()
+  await fetchCurrentUser();
+  await fetchChatList();
   initWebSocket();
+  if (route.params.id){
+    console.log(route.params.id);
+    goToPrMessage();
+  }
 })
 
 onUnmounted(() => {
   if (chatBodyRef.value) {
-    chatBodyRef.value.removeEventListener('scroll', throttledHandleScroll)
+    chatBodyRef.value.removeEventListener('scroll', throttledHandleScroll);
   }
   closeWebSocket();
 })
@@ -280,7 +358,7 @@ onUnmounted(() => {
             :key="chat.target_id"
             class="chat-item"
             :class="{ active: activeChat && activeChat.target_id === chat.target_id }"
-            @click="selectChat(chat)"
+            @click="activeChat && activeChat.target_id === chat.target_id ? null : selectChat(chat, false)"
         >
           <el-avatar :src="chat.user_pic" size="large">{{ chat.nickname ? chat.nickname[0] : '?' }}</el-avatar>
           <div class="chat-info">
@@ -297,6 +375,10 @@ onUnmounted(() => {
         </div>
 
         <div class="chat-body" ref="chatBodyRef" v-loading="loadingMessages">
+          <div v-if="messages.length === 0 && !loadingMessages" class="empty-message">
+            发出你的第一个消息吧！<br>
+            (直接离开的话，聊天会消失哦)
+          </div>
           <div v-for="msg in messages" :key="msg.message_id" class="chat-message"
                :class="{ 'me': msg.from_id === currentUser.user_id }">
             <div v-if="msg.type === 0" class="chat-content" v-html="msg.content"></div>
@@ -317,7 +399,7 @@ onUnmounted(() => {
               style="height: 200px"
               :visible="true"
           />
-          <el-button type="primary" @click="sendMsg" style="height: 60px; margin-top: 10px;">发送</el-button>
+          <el-button type="primary" @click="sendMsg" style="height: 60px; margin-top: 70px; margin-left: 5px;">发送</el-button>
         </div>
       </div>
 
@@ -340,7 +422,7 @@ onUnmounted(() => {
   width: 1720px;
   margin: 0 auto;
   margin-bottom: 10px;
-  height: 86vh;
+  height: 90vh;
   background: #f5f7fa;
 }
 
@@ -365,6 +447,7 @@ onUnmounted(() => {
 }
 
 .chat-item.active {
+  cursor: not-allowed;
   background: #e6f7ff;
   box-shadow: inset 4px 0 0 #409eff;
 }
@@ -415,16 +498,24 @@ onUnmounted(() => {
   background: #f9f9f9;
 }
 
+.empty-message {
+  text-align: center;
+  font-size: 16px;
+  color: #888;
+  margin-top: 10px;
+}
 
 .chat-message {
   margin-bottom: 10px;
   max-width: 500px;
   word-break: break-word;
+  align-self: flex-start;
 }
 
 .chat-message.me {
   margin-left: auto;
   text-align: right;
+  align-self: flex-end;
 }
 
 .chat-content {
@@ -433,6 +524,8 @@ onUnmounted(() => {
   color: white;
   padding: 10px;
   border-radius: 8px;
+  text-align: left;
+  box-sizing: border-box;
 }
 
 .chat-message.me .chat-content {

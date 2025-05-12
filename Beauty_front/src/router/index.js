@@ -79,7 +79,7 @@ const routes = [
         meta: {requiresAuth: true}
     },
     {
-        path: "/myMessage",
+        path: "/myMessage/:id?",
         component: MyMessage,
         meta: {requiresAuth: true}
     },

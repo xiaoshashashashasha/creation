@@ -1,18 +1,28 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { userOtherInfoService } from '@/api/user'
+import {userInfoService, userOtherInfoService} from '@/api/user'
 import { ElMessage } from 'element-plus'
 
 const route = useRoute()
 const router = useRouter()
 const userId = route.params.id // 从路由中获取 user_id
+const myId = ref()
 
 const userInfo = ref({})
 const roleMap = {
   0: '普通用户',
   1: '管理员',
   2: '封禁用户'
+}
+
+const fetchUserInfo = async () => {
+  try {
+    const res = await userInfoService()
+    myId.value = res.data.user_id
+  } catch (err) {
+    ElMessage.error('用户信息加载失败')
+  }
 }
 
 const fetchOtherUserInfo = async () => {
@@ -32,9 +42,15 @@ const goToUserCreation = (user_id) => {
   router.push(`/otherCreation/${user_id}`)
 }
 
+const goForPrChat = (user_id) =>{
+  router.push(`/myMessage/${user_id}`)
+}
 
-onMounted(() => {
-  fetchOtherUserInfo()
+onMounted(async () => {
+  await Promise.all([
+      fetchOtherUserInfo(),
+      fetchUserInfo()
+  ])
 })
 </script>
 
@@ -74,6 +90,7 @@ onMounted(() => {
 
             <div class="actions">
               <el-button type="primary" plain @click="goToUserCreation(userInfo.user_id)">TA 的内容</el-button>
+              <el-button v-if="userInfo.user_id !== myId" type="primary" plain @click="goForPrChat(userInfo.user_id)">私信 TA</el-button>
             </div>
           </div>
         </div>

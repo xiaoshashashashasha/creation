@@ -104,6 +104,10 @@ const follow = async () => {
   }
 }
 
+const goToOtherInfo = (user_id) => {
+  router.push(`/otherInfo/${user_id}`)
+}
+
 /**
  * 分享部分
  * */
@@ -421,7 +425,7 @@ const loadingOfflineComments = ref(false)
 const userInfoMap = ref({})
 const reserveDialogVisible = ref(false)
 const reserveForm = ref({
-  member_id: null,
+  selectedMember: null,
   date: '',
   start_time: '',
   end_time: ''
@@ -438,23 +442,10 @@ const openReserveDialog = async () => {
     memberOptions.value = res.data || []
 
     const now = new Date()
-    const currentHour = now.getHours()
-    const currentMinute = now.getMinutes()
-
-    // 默认最近的半小时起步
-    let startHour = currentHour
-    let startMinute = currentMinute < 30 ? 30 : 0
-    if (currentMinute >= 30) startHour++
-
-    const start_time = `${String(startHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`
-    const endHour = startMinute === 0 ? startHour : startHour + 1
-    const end_time = `${String(endHour).padStart(2, '0')}:${startMinute === 0 ? '30' : '00'}`
 
     reserveForm.value = {
       member_id: null,
-      date: formatDate(now),
-      start_time,
-      end_time
+      date: formatDate(now)
     }
 
     generateTimeOptions()
@@ -479,7 +470,7 @@ const timeOptions = ref([])
 
 const generateTimeOptions = () => {
   const times = []
-  for (let h = 0; h < 24; h++) {
+  for (let h = 8; h < 22; h++) {
     times.push(`${h.toString().padStart(2, '0')}:00`)
     times.push(`${h.toString().padStart(2, '0')}:30`)
   }
@@ -506,9 +497,9 @@ const generateDateOptions = () => {
 
 
 const submitReservation = async () => {
-  const {member_id, date, start_time, end_time} = reserveForm.value
+  const {selectedMember, date, start_time, end_time} = reserveForm.value
 
-  if (!member_id || !date || !start_time || !end_time) {
+  if (!selectedMember || !date || !start_time || !end_time) {
     ElMessage.warning('请完整填写预约信息')
     return
   }
@@ -525,24 +516,44 @@ const submitReservation = async () => {
     reserveLoading.value = true
     await addReservation({
       offline_id: Number(id),
-      member_id,
+      member_id: Number(selectedMember.member_id),
       start_at,
       end_at
     })
     ElMessage.success('预约成功！')
     reserveDialogVisible.value = false
     reserveForm.value = {
-      member_id: null,
+      selectedMember: null,
       date: '',
       start_time: '',
       end_time: ''
     }
+    //预约成功后向对应人员发送预约信息
+
+    try {
+      // 构造消息内容
+      const payload = {
+        to_id: selectedMember.user_id,
+        type: 0,
+        content: "我预约了"+start_at+"到"+end_at+"请提前跟我对齐颗粒度吧！😏",
+      };
+
+      // 调用发送消息 AP
+      await sendMessage(payload);
+      ElMessage.success('发起成功');
+      showShareDialog.value = false; // 关闭弹窗
+    } catch (err) {
+      console.error('发起消息失败:', err);
+      ElMessage.error('发送失败，请稍后重试');
+    }
+
   } catch (err) {
     ElMessage.error(err.msg || '预约失败')
   } finally {
     reserveLoading.value = false
   }
 }
+
 
 
 const fetchOfflineComments = async () => {
@@ -721,7 +732,7 @@ onMounted(() => {
 
             <div v-if="type === 'creation'" class="creater">
               <div class="avatar-box">
-                <img :src="userInfo.user_pic" alt="cover"/>
+                <img :src="userInfo.user_pic" @click="goToOtherInfo(userInfo.user_id)" alt="cover"/>
               </div>
               <div>
                 <p class="user-name">{{ userInfo.nickname }}</p>
@@ -778,6 +789,7 @@ onMounted(() => {
                         <img
                             v-if="commentUserInfoMap[comment.user_id]?.user_pic"
                             :src="commentUserInfoMap[comment.user_id]?.user_pic"
+                            @click="goToOtherInfo(comment.user_id)"
                             class="comment-avatar"
                             alt="用户头像"
                         />
@@ -827,6 +839,7 @@ onMounted(() => {
                         <img
                             v-if="userInfoMap[item.user_id]"
                             :src="userInfoMap[item.user_id].user_pic"
+                            @click="goToOtherInfo(item.user_id)"
                             class="comment-avatar"
                         />
                         <span class="nickname">{{ userInfoMap[item.user_id]?.nickname }}</span>
@@ -959,15 +972,13 @@ onMounted(() => {
           </template>
         </el-dialog>
 
-
         <!-- 预约弹窗 -->
         <el-dialog v-model="reserveDialogVisible" title="立刻预约" width="600px">
           <el-form :model="reserveForm" label-width="100px">
 
             <el-form-item label="选择成员">
-              <el-select v-model="reserveForm.member_id" placeholder="请选择服务人员">
-                <el-option v-for="member in memberOptions" :key="member.member_id" :label="member.member_name"
-                           :value="member.member_id"/>
+              <el-select v-model="reserveForm.selectedMember" placeholder="请选择服务人员">
+                <el-option v-for="member in memberOptions" :key="member.member_id" :label="member.member_name" :value="member" />
               </el-select>
             </el-form-item>
 
@@ -999,7 +1010,7 @@ onMounted(() => {
 
           <template #footer>
             <el-button @click="reserveDialogVisible = false">取消</el-button>
-            <el-button type="primary" :loading="reserveLoading" @click="submitReservation">预约</el-button>
+            <el-button type="primary" :loading="reserveLoading" @click="submitReservation()">预约</el-button>
           </template>
         </el-dialog>
 
