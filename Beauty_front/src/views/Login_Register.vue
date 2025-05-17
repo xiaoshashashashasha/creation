@@ -161,7 +161,7 @@ onMounted(()=>{
               <el-form-item label="用户名 :" style="margin: 20px; " prop="username">
                 <input v-model="form_login.username" style="width: 235px; height: 35px"/>
               </el-form-item>
-              <el-form-item label="密码 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px" prop="password">
+              <el-form-item label="密码 :" style="margin: 30px 20px" prop="password">
                 <input v-model="form_login.password" style="width: 235px; height: 35px"/>
               </el-form-item>
 
@@ -177,7 +177,7 @@ onMounted(()=>{
               <el-form-item label="用户名 :" style="margin: 20px;" prop="username">
                 <input v-model="form_register.username" style="width: 235px; height: 35px"/>
               </el-form-item>
-              <el-form-item label="昵称 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px" prop="nickname">
+              <el-form-item label="昵称 :" style="margin: 30px 20px" prop="nickname">
                 <input v-model="form_register.nickname" style="width: 235px; height: 35px"/>
               </el-form-item>
               <el-form-item label="性别 :" style="margin-left: 20px;" prop="gender">
@@ -186,13 +186,13 @@ onMounted(()=>{
                   <el-radio value="女">女</el-radio>
                 </el-radio-group>
               </el-form-item>
-              <el-form-item label="密码 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px" prop="password">
+              <el-form-item label="密码 :" style="margin: 30px 20px" prop="password">
                 <input v-model="form_register.password" style="width: 235px; height: 35px"/>
               </el-form-item>
-              <el-form-item label="确认密码 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px" prop="repassword">
+              <el-form-item label="确认密码 :" style="margin: 30px 20px" prop="repassword">
                 <input v-model="form_register.repassword" style="width: 235px; height: 35px"/>
               </el-form-item>
-              <el-form-item label="邮箱 :" style="margin: 20px; margin-top: 30px; margin-bottom: 30px" prop="email">
+              <el-form-item label="邮箱 :" style="margin: 30px 20px" prop="email">
                 <input v-model="form_register.email" style="width: 235px; height: 35px"/>
               </el-form-item>
 
@@ -234,9 +234,8 @@ html, body {
 .form-box {
   display: flex;
   justify-content: center;
-  padding-top: 80px;
+  padding: 80px 20px 20px;
   height: 100%;
-  padding: 20px;
   box-sizing: border-box;
 }
 
@@ -290,6 +289,7 @@ input {
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.33);
 }
+
 
 .state1 {
   height: 420px;
