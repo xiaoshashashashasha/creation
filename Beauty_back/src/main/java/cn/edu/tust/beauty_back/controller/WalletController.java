@@ -17,6 +17,9 @@ public class WalletController {
     @Autowired
     private WalletService walletService;
 
+    /**
+     *获取钱包信息
+     * **/
     @GetMapping("/walletInfo")
     public Result walletInfo(){
         Map<String, Object> map = ThreadLocalUtil.get();

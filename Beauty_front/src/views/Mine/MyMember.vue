@@ -3,6 +3,7 @@ import {ref, onMounted} from 'vue'
 import {useRoute,useRouter} from 'vue-router'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {memberList, addMember, delMember} from '@/api/offline'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 // 获取 offline_id 参数
 const route = useRoute()
@@ -84,7 +85,7 @@ onMounted(() => {
     <!-- 返回按钮 -->
     <el-button
         type="primary"
-        icon="el-icon-arrow-left"
+        :icon="ArrowLeft"
         plain
         @click="router.back()"
         style="margin-bottom: 20px"

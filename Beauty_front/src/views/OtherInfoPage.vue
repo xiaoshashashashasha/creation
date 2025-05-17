@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {userInfoService, userOtherInfoService} from '@/api/user'
 import { ElMessage } from 'element-plus'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -61,7 +62,7 @@ onMounted(async () => {
         <el-button
             class="back-btn"
             type="primary"
-            icon="el-icon-arrow-left"
+            :icon="ArrowLeft"
             @click="goBack"
             plain
         >

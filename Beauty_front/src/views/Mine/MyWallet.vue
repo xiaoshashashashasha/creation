@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { walletInfo } from '@/api/wallet'
 import { ElMessage } from 'element-plus'
-import { Wallet } from '@element-plus/icons-vue'
+import {ArrowLeft, Wallet} from '@element-plus/icons-vue'
 
 const router = useRouter()
 
@@ -46,7 +46,7 @@ onMounted(() => {
         <el-button
             class="back-btn"
             type="primary"
-            icon="el-icon-arrow-left"
+            :icon="ArrowLeft"
             @click="backToHome"
             plain
         >

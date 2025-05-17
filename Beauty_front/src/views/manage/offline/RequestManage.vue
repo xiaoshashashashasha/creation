@@ -13,7 +13,7 @@ const userInfoMap = reactive({})
 
 // 获取店长的昵称与邮箱
 const fetchManagerInfo = async (managerId) => {
-  if (userInfoMap[managerId]) return // 已缓存
+  if (userInfoMap[managerId]) return
 
   try {
     const res = await userListService({ pageSize:1,pageNum:1, user_id: managerId })

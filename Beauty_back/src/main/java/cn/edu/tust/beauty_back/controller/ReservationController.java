@@ -20,13 +20,17 @@ public class ReservationController {
     @Autowired
     private ReservationService reservationService;
 
-    //带参获取我的预约列表
+    /**
+     *带参获取我的预约列表
+     * **/
     @GetMapping("/myList")
     public Result<PageBean<Reservation>> myList(@RequestParam Integer pageNum, Integer pageSize,@NotNull @Min(0) @Max(3) Integer status) {
         return reservationService.myList(pageNum,pageSize,status);
     }
 
-    //新建预约
+    /**
+     *新建预约
+     * **/
     @PostMapping("/add")
     public Result add(@RequestBody @Validated Reservation reservation) {
         if (reservation.getStart_at().isAfter(reservation.getEnd_at())) {
@@ -35,31 +39,42 @@ public class ReservationController {
         return reservationService.add(reservation);
     }
 
-    //取消预约
+
+    /**
+     *取消预约
+     * **/
     @DeleteMapping("/del")
     public Result del(@RequestParam @NotNull Integer reservation_id) {
         return reservationService.del(reservation_id);
     }
 
-    //评价
+    /**
+     *评价
+     * **/
     @PatchMapping("/evaluate")
     public Result evaluate(@RequestParam @NotNull Integer reservation_id, @NotNull @Min(0) @Max(5) Integer point, @NotNull String comment) {
         return reservationService.evaluate(reservation_id,point,comment);
     }
 
-    //分页获取门店评价列表
+    /**
+     *分页获取门店评价列表
+     * **/
     @GetMapping("/commentList")
     public Result<PageBean<Reservation>> commentList(@RequestParam Integer pageNum, Integer pageSize, @NotNull Integer offline_id) {
         return reservationService.commentList(pageNum,pageSize,offline_id);
     }
 
-    //分页获取门店下预约列表
+    /**
+     *分页获取门店下预约列表
+     * **/
     @GetMapping("/offlineList")
     public Result<PageBean<Reservation>> offlineList(@RequestParam Integer pageNum, Integer pageSize, @NotNull Integer offline_id, @NotNull @Min(0) @Max(3) Integer status) {
         return reservationService.offlineList(pageNum,pageSize,offline_id,status);
     }
 
-    //核销预约
+    /**
+     *核销预约
+     * **/
     @PatchMapping("/updateStatus")
     public Result updateStatus(@RequestParam Integer reservation_id, @NotNull @Min(1) @Max(2) Integer status) {
         return reservationService.updateStatus(reservation_id,status);

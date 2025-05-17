@@ -1,6 +1,11 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import LoginSwitch from "@/components/part/LoginSwitch.vue";
+import {useTokenStore} from '@/stores/token'
+import {useStateStore} from '@/stores/state'
+import {userLoginService, userRegisterService,userCheckRoleService} from "@/api/user";
+import {ElMessage} from "element-plus";
+import router from "@/router";
 
 
 const loginMode = ref(true);
@@ -71,12 +76,6 @@ function handleLoginMode(val) {
   loginMode.value = val;
 }
 
-import {useTokenStore} from '@/stores/token'
-import {useStateStore} from '@/stores/state'
-import {userLoginService, userRegisterService,userCheckRoleService} from "@/api/user";
-import {ElMessage} from "element-plus";
-import router from "@/router";
-
 
 const tokenStore = useTokenStore();
 const stateStore = useStateStore();
@@ -86,6 +85,8 @@ const register = async () => {
     await userRegisterService(form_register.value);
     ElMessage.success('注册成功')
 
+    form_login.value.username = form_register.value.username;
+    form_login.value.password = form_register.value.password;
 
     loginMode.value = false;
   } catch (err) {
@@ -121,7 +122,7 @@ const loginSta = async () => {
     }
   } catch (err) {
     if (err?.response?.status === 401) {
-      console.warn('[登录页] token失效，清空用户数据，留在本页')
+      console.warn('[登录页] token失效')
 
     } else {
       console.error('其他错误:', err)
@@ -204,8 +205,7 @@ onMounted(()=>{
       </div>
     </el-col>
 
-    <!-- 图像部分 -->
-    <el-col :span="16" class="pic">
+    <el-col :span="16">
     </el-col>
   </el-row>
   </body>
@@ -220,7 +220,6 @@ onMounted(()=>{
 html, body {
   height: 100%;
 }
-
 
 
 .el-row {
@@ -281,9 +280,6 @@ input {
   transform: scale(1.3);
 }
 
-.pic {
-  height: 100%;
-}
 
 .state {
   background: rgba(255, 255, 255, 0.1);

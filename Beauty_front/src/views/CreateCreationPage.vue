@@ -5,6 +5,7 @@ import { ElMessage } from 'element-plus'
 import { uploadFile } from '@/api/fileUpload'
 import { addCreation, creationClassList } from '@/api/creation'
 import RichTextEditor from '@/components/part/RichTextEditor.vue'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 const router = useRouter()
 
@@ -77,7 +78,7 @@ onMounted(() => {
 <template>
   <div class="creation-page">
     <div class="header">
-      <el-button icon="el-icon-arrow-left" @click="router.back()">返回</el-button>
+      <el-button :icon="ArrowLeft"  @click="router.back()">返回</el-button>
     </div>
 
     <div class="form-section">

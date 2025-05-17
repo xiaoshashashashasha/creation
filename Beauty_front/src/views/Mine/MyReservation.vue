@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { myReservationList, evaluate, deleteReservation } from '@/api/reservation'
 import RichTextEditor from '@/components/part/RichTextEditor.vue'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 const router = useRouter()
 const tableData = ref([])
@@ -96,7 +97,7 @@ onMounted(() => {
 
 <template>
   <div class="main-content">
-    <el-button class="back-btn" type="primary" plain @click="() => router.push('/')">
+    <el-button class="back-btn" type="primary" :icon="ArrowLeft" plain @click="() => router.push('/')">
       返回首页
     </el-button>
 

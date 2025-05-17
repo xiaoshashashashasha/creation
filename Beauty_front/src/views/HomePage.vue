@@ -130,7 +130,9 @@ onMounted(() => {
 
 <template>
   <el-container class="view-box">
+
     <el-main class="main">
+
       <div class="main-content">
         <!-- 轮播图 -->
         <el-carousel :interval="4000" type="card" class="cardpic" card-scale="0.7">
@@ -200,7 +202,6 @@ onMounted(() => {
         </el-card>
       </div>
 
-
     </el-main>
   </el-container>
 
@@ -210,19 +211,6 @@ onMounted(() => {
 * {
   margin: 0;
   padding: 0;
-}
-
-html, body {
-  height: 100%;
-}
-
-.main-content {
-  flex: 1;
-  display: block;
-  width: 1720px;
-  margin: 0 auto;
-  padding-top: 20px;
-  background: #fff;
 }
 
 .view-box {
@@ -236,6 +224,16 @@ html, body {
   flex: 1;
   overflow-y: visible;
 }
+
+.main-content {
+  flex: 1;
+  display: block;
+  width: 1720px;
+  margin: 0 auto;
+  padding-top: 20px;
+  background: #fff;
+}
+
 
 .cardpic {
   max-width: 1200px;

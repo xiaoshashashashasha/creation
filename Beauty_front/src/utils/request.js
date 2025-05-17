@@ -17,7 +17,7 @@ instance.interceptors.request.use(
         if (tokenStore.token) {
             config.headers.Authorization = tokenStore.token
         } else {
-            console.warn('⚠️ 请求时 token 为空')
+            console.warn('请求时 token 为空')
         }
 
         return config

@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { userInfoService,updateUserPicService,updatePasswordService } from '@/api/user'
 import { uploadFile } from '@/api/fileUpload'
 import { ElMessage,ElDialog } from 'element-plus'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 const router = useRouter()
 
@@ -133,7 +134,7 @@ onMounted(() => {
         <el-button
             class="back-btn"
             type="primary"
-            icon="el-icon-arrow-left"
+            :icon="ArrowLeft"
             @click="backToHome"
             plain
         >

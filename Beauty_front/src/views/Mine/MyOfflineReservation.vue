@@ -3,6 +3,7 @@ import {ref, onMounted} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import {ElMessage, ElMessageBox} from 'element-plus'
 import {offlineReservationList, updateReservation} from '@/api/reservation'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -111,6 +112,7 @@ onMounted(() => {
     <el-button
         class="back-btn"
         type="primary"
+        :icon="ArrowLeft"
         plain
         @click="() => router.back()"
     >

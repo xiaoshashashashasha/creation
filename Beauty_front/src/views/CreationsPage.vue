@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import CardCreation from '@/components/part/CardCreation.vue'
 import { creationList, creationClassList, creationTagList } from '@/api/creation'
 import { ElMessage } from 'element-plus'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 const router = useRouter()
 
@@ -84,12 +85,14 @@ const backToHome = () => {
 
 <template>
   <el-container class="view-box">
+
     <el-main class="main">
+
       <div class="main-content">
         <el-card class="card">
           <template #header>
             <div class="card-header">
-              <el-button @click="backToHome" type="primary" icon="el-icon-arrow-left" plain>返回首页</el-button>
+              <el-button @click="backToHome" type="primary" :icon="ArrowLeft" plain>返回首页</el-button>
               <div class="search-box">
                 <el-input v-model="searchTitle" placeholder="请输入标题" style="width: 200px; margin-right: 10px" clearable/>
                 <el-select v-model="selectedSearchClassId" placeholder="请选择分类" style="width: 150px; margin-right: 10px" clearable>
@@ -128,17 +131,32 @@ const backToHome = () => {
           />
         </el-card>
       </div>
+
     </el-main>
   </el-container>
 </template>
 
 
 <style scoped>
+.view-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main{
+  flex: 1;
+  overflow-y: visible;
+}
+
 .main-content {
   flex: 1;
+  height: auto;
   width: 1720px;
-  margin: 0 auto;
   background: #fff;
+  margin: 0 auto;
+  overflow-y: visible;
 }
 .card-header {
   display: flex;

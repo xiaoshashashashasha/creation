@@ -263,6 +263,9 @@ public class UserController {
         return Result.error("您无权访问用户权限内容！");
     }
 
+    /**
+     *检查用户权限
+     * **/
     @GetMapping("/roleCheck")
     public Result roleCheck(){
         Map<String, Object> map = ThreadLocalUtil.get();
@@ -280,6 +283,9 @@ public class UserController {
         }
     }
 
+    /**
+     *登出
+     * **/
     @GetMapping("/logout")
     public Result loginOut(@RequestHeader("Authorization") String token) {
         // 删除 Redis 中的 token

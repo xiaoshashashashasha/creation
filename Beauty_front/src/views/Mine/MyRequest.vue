@@ -3,6 +3,7 @@ import {onMounted, ref} from "vue"
 import {ElMessage} from "element-plus"
 import {offlineRequestList, addRequest} from "@/api/offline"
 import { useRouter } from 'vue-router'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 
 
@@ -66,7 +67,7 @@ onMounted(() => {
     <el-button
         class="back-btn"
         type="primary"
-        icon="el-icon-arrow-left"
+        :icon="ArrowLeft"
         plain
         @click="backToHome"
     >

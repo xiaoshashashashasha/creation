@@ -7,6 +7,7 @@ import { getChatList, getHistory, sendMessage, setMessageRead } from '@/api/prMe
 import { userOtherInfoService, userInfoService } from '@/api/user'
 import RichTextEditor from "@/components/part/RichTextEditor.vue";
 import SharedMessage from "@/components/part/SharedMessage.vue";
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 
 const chatList = ref([])
@@ -193,7 +194,7 @@ const fetchMessages = async (append = false, retryCount = 0, bol = false) => {
     if (res.code === 0) {
       const list = res.data || []
       if (list.length === 0 && append) {
-        if (retryCount < 2) {
+        if (retryCount < 3) {
           //防止因为滚动检测出错导致pageNum初始为2而无法获取到短聊天的问题
           if (messages.value.length === 0) {
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -236,8 +237,9 @@ const selectChat = async (chat,bol) => {
   activeChat.value = chat
   pageNum.value = 1
   messages.value = []
+  noMoreMessages.value = false
   await setMessageRead(chat.target_id)
-  await fetchMessages()
+  await fetchMessages(false,0,false);
   if (route.params.id == chat.target_id && bol) {
     try {
       const userRes = await userOtherInfoService(chat.target_id)
@@ -348,10 +350,12 @@ onUnmounted(() => {
 
 <template>
   <div class="main-content">
-    <el-button type="primary" plain class="back-btn" @click="goBack">
+    <el-button type="primary" :icon="ArrowLeft" plain class="back-btn" @click="goBack">
       返回
     </el-button>
     <div class="message-page">
+
+      <!-- 聊天列表 -->
       <div class="chat-list">
         <div
             v-for="chat in chatList"
@@ -369,6 +373,7 @@ onUnmounted(() => {
         </div>
       </div>
 
+      <!-- 聊天窗口 -->
       <div class="chat-window" v-if="activeChat">
         <div class="chat-header">
           与 {{ activeChat.nickname }} 的聊天

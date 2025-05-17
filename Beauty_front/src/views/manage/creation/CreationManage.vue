@@ -257,7 +257,7 @@ onMounted(() => {
           <el-button size="small" @click="openClassDialog(row.creation_id)">更改</el-button>
         </template>
       </el-table-column>
-      <el-table-column label="关联的标签" width="300px">
+      <el-table-column label="关联的标签" width="210px">
         <template #default="{ row }">
           <el-tag
               v-for="tag in row.tags"

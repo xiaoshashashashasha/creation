@@ -750,7 +750,7 @@ onMounted(() => {
 
 
             <div style="padding: 20px;">
-              <h1 style="text-align: center">
+              <h1 style="text-align: center; font-size: 32px">
                 {{ detail.title || detail.offline_name || detail.hairstyle_name }}
               </h1>
               <img
@@ -758,6 +758,8 @@ onMounted(() => {
                   style="width: 100%; max-width: 400px; display: block; margin: 0 auto;"
                   alt="cover"
               />
+
+              <h2 v-if="type === 'creation'" class="abs">摘要：{{detail.abs_text}}</h2>
 
               <div class="content" v-html="content"/>
 
@@ -1076,9 +1078,27 @@ onMounted(() => {
   background: #fff;
 }
 
+.abs{
+  margin: 10px 0;
+  text-align: center;
+}
+
 .content {
-  width: 1080px;
+  width: 960px;
+  font-size: 20px;
   margin: 0 auto;
+}
+
+.content h1 {
+  font-size: 32px;
+}
+
+.content h2 {
+  font-size: 28px;
+}
+
+.content h3 {
+  font-size: 24px;
 }
 
 .top-bar {

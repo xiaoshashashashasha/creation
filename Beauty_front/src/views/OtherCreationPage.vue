@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import CardCreation from '@/components/part/CardCreation.vue'
 import { otherCreationList } from '@/api/creation'
 import { ElMessage } from 'element-plus'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -54,7 +55,7 @@ onMounted(() => {
         <el-card class="card">
           <template #header>
             <div class="card-header">
-              <el-button @click="goBack" type="primary" icon="el-icon-arrow-left" plain>返回</el-button>
+              <el-button @click="goBack" type="primary" :icon="ArrowLeft" plain>返回</el-button>
               <h2 style="margin: 0;">TA 的内容</h2>
             </div>
           </template>
@@ -86,6 +87,18 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.view-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main{
+  flex: 1;
+  overflow-y: visible;
+}
+
 .main-content {
   flex: 1;
   width: 1720px;

@@ -44,11 +44,11 @@ function toggle() {
   position: absolute;
   height: 70px;
   width: 35px;
-  background: linear-gradient(to bottom, #86e4d3, #60b8aa); /* 渐变绿色 */
+  background: linear-gradient(to bottom, #86e4d3, #60b8aa);
   box-shadow:
-      0 4px 8px rgba(0, 0, 0, 0.2),      /* 外部阴影 */
-      inset 0 -2px 4px rgba(0, 0, 0, 0.2); /* 内部阴影 */
-  border: 1px solid #5bb1a1; /* 更深绿色边框 */
+      0 4px 8px rgba(0, 0, 0, 0.2),
+      inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #5bb1a1;
   transition: all 0.4s ease;
   top: -5px;
 }

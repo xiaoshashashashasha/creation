@@ -80,7 +80,7 @@ onMounted(() => {
     <el-col :span="14">
       <el-table :data="tableData" style="width: 100%">
         <el-table-column prop="tag_id" label="标签ID" width="180px"/>
-        <el-table-column prop="tag_name" label="标签名" width="320px"/>
+        <el-table-column prop="tag_name" label="标签名" width="280px"/>
         <el-table-column prop="created_at" label="创建时间" width="320px"/>
         <el-table-column label="操作" width="180px">
           <template #default="{ row }">

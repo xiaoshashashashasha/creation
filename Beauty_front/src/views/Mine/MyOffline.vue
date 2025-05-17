@@ -5,6 +5,7 @@ import {ElMessage, ElMessageBox} from 'element-plus'
 import {myOfflineList, improveOffline, delOffline} from '@/api/offline'
 import {uploadFile} from '@/api/fileUpload'
 import RichTextEditor from '@/components/part/RichTextEditor.vue'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 const router = useRouter()
 const tableData = ref([])
@@ -134,7 +135,7 @@ onMounted(() => {
     <el-button
         class="back-btn"
         type="primary"
-        icon="el-icon-arrow-left"
+        :icon="ArrowLeft"
         plain
         @click="() => router.push('/')"
     >

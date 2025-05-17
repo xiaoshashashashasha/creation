@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import CardOffline from '@/components/part/CardOffline.vue'
 import { offlineList } from '@/api/offline'
 import { ElMessage } from 'element-plus'
+import {ArrowLeft} from "@element-plus/icons-vue";
 
 const router = useRouter()
 
@@ -65,7 +66,7 @@ const backToHome = () => {
           <template #header>
             <div class="card-header">
               <!-- 左侧返回首页 -->
-              <el-button @click="backToHome" type="primary" icon="el-icon-arrow-left" plain>返回首页</el-button>
+              <el-button @click="backToHome" type="primary" :icon="ArrowLeft" plain>返回首页</el-button>
 
               <!-- 搜索区域 -->
               <div class="search-box">
@@ -109,6 +110,18 @@ const backToHome = () => {
 </template>
 
 <style scoped>
+.view-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main{
+  flex: 1;
+  overflow-y: visible;
+}
+
 .main-content {
   flex: 1;
   width: 1720px;
