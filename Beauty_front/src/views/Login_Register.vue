@@ -119,11 +119,13 @@ const loginSta = async () => {
     if (res.data !== 3) {
       stateStore.setState(res.data)
       router.push('/')
+    }else {
+      stateStore.setState(3)
     }
   } catch (err) {
     if (err?.response?.status === 401) {
       console.warn('[登录页] token失效')
-
+      stateStore.setState(3)
     } else {
       console.error('其他错误:', err)
       ElMessage.error('系统异常，请稍后再试')
