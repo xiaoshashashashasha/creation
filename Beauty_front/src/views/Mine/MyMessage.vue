@@ -394,6 +394,7 @@ onUnmounted(() => {
                            :type="msg.type"
                            :content_id="msg.content_id"
                             />
+            <div class="chat-read">{{ msg.is_read === 0 ? "🔴未读" : "🟢已读" }}</div>
             <div class="chat-time">{{ new Date(msg.created_at).toLocaleString() }}</div>
           </div>
         </div>
@@ -537,8 +538,14 @@ onUnmounted(() => {
   background: #67c23a;
 }
 
+.chat-read{
+  font-size: 14px;
+  color: #837b7b;
+  margin-top: 5px;
+}
+
 .chat-time {
-  font-size: 10px;
+  font-size: 12px;
   color: #999;
   margin-top: 5px;
 }
